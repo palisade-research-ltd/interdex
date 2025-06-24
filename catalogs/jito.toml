@@ -1,0 +1,15 @@
+[tips]
+
+[tips.wallets]
+Jitotip_1 = "96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5"
+Jitotip_2 = "HFqU5x63VTqvQss8hp11i4wVV8bD44PvwucfZ2bU7gRe"
+Jitotip_3 = "Cw8CFyM9FkoMi7K7Crf6HNQqf4uEMzpKw6QNghXLvLkY"
+Jitotip_4 = "ADaUMid9yfUytqMBgopwjb2DTLSokTSzL1zt6iGPaS49"
+Jitotip_5 = "DfXygSm4jCyNCybVYYK6DwvWqjKee8pbDmJGcLWNDXjh"
+Jitotip_6 = "ADuUkR4vqLUMWXxW9gh6D6L8pMSawimctcNZ5pGwDcEt"
+Jitotip_7 = "DttWaMuVvTiduZRnguLF7jNxTgiMBZ1hyAumKUiL2KRL"
+Jitotip_8 = "3AVi9Tg9Uo68tJfuvoKvqKNWKkC5wPdSSdeBnizKZ6jT"
+
+[tips.program]
+JitoTipPayment = "T1pyyaTNZsKv2WcRAB8oVnk93mLJw2XzjtVYqCsaHqt"
+

@@ -1,0 +1,37 @@
+[package]
+name = "ci-data"
+publish = false
+readme = "README.md"
+version = "0.0.1"
+rust-version = "1.84.1"
+edition = "2021"
+authors = ["palisade research ltd"]
+
+[dependencies]
+
+ci-results = { path = "../ci-results", version = "0.0.1" }
+
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+criterion = { workspace = true }
+memuse = { workspace = true }
+human_bytes = { workspace = true }
+rand = { workspace = true }
+toml = { workspace = true }
+csv = { workspace = true }
+clap = { workspace = true }
+
+tokio = { workspace = true }
+futures = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tch = { workspace = true }
+
+regex = { workspace = true }
+hex = { workspace = true }
+borsh = { workspace = true }
+bs58 = { workspace = true }
+
+reqwest = { workspace = true }
+solana-transaction-status = { workspace = true }
+

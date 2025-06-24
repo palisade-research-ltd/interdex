@@ -1,0 +1,15 @@
+[package]
+name = "ci-results"
+description = "Standardized results, errors and successes, for the composite indicators project"
+publish = false
+readme = "README.md"
+version = "0.0.1"
+rust-version = "1.84.1"
+edition = "2021"
+authors = ["palisade research ltd"]
+
+[dependencies]
+thiserror.workspace = true
+serde = { workspace = true }
+serde_json = { workspace = true }
+

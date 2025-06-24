@@ -1,0 +1,60 @@
+[workspace]
+
+resolver = "2"
+
+members = [
+  "ci-data",
+  "ci-dojo",
+  "ci-program",
+  "ci-results",
+  "benches",
+  "examples",
+  "tests",
+]
+
+[workspace.package]
+
+edition = "2021"
+rust-version = "1.84.1"
+description = "Composite Indicators"
+authors = ["palisade research ltd"]
+
+[workspace.dependencies]
+
+ci-data = { path = "../ci-data", version = "0.0.1" }
+ci-dojo = { path = "../ci-dojo", version = "0.0.1" }
+ci-program = { path = "../ci-program", version = "0.0.1" }
+
+anyhow = { version = "1.0.98" }
+thiserror = { version = "1.0.64" }
+criterion = { version = "0.5", features = ["html_reports"] }
+memuse = { version = "0.2.0" }
+human_bytes = { version = "0.4.1" }
+toml = { version = "0.8" }
+csv = { version = "1.3" }
+clap = { version = "4.5", features = ["derive"] }
+
+borsh = { version = "1.5.7" }
+bs58 = { version = "0.5.1" }
+hex = { version = "0.4.3" }
+tokio = { version = "1", features = ["full"] }
+futures = { version = "0.3" }
+rand = { version = "0.7.3" }
+regex = { version = "1.5" }
+reqwest = { version = "0.11", features = ["json"] }
+
+solana-transaction-status = { version = "1.0" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0" }
+tch = { version = "0.20.0" }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+unused_extern_crates = "allow"
+unreachable_code = "allow"
+unreachable_patterns = "allow"
+unused_variables = "warn"
+trivial_casts = "warn"
+trivial_numeric_casts = "warn"
+dead_code = "allow"
+
