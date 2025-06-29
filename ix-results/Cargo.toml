@@ -1,6 +1,6 @@
 [package]
-name = "ci-results"
-description = "Standardized results, errors and successes, for the composite indicators project"
+name = "ix-results"
+description = "Standardized results, errors and successes, for the interdexer project"
 publish = false
 readme = "README.md"
 version = "0.0.1"

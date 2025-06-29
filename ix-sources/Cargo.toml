@@ -1,5 +1,5 @@
 [package]
-name = "ci-program"
+name = "ix-sources"
 publish = false
 readme = "README.md"
 version = "0.0.1"
@@ -9,9 +9,9 @@ authors = ["palisade research ltd"]
 
 [dependencies]
 
-ci-dojo = { path = "../ci-dojo", version = "0.0.1" }
-ci-data = { path = "../ci-data", version = "0.0.1" }
+ix-results = { path = "../ix-results", version = "0.0.1" }
 
+anyhow = { workspace = true }
 thiserror = { workspace = true }
 criterion = { workspace = true }
 memuse = { workspace = true }
@@ -32,6 +32,6 @@ hex = { workspace = true }
 borsh = { workspace = true }
 bs58 = { workspace = true }
 
-[dev-dependencies]
-solana-program-test = { version = "2.2.7" }
+reqwest = { workspace = true }
+solana-transaction-status = { workspace = true }
 

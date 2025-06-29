@@ -1,15 +1,20 @@
 //! Files I/O
 
-use ci_results::errors::FileError;
+use ix_results::errors::FileError;
 use serde_json::Value;
 use std::fs::File;
-use std::io::Read;
-use thiserror::Error;
+// use std::io::Read;
+// use thiserror::Error;
 
-// -------------------------------------------------------------------------------------------- //
-// -------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------- //
 
-pub fn read_json(json_file: &str, case: &str, sub_case: &str) -> Result<Vec<String>, FileError> {
+pub fn read_json(
+    json_file: &str,
+    case: &str,
+    sub_case: &str
+    ) -> Result<Vec<String>, FileError> {
+
     // Read and parse JSON in one operation
     let json_value: Value = {
         let file = File::open(json_file)?;

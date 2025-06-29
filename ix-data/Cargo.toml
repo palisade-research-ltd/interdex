@@ -1,5 +1,5 @@
 [package]
-name = "ci-dojo"
+name = "ix-data"
 publish = false
 readme = "README.md"
 version = "0.0.1"
@@ -8,8 +8,13 @@ edition = "2021"
 authors = ["palisade research ltd"]
 
 [dependencies]
+
+ix-results = { path = "../ix-results", version = "0.0.1" }
+
+anyhow = { workspace = true }
 thiserror = { workspace = true }
 criterion = { workspace = true }
+memuse = { workspace = true }
 human_bytes = { workspace = true }
 rand = { workspace = true }
 toml = { workspace = true }

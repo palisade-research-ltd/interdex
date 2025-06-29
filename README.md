@@ -1,5 +1,8 @@
-# composed-indicators
+# interdexer
 
-OffChain development for Composed Indicator to Deploy OnChain as a Solana Program
+OnChain data pipeline for indexing, parsing and computing data from DEXes
 
+## Indicators
+
+1. Forecast PriorityFees 
 

@@ -1,8 +1,9 @@
 use borsh::{BorshDeserialize, BorshSerialize};
 use bs58;
-use hex::FromHexError;
+//use hex::encode as hex_encode;
+//use hex::FromHexError;
 use serde::{Deserialize, Serialize};
-use serde_json::json;
+//use serde_json::json;
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -43,7 +44,7 @@ pub fn decode_icd(
 
         // Log an error if neither type matches
         println!(
-            "\n Failed to deserialize data into either ComputeUnitLimit or ComputeUnitPrice: {:?} 
+            "\n Failed to deserialize data into ComputeUnitLimit or ComputeUnitPrice: {:?}
              \n Original encoded data {:?}",
             decoded_data, &encoded_str
         );
@@ -59,8 +60,8 @@ pub struct TransferInfo {
     pub lamports: u64,
 }
 
-// -- -------------------------------------------------------------------------------------- -- //
-// -- -------------------------------------------------------------------------------------- -- //
+// -- ----------------------------------------------------------------------------- -- //
+// -- ----------------------------------------------------------------------------- -- //
 
 pub fn decode_instruction_data(
     encoded_data: &str,
@@ -72,7 +73,7 @@ pub fn decode_instruction_data(
     let destination = "";
 
     // Parse the first 4 bytes as the discriminator (u32)
-    let discriminator = u32::from_le_bytes(decoded_data[0..4].try_into()?);
+    // let discriminator = u32::from_le_bytes(decoded_data[0..4].try_into()?);
 
     // Parse the next 8 bytes as lamports (u64)
     let lamports = u64::from_le_bytes(decoded_data[4..12].try_into()?);

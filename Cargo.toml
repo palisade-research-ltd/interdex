@@ -3,10 +3,13 @@
 resolver = "2"
 
 members = [
-  "ci-data",
-  "ci-dojo",
-  "ci-program",
-  "ci-results",
+  
+  "ix-data",
+  "ix-composer",
+  "ix-program",
+  "ix-results",
+  "ix-sources",
+
   "benches",
   "examples",
   "tests",
@@ -16,14 +19,14 @@ members = [
 
 edition = "2021"
 rust-version = "1.84.1"
-description = "Composite Indicators"
+description = "OnChain data pipeline for indexing, parsing and computing data from DEXes"
 authors = ["palisade research ltd"]
 
 [workspace.dependencies]
 
-ci-data = { path = "../ci-data", version = "0.0.1" }
-ci-dojo = { path = "../ci-dojo", version = "0.0.1" }
-ci-program = { path = "../ci-program", version = "0.0.1" }
+ix-data = { path = "../ix-data", version = "0.0.1" }
+ix-composer = { path = "../ix-composer", version = "0.0.1" }
+ix-program = { path = "../ix-program", version = "0.0.1" }
 
 anyhow = { version = "1.0.98" }
 thiserror = { version = "1.0.64" }

@@ -9,9 +9,9 @@ authors = ["palisade research ltd"]
 
 [dependencies]
 
-ci-data = { path = "../ci-data", version = "0.0.1" }
-ci-dojo = { path = "../ci-dojo", version = "0.0.1" }
-ci-program = { path = "../ci-program", version = "0.0.1" }
+ix-data = { path = "../ix-data", version = "0.0.1" }
+ix-composer = { path = "../ix-composer", version = "0.0.1" }
+ix-program = { path = "../ix-program", version = "0.0.1" }
 
 thiserror = { workspace = true }
 criterion = { workspace = true }
@@ -38,4 +38,5 @@ solana-transaction-status = { workspace = true }
 [[example]]
 name = "deserialize"
 path = "deserialize.rs"
+
 
