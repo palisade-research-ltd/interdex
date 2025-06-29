@@ -2,6 +2,14 @@ use anyhow::{Context, Result};
 use reqwest::Client;
 use serde_json::json;
 
+use ix_data::{
+    priorityFeeEstimateResponse,
+    priorityFeeRecentResponse,
+    SolanaResponse,
+    SolanaResponse2,
+    TransactionResponse,
+};
+
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct GenericRpc {
     pub url: String,

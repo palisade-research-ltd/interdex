@@ -10,6 +10,7 @@ authors = ["palisade research ltd"]
 [dependencies]
 
 ix-results = { path = "../ix-results", version = "0.0.1" }
+ix-data = { path = "../ix-data", version = "0.0.1" }
 
 anyhow = { workspace = true }
 thiserror = { workspace = true }
@@ -34,4 +35,6 @@ bs58 = { workspace = true }
 
 reqwest = { workspace = true }
 solana-transaction-status = { workspace = true }
+solana-client = { workspace = true }
+solana-sdk = { workspace = true }
 

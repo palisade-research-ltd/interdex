@@ -3,16 +3,23 @@
 resolver = "2"
 
 members = [
-  
-  "ix-data",
+ 
+  # --- Data Acquisition
+  # "ix-data",
+  # "ix-sources",
+
+  # --- Solana Program
   "ix-composer",
   "ix-program",
-  "ix-results",
-  "ix-sources",
 
-  "benches",
-  "examples",
-  "tests",
+  # --- Utils
+  # "ix-results",
+
+  # --- Usability
+  # "benches",
+  # "examples",
+  # "tests",
+
 ]
 
 [workspace.package]
@@ -23,10 +30,6 @@ description = "OnChain data pipeline for indexing, parsing and computing data fr
 authors = ["palisade research ltd"]
 
 [workspace.dependencies]
-
-ix-data = { path = "../ix-data", version = "0.0.1" }
-ix-composer = { path = "../ix-composer", version = "0.0.1" }
-ix-program = { path = "../ix-program", version = "0.0.1" }
 
 anyhow = { version = "1.0.98" }
 thiserror = { version = "1.0.64" }
@@ -40,16 +43,23 @@ clap = { version = "4.5", features = ["derive"] }
 borsh = { version = "1.5.7" }
 bs58 = { version = "0.5.1" }
 hex = { version = "0.4.3" }
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1.45", features = ["full"] }
 futures = { version = "0.3" }
 rand = { version = "0.7.3" }
 regex = { version = "1.5" }
 reqwest = { version = "0.11", features = ["json"] }
 
-solana-transaction-status = { version = "1.0" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0" }
 tch = { version = "0.20.0" }
+
+# anchor-lang = { version = "0.31.1" }
+# anchor-client = { version = "0.31.1" }
+# pyth-solana-receiver-sdk = { version = "0.6.1" }
+# libm = { version = "0.2.15" }
+# solana-sdk = { version = "2.2.0" }
+# solana-client = { version = "2.2.7" }
+# solana-transaction-status = { version = "1.14" }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

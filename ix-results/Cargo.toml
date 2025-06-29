@@ -9,7 +9,6 @@ edition = "2021"
 authors = ["palisade research ltd"]
 
 [dependencies]
-thiserror.workspace = true
-serde = { workspace = true }
-serde_json = { workspace = true }
 
+thiserror.workspace = true
+serde_json = { workspace = true }

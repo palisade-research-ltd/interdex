@@ -7,13 +7,11 @@ use serde_json::json;
 pub struct HeliusRpc {
     pub url: String,
     pub tkn: String,
-    pub client: Option<RpcClient>,
 }
 
 pub struct HeliusRpcBuilder {
     url: Option<String>,
     tkn: Option<String>,
-    client: Option<RpcClient>,
 }
 
 impl HeliusRpcBuilder {
@@ -21,7 +19,6 @@ impl HeliusRpcBuilder {
         HeliusRpcBuilder {
             url: None,
             tkn: None,
-            client: None,
         }
     }
 
@@ -35,11 +32,6 @@ impl HeliusRpcBuilder {
         self
     }
 
-    pub fn client(mut self, client: RpcClient) -> Self {
-        self.client = Some(client);
-        self
-    }
-
     pub fn build(self) -> Result<HeliusRpc, String> {
         match (self.url, self.tkn) {
             (Some(url), Some(tkn)) => Ok(HeliusRpc { url, tkn }),
@@ -50,15 +42,14 @@ impl HeliusRpcBuilder {
 
 impl HeliusRpc {
 
-    pub fn get_client(&mut self) -> Self {
+    pub fn get_client(&mut self, rpc_url: &str) -> RpcClient {
         
         let rpc_client = RpcClient::new_with_commitment(
             rpc_url.to_string(),
             CommitmentConfig::confirmed(),
         );
 
-        self.client = rpc_client;
-        self
+        rpc_client
 
     }
 

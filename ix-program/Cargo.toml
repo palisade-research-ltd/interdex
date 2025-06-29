@@ -1,48 +1,14 @@
-[package]
-name = "ix-program"
-publish = false
-readme = "README.md"
-version = "0.0.1"
-rust-version = "1.84.1"
-edition = "2021"
-authors = ["palisade research ltd"]
+[workspace]
+members = [
+    "programs/*"
+]
+resolver = "2"
 
-[lib]
-crate-type = ["cdylib", "lib"]
-name = "ix_program"
-
-[dependencies]
-
-anchor-lang = { version = "0.31.1" }
-pyth-solana-receiver-sdk = { version = "0.6.1" }
-libm = { version = "0.2.15" }
-
-thiserror = { workspace = true }
-criterion = { workspace = true }
-memuse = { workspace = true }
-human_bytes = { workspace = true }
-rand = { workspace = true }
-toml = { workspace = true }
-csv = { workspace = true }
-clap = { workspace = true }
-
-tokio = { workspace = true }
-futures = { workspace = true }
-serde = { workspace = true }
-serde_json = { workspace = true }
-tch = { workspace = true }
-
-regex = { workspace = true }
-hex = { workspace = true }
-borsh = { workspace = true }
-bs58 = { workspace = true }
-
-[dev-dependencies]
-solana-program-test = { version = "2.2.7" }
-anchor-lang = { version = "0.31.1" }
-anchor-client = { version = "0.31.1" }
-solana-sdk = { version = "2.2.0" }
-tokio = { version = "1.45" }
-solana-client = { version = "2.2.7" }
-toml = { version = "0.8" }
-
+[profile.release]
+overflow-checks = true
+lto = "fat"
+codegen-units = 1
+[profile.release.build-override]
+opt-level = 3
+incremental = false
+codegen-units = 1

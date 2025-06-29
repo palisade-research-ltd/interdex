@@ -1,18 +1,16 @@
-#[cfg(test)]]
+#[cfg(test)]
 mod helius_rpc_utils {
 
     pub const DEVNET: &str = "https://api-devnet.helius-rpc.com/";
     pub const TX_URL: &str = "v0/transactions/";
     pub const API_KEY: &str = "?api-key=";
 
-    }
-
 }
 
 mod tests {
 
     // use tokio;
-    use crate::test_client_utils::*;
+    use crate::helius_rpc_utils::*;
     use ix_data::data::SolanaResponse2;
     use ix_sources::helius::HeliusRpc;
 
@@ -22,7 +20,7 @@ mod tests {
     #[tokio::test]
     async fn test_rpc() {
 
-        let rpc_url: &str = DEVNET.to_owned() + TX_URL + API_KEY;
+        let rpc_url: String = DEVNET.to_owned() + TX_URL + API_KEY;
         let helius_client = HeliusRpc::get_client();
 
     }
@@ -84,7 +82,7 @@ mod tests {
             
             assert_eq!(results, (true, true));
             
-        }
+    }
 
 }
 
