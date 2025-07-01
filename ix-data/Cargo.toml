@@ -13,4 +13,5 @@ ix-results = { path = "../ix-results", version = "0.0.1" }
 
 serde = { workspace = true }
 serde_json = { workspace = true }
-
+borsh = { workspace = true }
+bs58 = { workspace = true }

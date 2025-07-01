@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod test_client_utils {
 
-    use ix_data::clients::{SolanaRpc, SolanaRpcBuilder};
+    use ix_sources::solana::{SolanaRpc, SolanaRpcBuilder};
 
     pub const WALLET_1: &str = "58oQChx4yWmvKdwLLZzBi4ChoCc2fqCUWBkwMihLYQo2";
     pub const DEVNET: &str = "https://api.devnet.solana.com";

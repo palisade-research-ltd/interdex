@@ -1,0 +1,306 @@
+=== PROJECT STRUCTURE ANALYSIS FOR: interdexer ===
+Generated on: lunes, 30 de junio de 2025, 15:43:25 CST
+
+
+========================================
+1. PROJECT DIRECTORY STRUCTURE
+========================================
+
+Tree command not available. Using find instead:
+./Cargo.toml
+./project_structure_analysis.txt
+./ix-program/Cargo.toml
+./ix-program/Cargo.lock
+./ix-program/.prettierignore
+./ix-program/Anchor.toml
+./ix-program/programs/ix_program/Cargo.toml
+./ix-program/programs/ix_program/tests/test_program_exist.rs
+./ix-program/programs/ix_program/tests/test_utils.rs
+./ix-program/programs/ix_program/tests/test_fetch_data_prices.rs
+./ix-program/programs/ix_program/tests/test_connectivity.rs
+./ix-program/programs/ix_program/tests/test_initialize_data_accounts.rs
+./ix-program/programs/ix_program/Xargo.toml
+./ix-program/programs/ix_program/src/instructions/fetch_data.rs
+./ix-program/programs/ix_program/src/instructions/initialize.rs
+./ix-program/programs/ix_program/src/instructions/mod.rs
+./ix-program/programs/ix_program/src/instructions/compute_features.rs
+./ix-program/programs/ix_program/src/lib.rs
+./ix-program/programs/ix_program/src/state/ind_data.rs
+./ix-program/programs/ix_program/src/state/ind_params.rs
+./ix-program/programs/ix_program/src/state/ind_results.rs
+./ix-program/programs/ix_program/src/state/mod.rs
+./ix-program/programs/ix_program/src/state/ind_features.rs
+./ix-program/programs/ix_program/src/operations/linear.rs
+./ix-program/programs/ix_program/src/operations/mod.rs
+./ix-program/programs/ix_program/src/errors/mod.rs
+./ix-program/programs/ix_program/src/data/data_feed.rs
+./ix-program/programs/ix_program/src/data/mod.rs
+./ix-program/.gitignore
+./ix-program/package.json
+./ix-program/tsconfig.json
+./ix-sources/Cargo.toml
+./ix-sources/README.md
+./ix-sources/src/solana.rs
+./ix-sources/src/lib.rs
+./ix-sources/src/custom.rs
+./ix-sources/src/helius.rs
+./ix-results/Cargo.toml
+./ix-results/README.md
+./ix-results/src/lib.rs
+./ix-results/src/errors.rs
+./ix-data/Cargo.toml
+./ix-data/README.md
+./ix-data/src/types.rs
+./ix-data/src/lib.rs
+./ix-data/src/decoder.rs
+./ix-data/src/files.rs
+./ix-data/src/data.rs
+./tests/Cargo.toml
+./tests/composer/test_train.rs
+
+========================================
+2. CARGO.TOML FILES FOUND
+========================================
+
+./Cargo.toml
+./ix-program/Cargo.toml
+./ix-program/programs/ix_program/Cargo.toml
+./ix-sources/Cargo.toml
+./ix-results/Cargo.toml
+./ix-data/Cargo.toml
+./tests/Cargo.toml
+./ix-composer/Cargo.toml
+./examples/Cargo.toml
+./benches/Cargo.toml
+
+========================================
+3. SOLANA/ANCHOR DEPENDENCIES ANALYSIS
+========================================
+
+--- File: ./Cargo.toml ---
+
+Workspace Configuration:
+[workspace]
+
+resolver = "2"
+
+members = [
+ 
+  # --- Data Acquisition
+  # "ix-data",
+  # "ix-sources",
+
+  # --- Solana Program
+  "ix-composer",
+  # "ix-program",
+
+  # --- Utils
+  # "ix-results",
+
+  # --- Usability
+  # "benches",
+  # "examples",
+
+Solana/Anchor Dependencies:
+No Solana/Anchor dependencies found
+
+---
+
+--- File: ./ix-program/Cargo.toml ---
+
+Workspace Configuration:
+[workspace]
+
+resolver = "2"
+
+members = [
+    "programs/ix_program"
+]
+
+default_members = [
+  "programs/ix_program",
+]
+
+[workspace.package]
+
+Solana/Anchor Dependencies:
+anchor-lang = { version = "0.31.1" }
+anchor-client = { version = "0.31.1" }
+pyth-solana-receiver-sdk = { version = "0.6.1" }
+solana-sdk = { version = "2.2.0" }
+solana-client = { version = "2.2.7" }
+
+---
+
+--- File: ./ix-program/programs/ix_program/Cargo.toml ---
+
+Package Information:
+name = "ix_program"
+version = "0.0.1"
+edition = "2021"
+
+Solana/Anchor Dependencies:
+anchor-lang = { version = "0.31.1" }
+pyth-solana-receiver-sdk = { version = "0.6.1" }
+anchor-lang = { version = "0.31.1" }
+anchor-client = { version = "0.31.1" }
+solana-sdk = { version = "2.2.0" }
+solana-client = { version = "2.2.7" }
+solana-program-test = { version = "2.2.7" }
+idl-build = ["anchor-lang/idl-build"]
+anchor-debug = []
+
+Dev Dependencies (Solana/Anchor related):
+anchor-lang = { version = "0.31.1" }
+anchor-client = { version = "0.31.1" }
+solana-sdk = { version = "2.2.0" }
+solana-client = { version = "2.2.7" }
+solana-program-test = { version = "2.2.7" }
+
+---
+
+--- File: ./ix-sources/Cargo.toml ---
+
+Package Information:
+name = "ix-sources"
+version = "0.0.1"
+edition = "2021"
+
+Solana/Anchor Dependencies:
+solana-transaction-status = { workspace = true }
+solana-client = { workspace = true }
+solana-sdk = { workspace = true }
+
+---
+
+--- File: ./ix-results/Cargo.toml ---
+
+Package Information:
+name = "ix-results"
+version = "0.0.1"
+edition = "2021"
+
+Solana/Anchor Dependencies:
+No Solana/Anchor dependencies found
+
+---
+
+--- File: ./ix-data/Cargo.toml ---
+
+Package Information:
+name = "ix-data"
+version = "0.0.1"
+edition = "2021"
+
+Solana/Anchor Dependencies:
+No Solana/Anchor dependencies found
+
+---
+
+--- File: ./tests/Cargo.toml ---
+
+Package Information:
+name = "tests"
+version = "0.0.1"
+edition = "2021"
+
+Solana/Anchor Dependencies:
+solana-transaction-status = { workspace = true }
+solana-client = { workspace = true }
+anchor-lang = { version = "0.31.1" }
+anchor-client = { version = "0.31.1" }
+pyth-solana-receiver-sdk = { version = "0.6.1" }
+solana-sdk = { version = "2.2.0" }
+solana-client = { version = "2.2.7" }
+
+---
+
+--- File: ./ix-composer/Cargo.toml ---
+
+Package Information:
+name = "ix-composer"
+version = "0.0.1"
+edition = "2021"
+
+Solana/Anchor Dependencies:
+No Solana/Anchor dependencies found
+
+---
+
+--- File: ./examples/Cargo.toml ---
+
+Package Information:
+name = "examples"
+version = "0.0.1"
+edition = "2021"
+
+Solana/Anchor Dependencies:
+solana-transaction-status = { workspace = true }
+
+---
+
+--- File: ./benches/Cargo.toml ---
+
+Package Information:
+name = "benches"
+version = "0.0.1"
+edition = "2021"
+
+Solana/Anchor Dependencies:
+solana-transaction-status = { workspace = true }
+
+---
+
+
+========================================
+4. RESOLVED DEPENDENCY VERSIONS (from Cargo.lock)
+========================================
+
+Cargo.lock not found
+
+========================================
+5. ANCHOR CONFIGURATION
+========================================
+
+Anchor.toml not found
+
+========================================
+6. INSTALLED TOOL VERSIONS
+========================================
+
+Anchor CLI version:
+anchor-cli 0.31.1
+
+Solana CLI version:
+solana-cli 2.2.14 (src:e2b57760; feat:798020478, client:Agave)
+
+Rust version:
+rustc 1.87.0 (17067e9ac 2025-05-09)
+
+Cargo version:
+cargo 1.87.0 (99624be96 2025-05-06)
+
+========================================
+7. POTENTIAL ISSUES DETECTED
+========================================
+
+Checking for common version conflict patterns...
+
+Files with workspace configuration:
+./Cargo.toml
+./ix-program/Cargo.toml
+./ix-sources/Cargo.toml
+./ix-data/Cargo.toml
+./tests/Cargo.toml
+./examples/Cargo.toml
+./benches/Cargo.toml
+
+
+========================================
+8. DEPENDENCY TREE (if available)
+========================================
+
+Generating dependency tree for Solana/Anchor crates...
+
+=== ANALYSIS COMPLETE ===
+Output saved to: project_structure_analysis.txt

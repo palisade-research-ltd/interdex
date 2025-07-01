@@ -5,20 +5,17 @@ resolver = "2"
 members = [
  
   # --- Data Acquisition
-  # "ix-data",
-  # "ix-sources",
+  "ix-data",
+  "ix-sources",
 
   # --- Solana Program
-  "ix-composer",
-  "ix-program",
+  # "ix-programs",
 
   # --- Utils
-  # "ix-results",
+  "ix-results",
 
   # --- Usability
-  # "benches",
-  # "examples",
-  # "tests",
+  "tests",
 
 ]
 
@@ -31,6 +28,16 @@ authors = ["palisade research ltd"]
 
 [workspace.dependencies]
 
+anchor-lang = { version = "0.31.1" }
+anchor-client = "0.31.1"
+anchor-spl = "0.31.1"
+libm = { version = "0.2.15" }
+solana-sdk = { version = "2.2.18" }
+solana-client = { version = "2.2.18" }
+solana-transaction-status = "2.2.18"
+pyth-solana-receiver-sdk = "0.6.1"
+
+# Common dependencies
 anyhow = { version = "1.0.98" }
 thiserror = { version = "1.0.64" }
 criterion = { version = "0.5", features = ["html_reports"] }
@@ -52,14 +59,6 @@ reqwest = { version = "0.11", features = ["json"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0" }
 tch = { version = "0.20.0" }
-
-# anchor-lang = { version = "0.31.1" }
-# anchor-client = { version = "0.31.1" }
-# pyth-solana-receiver-sdk = { version = "0.6.1" }
-# libm = { version = "0.2.15" }
-# solana-sdk = { version = "2.2.0" }
-# solana-client = { version = "2.2.7" }
-# solana-transaction-status = { version = "1.14" }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

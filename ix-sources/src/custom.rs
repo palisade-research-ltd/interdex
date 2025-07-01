@@ -2,11 +2,7 @@ use anyhow::{Context, Result};
 use reqwest::Client;
 use serde_json::json;
 
-use ix_data::{
-    priorityFeeEstimateResponse,
-    priorityFeeRecentResponse,
-    SolanaResponse,
-    SolanaResponse2,
+use ix_data::data::{
     TransactionResponse,
 };
 

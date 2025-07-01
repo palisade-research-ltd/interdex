@@ -1,9 +1,7 @@
-use ix_data::{
-    priorityFeeEstimateResponse,
+use ix_data::data::{
     priorityFeeRecentResponse,
     SolanaResponse,
     SolanaResponse2,
-    TransactionResponse,
 };
 
 use anyhow::{Context, Result};

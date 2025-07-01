@@ -34,7 +34,6 @@ borsh = { workspace = true }
 bs58 = { workspace = true }
 
 reqwest = { workspace = true }
-solana-transaction-status = { workspace = true }
 solana-client = { workspace = true }
 solana-sdk = { workspace = true }
 

@@ -1,0 +1,33 @@
+[workspace]
+
+resolver = "2"
+
+members = [
+    # Solana Programs
+    "programs/datanode",
+]
+
+[workspace.package]
+edition = "2021"
+rust-version = "1.84.1"
+
+[workspace.dependencies]
+anchor-lang = { version = "0.31.1" }
+anchor-client = { version = "0.31.1" }
+pyth-solana-receiver-sdk = { version = "0.6.1" }
+libm = {version = "0.2.15" }
+solana-sdk = { version = "2.2.18" }
+solana-client = { version = "2.2.18" }
+
+tokio = { version = "1.45" }
+
+[profile.release]
+overflow-checks = true
+lto = "fat"
+codegen-units = 1
+
+[profile.release.build-override]
+opt-level = 3
+incremental = false
+codegen-units = 1
+
