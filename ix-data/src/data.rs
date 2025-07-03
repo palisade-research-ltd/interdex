@@ -25,7 +25,7 @@ pub struct BlockResult {
     pub blockhash: Option<String>,
     pub parent_slot: Option<u64>,
     pub previous_blockhash: Option<String>,
-    pub transactions: Option<Vec<Transactions>>
+    pub transactions: Option<Vec<Transactions>>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -69,7 +69,6 @@ pub struct SolanaResponse {
     pub result: Option<Vec<SolanaResult>>,
     pub id: i64,
 }
-
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]

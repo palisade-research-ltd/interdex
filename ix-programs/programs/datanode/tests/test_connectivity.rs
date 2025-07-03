@@ -4,24 +4,26 @@
 // -- ---------------------------------------------------------------- ------------ -- //
 
 mod tests {
+    
+    use solana_client::rpc_client::RpcClient;
+    use solana_sdk::commitment_config::CommitmentConfig;
 
     #[test]
-    fn verify_devnet_connectivity() {
+    fn verify_connectivity() {
         
-        use solana_client::rpc_client::RpcClient;
-        println!(" Verifying devnet connectivity...");
+        println!(" Verifying connectivity...");
         
-        let client = RpcClient::new(std::env::var("NETWORK").unwrap());
+        let client = RpcClient::new_with_commitment(
+            std::env::var("NETWORK").unwrap().to_string(),
+            CommitmentConfig::confirmed()
+        );
         
         // Test basic connectivity
-        let version = client.get_version().unwrap();
-        println!("Connected to devnet");
-        println!("  - Solana version: {}", version.solana_core);
-        
-        // Test recent blockhash
-        let recent_blockhash = client.get_latest_blockhash().unwrap();
-        println!("  - Latest blockhash: {}", recent_blockhash);
-        
+        let version = client.get_version();
+        assert!(
+            version.is_ok(),
+            "Failed to client.get_version {:?}", version.err())
+       
     }
 }
 

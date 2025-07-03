@@ -66,8 +66,9 @@ impl AnchorConfig {
             );
      
         AnchorConfig {
-            cluster: Cluster::Localnet,
-            program: std::env::var(self.program.to_string()).unwrap(),
+            cluster: Cluster::Devnet,
+            program: env::var("PROGRAM")
+                .expect("Failed to fetch PROGRAM"),
             wallet: wallet_file.to_str().unwrap().to_string(),
         }
 

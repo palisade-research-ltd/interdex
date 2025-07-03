@@ -2,9 +2,7 @@ use anyhow::{Context, Result};
 use reqwest::Client;
 use serde_json::json;
 
-use ix_data::data::{
-    TransactionResponse,
-};
+use ix_data::data::TransactionResponse;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct GenericRpc {
@@ -76,4 +74,3 @@ impl GenericRpc {
         Ok(tx_response)
     }
 }
-

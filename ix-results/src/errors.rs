@@ -31,4 +31,3 @@ pub enum FileError {
     #[error("Failed to parse JSON: {0}")]
     MissingKey(String),
 }
-

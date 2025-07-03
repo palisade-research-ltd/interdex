@@ -1,4 +1,3 @@
-
 #[cfg(test)]
 
 // -- ----------------------------------------------------------------- TESTS UTILS -- //
@@ -20,14 +19,14 @@ mod tests {
     use solana_sdk::signer::keypair::Keypair;
 
     #[test]
-    fn test_initialize_data_accounts() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_initialize_pf_accounts() -> Result<(), Box<dyn std::error::Error>> {
 
-        println!("🧪 Testing Data Accounts Initialization... ");
+        println!("🧪 Testing Priority Fees accounts Initialization... ");
 
         use crate::test_utils::AnchorConfig;
 
         let test_config = AnchorConfig::new(
-            Cluster::Localnet,
+            Cluster::Devnet,
             "PROGRAM".to_string(),
             "WALLET".to_string(),
         );
@@ -48,17 +47,24 @@ mod tests {
         let pubkey = Pubkey::from_str(&anchor_config.program).unwrap();
         let program = client.program(pubkey).unwrap();
 
-        println!(" testing data prices account... ");
+        println!(" testing priority fees accounts ");
         
         // derive pdas
-        let (data_prices_pda, _) = Pubkey::find_program_address(
-            &[b"data_prices", payer_pubkey.as_ref()],
+        let (pf_buffer_pda, _) = Pubkey::find_program_address(
+            &[b"pf_buffer", payer_pubkey.as_ref()],
+            &program.id()
+        );
+        
+        // derive pdas
+        let (pf_stats_pda, _) = Pubkey::find_program_address(
+            &[b"pf_stats", payer_pubkey.as_ref()],
             &program.id()
         );
         
         // Test each initialization
         let accounts_to_test = vec![
-            ("data_prices", data_prices_pda, "InitializeDataPrices"),
+            ("pf_buffer", pf_buffer_pda, "InitializePFBuffer"),
+            ("pf_stats", pf_stats_pda, "InitializePFStats"),
         ];
         
         for (name, pda, instruction_name) in accounts_to_test {
@@ -76,16 +82,30 @@ mod tests {
             // Call appropriate initialization instruction
             let result = match instruction_name {
 
-                "InitializeDataPrices" => {
+                "InitializePFBuffer" => {
 
                 program
                     .request()
-                    .accounts(datanode::accounts::InitializeDataPrices {
-                        data_prices: data_prices_pda,
+                    .accounts(datanode::accounts::InitializePFBuffer {
+                        pf_buffer: pf_buffer_pda,
                         authority: payer_pubkey,
                         system_program: system_program::ID,
                     })
-                    .args(datanode::instruction::InitializeDataPrices {})
+                    .args(datanode::InitializePFBuffer {})
+                    .signer(&payer)
+                    .send()
+                },
+
+                "InitializePFStats" => {
+
+                program
+                    .request()
+                    .accounts(datanode::accounts::InitializePFStats {
+                        pf_stats: pf_stats_pda,
+                        authority: payer_pubkey,
+                        system_program: system_program::ID,
+                    })
+                    .args(datanode::InitializePFStats {})
                     .signer(&payer)
                     .send()
                 },

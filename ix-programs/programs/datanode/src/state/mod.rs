@@ -1,12 +1,6 @@
-/// Model's Parameters Data Account
-pub mod model_params;
+/// Priority Fees Circular Buffer
+pub mod pf_buffer;
 
-/// Model's Results Data Account
-pub mod model_results;
-
-/// Features's Parameters
-pub mod model_features;
-
-/// PriceHistory
-pub mod data_prices;
+/// Priority Fees Aggregated Stats
+pub mod pf_stats;
 

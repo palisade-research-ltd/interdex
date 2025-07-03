@@ -7,6 +7,7 @@ members = [
   # --- Data Acquisition
   "ix-data",
   "ix-sources",
+  "ix-cex",
 
   # --- Solana Program
   # "ix-programs",
@@ -65,7 +66,7 @@ unsafe_code = "forbid"
 unused_extern_crates = "allow"
 unreachable_code = "allow"
 unreachable_patterns = "allow"
-unused_variables = "warn"
+unused_variables = "allow"
 trivial_casts = "warn"
 trivial_numeric_casts = "warn"
 dead_code = "allow"

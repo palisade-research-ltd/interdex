@@ -1,8 +1,4 @@
-use ix_data::data::{
-    priorityFeeRecentResponse,
-    SolanaResponse,
-    SolanaResponse2,
-};
+use ix_data::data::{priorityFeeRecentResponse, SolanaResponse, SolanaResponse2};
 
 use anyhow::{Context, Result};
 use reqwest::Client;
@@ -24,7 +20,6 @@ pub struct SolanaRpcBuilder {
 }
 
 impl SolanaRpcBuilder {
-    
     fn default() -> Self {
         SolanaRpcBuilder::new()
     }
@@ -47,9 +42,7 @@ impl SolanaRpcBuilder {
 }
 
 impl SolanaRpc {
-
     pub async fn get_block(&self, slot: u64) -> Result<SolanaResponse2> {
-        
         let solana_client = Client::new();
         let url = format!("{}", self.url);
 
@@ -59,7 +52,7 @@ impl SolanaRpc {
             "method": "getBlock",
             "params": [
                 slot,
-                { 
+                {
                     "encoding": "json",
                     "maxSupportedTransactionVersion": 0,
                     "transactionDetails": "full",
@@ -75,7 +68,6 @@ impl SolanaRpc {
             .send()
             .await
             .context("Failed to send getBlock RPC request")?;
-        
 
         let solana_response: SolanaResponse2 = solana_post
             .json()
@@ -83,7 +75,7 @@ impl SolanaRpc {
             .context("Failed to parse getBlock response data")?;
 
         // println!("solana_response: {:?}", &solana_transactions);
-        
+
         Ok(solana_response)
     }
 
@@ -131,4 +123,3 @@ impl SolanaRpc {
         Ok(priorityFeeRecentResponse { slots, fees })
     }
 }
-

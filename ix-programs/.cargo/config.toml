@@ -1,3 +1,11 @@
 [env]
-HELIUS_TK = "12f5697c-1c4e-498c-91b9-e43119a273dc"
+LVE = "12f5697c-1c4e-498c-91b9-e43119a273dc"
 WALLET = "~/.config/solana/"
+PROGRAM = "9YmDSZaTX5ALSvrQiuE2vuztESzJGX97tEYLngTR3GXz"
+NETWORK = "https://api.devnet.solana.com"
+CLUSTER = "devnet"
+
+PROGRAM_MAINNET = "GWVfXsjLBfbLvHpuwXPR6jYsCPSCcbMXaKBZvNLM1bgJ"
+NETWORK_MAINNET = "https://api.apr.dev"
+CLUSTER_MAINNET = "devnet"
+

@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-datanode = "9QVbMSXAnJsDuMWWWWcatxqwS1hmXoC5x16Dt8u9kWCA"
+datanode = "9YmDSZaTX5ALSvrQiuE2vuztESzJGX97tEYLngTR3GXz"
 
 [registry]
 url = "https://api.apr.dev"
