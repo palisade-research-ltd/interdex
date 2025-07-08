@@ -1,8 +1,7 @@
 use anyhow::{Context, Result};
+use ix_core::data::TransactionResponse;
 use reqwest::Client;
 use serde_json::json;
-
-use ix_data::data::TransactionResponse;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct GenericRpc {

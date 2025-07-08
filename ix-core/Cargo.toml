@@ -1,5 +1,5 @@
 [package]
-name = "ix-data"
+name = "ix-core"
 publish = false
 readme = "README.md"
 version = "0.0.1"

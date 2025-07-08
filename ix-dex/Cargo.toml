@@ -1,5 +1,5 @@
 [package]
-name = "ix-sources"
+name = "ix-dex"
 publish = false
 readme = "README.md"
 version = "0.0.1"
@@ -10,7 +10,7 @@ authors = ["palisade research ltd"]
 [dependencies]
 
 ix-results = { path = "../ix-results", version = "0.0.1" }
-ix-data = { path = "../ix-data", version = "0.0.1" }
+ix-core = { path = "../ix-core", version = "0.0.1" }
 
 anyhow = { workspace = true }
 thiserror = { workspace = true }

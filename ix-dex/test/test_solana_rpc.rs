@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod test_client_utils {
 
-    use ix_sources::solana::{SolanaRpc, SolanaRpcBuilder};
+    use ix_dex::solana::{SolanaRpc, SolanaRpcBuilder};
 
     pub const WALLET_1: &str = "58oQChx4yWmvKdwLLZzBi4ChoCc2fqCUWBkwMihLYQo2";
     pub const DEVNET: &str = "https://api.devnet.solana.com";
@@ -23,7 +23,7 @@ mod tests {
 
     // use tokio;
     use crate::test_client_utils::*;
-    use ix_data::data::SolanaResponse2;
+    use ix_core::data::SolanaResponse2;
 
     // --- ------------------------------------------------------------- GET BLOCK --- //
     // --- ------------------------------------------------------------- --------- --- //

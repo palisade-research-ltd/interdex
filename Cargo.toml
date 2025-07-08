@@ -5,8 +5,9 @@ resolver = "2"
 members = [
  
   "ix-cex",
-  "ix-data",
-  "ix-sources",
+  "ix-core",
+  "ix-database",
+  "ix-dex",
   "ix-results",
 
 ]

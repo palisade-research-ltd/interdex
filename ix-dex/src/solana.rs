@@ -1,4 +1,4 @@
-use ix_data::data::{priorityFeeRecentResponse, SolanaResponse, SolanaResponse2};
+use ix_core::data::{priorityFeeRecentResponse, SolanaResponse, SolanaResponse2};
 
 use anyhow::{Context, Result};
 use reqwest::Client;
