@@ -15,6 +15,12 @@ pub struct GenericRpcBuilder {
     tkn: Option<String>,
 }
 
+impl Default for GenericRpcBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl GenericRpcBuilder {
     pub fn new() -> Self {
         GenericRpcBuilder {

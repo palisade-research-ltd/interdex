@@ -1,0 +1,29 @@
+[exchange]
+name = "coinbase"
+base_url = "https://api.coinbase.com"
+api_version = "v3"
+
+[api]
+# For public market data, no auth required
+# For authenticated calls (if needed later)
+# api_key = "your_api_key"
+# api_secret = "your_api_secret"
+# passphrase = "your_passphrase"
+
+[pairs]
+# Trading pairs to monitor
+symbols = ["BTC-USD", "ETH-USD", "SOL-USD"]
+
+[collection]
+interval_seconds = 1
+retry_attempts = 3
+timeout_seconds = 10
+
+[database]
+hosts = ["scylladb:9042"]
+keyspace = "orderbook_data"
+table = "coinbase_orderbooks"
+
+[logging]
+level = "info"
+file = "/var/log/coinbase_client.log"

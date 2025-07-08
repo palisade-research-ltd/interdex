@@ -37,3 +37,7 @@ reqwest = { workspace = true }
 solana-client = { workspace = true }
 solana-sdk = { workspace = true }
 
+[[test]]
+name = "test_solana_rpc"
+path = "test/test_solana_rpc.rs"
+

@@ -1,7 +1,7 @@
 use crate::client::http_client::{HttpClient, RetryConfig, RetryableHttpClient};
-use crate::error::{ExchangeError, Result};
 use crate::models::orderbook::{OrderBook, PriceLevel, TradingPair};
 use chrono::{DateTime, Utc};
+use ix_results::errors::{ExchangeError, Result};
 use rust_decimal::Decimal;
 use serde::Deserialize;
 use std::collections::HashMap;
@@ -339,4 +339,3 @@ impl Default for KrakenClient {
         Self::new().expect("Failed to create default Kraken client")
     }
 }
-

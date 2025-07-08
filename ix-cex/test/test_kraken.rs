@@ -24,7 +24,7 @@ mod tests {
                 );
             }
             Err(e) => {
-                println!("Expected network error in test environment: {:?}", e);
+                println!("Expected network error in test environment: {e:?}");
             }
         }
     }
@@ -40,9 +40,8 @@ mod tests {
                 println!("Kraken system status: {}", status.status);
             }
             Err(e) => {
-                println!("Expected network error in test environment: {:?}", e);
+                println!("Expected network error in test environment: {e:?}");
             }
         }
     }
 }
-

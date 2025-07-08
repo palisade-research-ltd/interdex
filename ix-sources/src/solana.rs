@@ -19,11 +19,13 @@ pub struct SolanaRpcBuilder {
     url: Option<String>,
 }
 
-impl SolanaRpcBuilder {
+impl Default for SolanaRpcBuilder {
     fn default() -> Self {
-        SolanaRpcBuilder::new()
+        Self::new()
     }
+}
 
+impl SolanaRpcBuilder {
     pub fn new() -> Self {
         SolanaRpcBuilder { url: None }
     }
@@ -44,7 +46,7 @@ impl SolanaRpcBuilder {
 impl SolanaRpc {
     pub async fn get_block(&self, slot: u64) -> Result<SolanaResponse2> {
         let solana_client = Client::new();
-        let url = format!("{}", self.url);
+        let url = self.url.to_string();
 
         let solana_request = json!({
             "jsonrpc": "2.0",
@@ -84,7 +86,7 @@ impl SolanaRpc {
         v_accounts: Vec<String>,
     ) -> Result<priorityFeeRecentResponse> {
         let solana_client = Client::new();
-        let url = format!("{}", self.url);
+        let url = self.url.to_string();
 
         let solana_request = json!({
             "jsonrpc": "2.0",

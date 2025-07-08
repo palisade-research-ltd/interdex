@@ -30,7 +30,7 @@ pub fn read_json(
 
             for key in path {
                 current = current.get(key).ok_or_else(|| {
-                    FileError::MissingKey(format!("Missing key: {}", key))
+                    FileError::MissingKey(format!("Missing key: {key}"))
                 })?;
             }
 
@@ -62,7 +62,7 @@ pub fn read_json(
         "tx_generic" => get_values(&["tx_generic", sub_case], "array"),
         "addresses_jito" => get_values(&["addresses_jito", sub_case], "object"),
         _ => {
-            eprintln!("Unknown case: {}", case);
+            eprintln!("Unknown case: {case}");
             Ok(Vec::new())
         }
     }

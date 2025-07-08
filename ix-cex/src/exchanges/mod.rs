@@ -2,12 +2,12 @@ pub mod binance;
 pub mod coinbase;
 pub mod kraken;
 
-pub use binance::BinanceClient;
-pub use coinbase::CoinbaseClient;
-pub use kraken::KrakenClient;
+pub use binance::binance_client::BinanceClient;
+pub use coinbase::coinbase_client::CoinbaseClient;
+pub use kraken::kraken_client::KrakenClient;
 
-use crate::error::Result;
 use crate::models::orderbook::{OrderBook, TradingPair};
+use ix_results::errors::Result;
 
 /// Trait for exchange clients
 #[async_trait::async_trait]

@@ -1,7 +1,7 @@
 use crate::client::http_client::{HttpClient, RetryConfig, RetryableHttpClient};
-use crate::error::{ExchangeError, Result};
 use crate::models::orderbook::{OrderBook, PriceLevel, TradingPair};
 use chrono::Utc;
+use ix_results::errors::{ExchangeError, Result};
 use rust_decimal::Decimal;
 use serde::Deserialize;
 use std::str::FromStr;
@@ -34,17 +34,17 @@ impl BinanceClient {
     pub async fn get_orderbook(
         &self,
         pair: TradingPair,
-        limit: Option<u32>,
+        depth: Option<u32>,
     ) -> Result<OrderBook> {
         let symbol = pair.to_exchange_symbol("binance");
-        let limit_str = limit.unwrap_or(1000).to_string();
+        let depth_str = depth.unwrap_or(1000).to_string();
 
         info!(
-            "Fetching Binance orderbook for {} with limit {}",
-            symbol, limit_str
+            "Fetching Binance orderbook for {} with depth {}",
+            symbol, depth_str
         );
 
-        let params = vec![("symbol", symbol.as_str()), ("limit", limit_str.as_str())];
+        let params = vec![("symbol", symbol.as_str()), ("limit", depth_str.as_str())];
 
         let response: BinanceDepthResponse = self
             .client
@@ -234,4 +234,3 @@ impl Default for BinanceClient {
         Self::new().expect("Failed to create default Binance client")
     }
 }
-
