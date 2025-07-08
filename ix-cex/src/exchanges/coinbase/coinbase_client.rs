@@ -1,7 +1,7 @@
 use crate::client::http_client::{HttpClient, RetryConfig, RetryableHttpClient};
-use crate::error::{ExchangeError, Result};
 use crate::models::orderbook::{OrderBook, PriceLevel, TradingPair};
 use chrono::Utc;
+use ix_results::errors::{ExchangeError, Result};
 use rust_decimal::Decimal;
 use serde::Deserialize;
 use std::str::FromStr;
@@ -34,15 +34,15 @@ impl CoinbaseClient {
     pub async fn get_orderbook(
         &self,
         pair: TradingPair,
-        limit: Option<u32>,
+        depth: Option<u32>,
     ) -> Result<OrderBook> {
         let product_id = pair.to_exchange_symbol("coinbase");
         info!("Fetching Coinbase orderbook for {}", product_id);
 
         let mut params: Vec<(&str, String)> = vec![("product_id", product_id.clone())];
 
-        if let Some(limit) = limit {
-            params.push(("limit", limit.to_string()));
+        if let Some(depth) = depth {
+            params.push(("depth", depth.to_string()));
         }
 
         // Convert params to the expected type for get_with_params_retry
@@ -143,7 +143,7 @@ impl CoinbaseClient {
     pub async fn get_product(&self, product_id: &str) -> Result<CoinbaseProduct> {
         info!("Fetching Coinbase product info for {}", product_id);
 
-        let endpoint = format!("/api/v3/brokerage/products/{}", product_id);
+        let endpoint = format!("/api/v3/brokerage/products/{product_id}");
         self.client.get_with_retry(&endpoint).await
     }
 
@@ -157,7 +157,7 @@ impl CoinbaseClient {
     ) -> Result<CoinbaseCandlesResponse> {
         info!("Fetching Coinbase candles for {}", product_id);
 
-        let endpoint = format!("/api/v3/brokerage/products/{}/candles", product_id);
+        let endpoint = format!("/api/v3/brokerage/products/{product_id}/candles");
         let params = vec![("start", start), ("end", end), ("granularity", granularity)];
 
         self.client.get_with_params_retry(&endpoint, &params).await
@@ -167,14 +167,14 @@ impl CoinbaseClient {
     pub async fn get_market_trades(
         &self,
         product_id: &str,
-        limit: Option<u32>,
+        depth: Option<u32>,
     ) -> Result<CoinbaseTradesResponse> {
-        let endpoint = format!("/api/v3/brokerage/products/{}/ticker", product_id);
+        let endpoint = format!("/api/v3/brokerage/products/{product_id}/ticker");
         let mut params: Vec<(&str, String)> =
             vec![("product_id", product_id.to_string())];
 
-        if let Some(limit) = limit {
-            params.push(("limit", limit.to_string()));
+        if let Some(depth) = depth {
+            params.push(("depth", depth.to_string()));
         }
 
         // Convert params to the expected type for get_with_params_retry
@@ -236,7 +236,7 @@ pub struct CoinbaseProduct {
     pub new: bool,
     pub status: String,
     pub cancel_only: bool,
-    pub limit_only: bool,
+    pub depth_only: bool,
     pub post_only: bool,
     pub trading_disabled: bool,
     pub auction_mode: bool,
@@ -288,4 +288,3 @@ impl Default for CoinbaseClient {
         Self::new().expect("Failed to create default Coinbase client")
     }
 }
-

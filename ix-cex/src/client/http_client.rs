@@ -1,5 +1,5 @@
-use crate::error::{ExchangeError, Result};
 use async_rate_limiter::RateLimiter;
+use ix_results::errors::{ExchangeError, Result};
 use reqwest::{Client, Response};
 use serde::de::DeserializeOwned;
 use std::time::Duration;
@@ -96,7 +96,7 @@ impl HttpClient {
         } else {
             let mut url =
                 Url::parse(&base).map_err(|e| ExchangeError::Configuration {
-                    message: format!("Invalid URL: {}", e),
+                    message: format!("Invalid URL: {e}"),
                 })?;
 
             for (key, value) in params {
@@ -143,15 +143,15 @@ impl HttpClient {
                 }
                 400..=499 => ExchangeError::ApiError {
                     exchange: self.exchange_name.clone(),
-                    message: format!("Client error ({}): {}", status, error_text),
+                    message: format!("Client error ({status}): {error_text}"),
                 },
                 500..=599 => ExchangeError::ApiError {
                     exchange: self.exchange_name.clone(),
-                    message: format!("Server error ({}): {}", status, error_text),
+                    message: format!("Server error ({status}): {error_text}"),
                 },
                 _ => ExchangeError::ApiError {
                     exchange: self.exchange_name.clone(),
-                    message: format!("HTTP error ({}): {}", status, error_text),
+                    message: format!("HTTP error ({status}): {error_text}"),
                 },
             };
 

@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    
+
     //use super::*;
 
     use ix_cex::CoinbaseClient;
@@ -23,7 +23,7 @@ mod tests {
                 println!("Found {} Coinbase products", products.len());
             }
             Err(e) => {
-                println!("Expected network error in test environment: {:?}", e);
+                println!("Expected network error in test environment: {e:?}");
             }
         }
     }

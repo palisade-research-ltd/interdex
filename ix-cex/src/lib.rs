@@ -11,32 +11,12 @@
 //! - Support for multiple exchanges with unified interface
 //! - Order book data validation and analysis
 //!
-//! ## Quick Start
-//!
-//! ```rust
-//! use ix_cex::exchanges::{BinanceClient, ExchangeClient};
-//! use ix_cex::models::TradingPair;
-//!
-//! #[tokio::main]
-//! async fn main() -> Result<(), Box<dyn std::error::Error>> {
-//!     let client = BinanceClient::new()?;
-//!     let orderbook = client.get_orderbook(TradingPair::BtcUsdc, Some(100)).await?;
-//!     
-//!     println!("Best bid: {:?}", orderbook.best_bid());
-//!     println!("Best ask: {:?}", orderbook.best_ask());
-//!     println!("Spread: {:?}", orderbook.spread());
-//!     
-//!     Ok(())
-//! }
-//! ```
 
 pub mod client;
-pub mod error;
 pub mod exchanges;
 pub mod models;
 
-pub use error::{ExchangeError, Result};
-
 // Re-export commonly used types
 pub use exchanges::{BinanceClient, CoinbaseClient, ExchangeClient, KrakenClient};
+pub use ix_results::errors::{ExchangeError, Result};
 pub use models::{OrderBook, OrderBookSummary, PriceLevel, TradingPair};

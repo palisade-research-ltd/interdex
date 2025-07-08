@@ -19,13 +19,38 @@ Library and CLI tool for querying centralized exchange APIs to retrieve order bo
 
 ```bash
 # Fetch BTC/USDC order book from Binance
-cargo run -- --exchange binance --pair btc-usdc --limit 50
-
-# Compare all exchanges for SOL/USDC
-cargo run -- --pair sol-usdc --all --format summary
+cargo run -- --exchange binance --pair btc-usdc --depth 50
 
 # Get full order book data in JSON format
-cargo run -- --exchange coinbase --pair btc-usdc --format json --limit 100
+cargo run -- --exchange coinbase --pair btc-usdc --format json --depth 100
+```
+
+# Compare exchanges 
+
+Select the pair `sol-usdc`, exchanges `--all`, number of levels per orderbook `--limit 10`, a summary as the format of the output `--format summary`.
+
+```
+cargo run -- --pair sol-usdc --all --limit 10 --format summary
+```
+
+with a result: 
+
+```
+Querying all exchanges for SOL/USDC with limit 10
+2025-07-08T02:00:09.190581Z  INFO ix_cex::exchanges::binance::binance: Fetching Binance orderbook for SOLUSDC with limit 10
+2025-07-08T02:00:09.420868Z  INFO ix_cex::exchanges::binance::binance: Successfully converted Binance orderbook: 10 bids, 10 asks, spread: Some(0.01000000)
+2025-07-08T02:00:10.422446Z  INFO ix_cex::exchanges::coinbase::coinbase: Fetching Coinbase orderbook for SOL-USDC
+2025-07-08T02:00:10.787503Z  INFO ix_cex::exchanges::coinbase::coinbase: Successfully converted Coinbase orderbook: 10 bids, 10 asks, spread: Some(0.01)
+2025-07-08T02:00:11.791522Z  INFO ix_cex::exchanges::kraken::kraken: Fetching Kraken orderbook for SOL/USDC
+2025-07-08T02:00:12.510733Z  INFO ix_cex::exchanges::kraken::kraken: Successfully converted Kraken orderbook: 10 bids, 10 asks, spread: Some(0.010000)
+
+=== Exchange Comparison ===
+
+Exchange        Best Bid        Best Ask        Spread          Mid Price      
+----------------------------------------------------------------------------
+Binance         148.68000000    148.69000000    0.01000000      148.68500000   
+Coinbase        148.67          148.68          0.01            148.6750       
+Kraken          148.760000      148.770000      0.010000        148.765000     
 ```
 
 ### As a Library

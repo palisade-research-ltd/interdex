@@ -24,7 +24,7 @@ struct Cli {
 
     /// Maximum number of order book levels to fetch
     #[arg(short, long, default_value = "100")]
-    limit: u32,
+    depth: u32,
 
     /// Output format
     #[arg(short, long, value_enum, default_value = "summary")]
@@ -97,12 +97,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if cli.all {
         // Query all exchanges
         let results =
-            query_all_exchanges(trading_pair, cli.limit, cli.timeout, cli.timewait).await;
+            query_all_exchanges(trading_pair, cli.depth, cli.timeout, cli.timewait).await;
         display_all_results(results, &cli.format).await;
     } else if let Some(exchange) = cli.exchange {
         // Query single exchange
         let result =
-            query_exchange(exchange, trading_pair, cli.limit, cli.timeout, cli.timewait)
+            query_exchange(exchange, trading_pair, cli.depth, cli.timeout, cli.timewait)
                 .await;
         display_single_result(result, &cli.format).await;
     } else {
@@ -116,11 +116,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 async fn query_exchange(
     exchange: Exchange,
     pair: TradingPair,
-    limit: u32,
+    depth: u32,
     timeout_secs: u64,
     timewait_millis: u64,
 ) -> Result<ix_cex::models::OrderBook, ExchangeError> {
-    // println!("Querying {:?} for {} with limit {}", exchange, pair, limit);
+    // println!("Querying {:?} for {} with depth {}", exchange, pair, depth);
 
     let client: Box<dyn ExchangeClient + Send + Sync> = match exchange {
         Exchange::Binance => Box::new(BinanceClient::new()?),
@@ -130,25 +130,24 @@ async fn query_exchange(
 
     sleep(Duration::from_millis(timewait_millis)).await;
 
-    let request_future = client.get_orderbook(pair, Some(limit));
+    let request_future = client.get_orderbook(pair, Some(depth));
 
     timeout(Duration::from_secs(timeout_secs), request_future)
         .await
         .map_err(|_| {
             ExchangeError::Timeout(format!(
-                "Request timed out after {} seconds",
-                timeout_secs
+                "Request timed out after {timeout_secs} seconds"
             ))
         })?
 }
 
 async fn query_all_exchanges(
     pair: TradingPair,
-    limit: u32,
+    depth: u32,
     timeout_secs: u64,
     timewait_millis: u64,
 ) -> Vec<(Exchange, Result<ix_cex::models::OrderBook, ExchangeError>)> {
-    println!("Querying all exchanges for {} with limit {}", pair, limit);
+    println!("Querying all exchanges for {pair} with depth {depth}");
 
     let exchanges = vec![Exchange::Binance, Exchange::Coinbase, Exchange::Kraken];
     let mut results = Vec::new();
@@ -162,7 +161,7 @@ async fn query_all_exchanges(
                 let result = query_exchange(
                     exchange.clone(),
                     pair,
-                    limit,
+                    depth,
                     timeout_secs,
                     timewait_millis,
                 )
@@ -231,7 +230,7 @@ async fn display_all_results(
     if !failed_results.is_empty() {
         println!("\nFailed exchanges:");
         for (exchange, error) in failed_results {
-            println!("{:?}: {:?}", exchange, error);
+            println!("{exchange:?}: {error:?}");
         }
     }
 }
@@ -244,19 +243,19 @@ fn print_summary(orderbook: &ix_cex::models::OrderBook) {
     println!("Timestamp: {}", summary.timestamp);
 
     if let Some(best_bid) = summary.best_bid {
-        println!("Best Bid: {}", best_bid);
+        println!("Best Bid: {best_bid}");
     }
 
     if let Some(best_ask) = summary.best_ask {
-        println!("Best Ask: {}", best_ask);
+        println!("Best Ask: {best_ask}");
     }
 
     if let Some(spread) = summary.spread {
-        println!("Spread: {}", spread);
+        println!("Spread: {spread}");
     }
 
     if let Some(mid_price) = summary.mid_price {
-        println!("Mid Price: {}", mid_price);
+        println!("Mid Price: {mid_price}");
     }
 
     println!("Bid Levels: {}", summary.bid_count);
@@ -271,7 +270,7 @@ fn print_full(orderbook: &ix_cex::models::OrderBook) {
     println!("Timestamp: {}", orderbook.timestamp);
 
     if let Some(update_id) = orderbook.last_update_id {
-        println!("Last Update ID: {}", update_id);
+        println!("Last Update ID: {update_id}");
     }
 
     println!("\nBids ({}):", orderbook.bids.len());
@@ -299,7 +298,7 @@ fn print_full(orderbook: &ix_cex::models::OrderBook) {
 
 fn print_json(orderbook: &ix_cex::models::OrderBook) {
     match serde_json::to_string_pretty(orderbook) {
-        Ok(json) => println!("{}", json),
+        Ok(json) => println!("{json}"),
         Err(e) => error!("Failed to serialize to JSON: {:?}", e),
     }
 }
@@ -345,7 +344,7 @@ fn print_comparison_summary(results: &[(Exchange, ix_cex::models::OrderBook)]) {
 
 fn print_comparison_full(results: &[(Exchange, ix_cex::models::OrderBook)]) {
     for (exchange, orderbook) in results {
-        println!("\n=== {:?} ===", exchange);
+        println!("\n=== {exchange:?} ===");
         print_full(orderbook);
     }
 }
@@ -362,7 +361,7 @@ fn print_comparison_json(results: &[(Exchange, ix_cex::models::OrderBook)]) {
         .collect();
 
     match serde_json::to_string_pretty(&json_data) {
-        Ok(json) => println!("{}", json),
+        Ok(json) => println!("{json}"),
         Err(e) => error!("Failed to serialize to JSON: {:?}", e),
     }
 }

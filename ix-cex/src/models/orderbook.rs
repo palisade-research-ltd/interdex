@@ -141,7 +141,7 @@ impl TradingPair {
             (TradingPair::SolUsdc, "coinbase") => "SOL-USDC".to_string(),
             (TradingPair::BtcUsdc, "kraken") => "BTC/USDC".to_string(),
             (TradingPair::SolUsdc, "kraken") => "SOL/USDC".to_string(),
-            _ => format!("{:?}", self), // Fallback
+            _ => format!("{self:?}"), // Fallback
         }
     }
 
@@ -161,7 +161,7 @@ impl std::fmt::Display for TradingPair {
             TradingPair::BtcUsdc => "BTC/USDC",
             TradingPair::SolUsdc => "SOL/USDC",
         };
-        write!(f, "{}", s)
+        write!(f, "{s}")
     }
 }
 

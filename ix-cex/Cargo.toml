@@ -2,39 +2,49 @@
 name = "ix-cex"
 version = "0.0.1"
 edition = "2021"
+publish = false
+readme = "README.md"
+authors = ["palisade research ltd"]
 
 [dependencies]
 
-tokio = { version = "1.0", features = ["full"] }
-reqwest = { version = "0.12", features = ["json"] }
+ix-results = { path = "../ix-results", version = "0.0.1" }
+
+anyhow = { workspace = true }
+clap = { workspace = true }
+reqwest = { workspace = true }
+rust_decimal = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+toml = { workspace = true }
+
 async-rate-limiter = { version = "1.0", features = ["rt-tokio"] }
-async-trait = "0.1"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-url = "2.0"
-
-anyhow = "1.0"
-tracing = "0.1"
-tracing-subscriber = "0.3"
-thiserror = "1.0"
-
-clap = { version = "4.0", features = ["derive"] }
+async-trait = { version = "0.1" }
+url = { version = "2.0" }
+tracing = { version = "0.1" }
+tracing-subscriber = { version = "0.3" }
 uuid = { version = "1.0", features = ["v4"] }
 chrono = { version = "0.4", features = ["serde"] }
-rust_decimal = { version = "1.0", features = ["serde"] }
+scylla = { version = "1.3.0" }
 
 [dev-dependencies]
 tokio-test = "0.4"
 
+[[bin]]
+name = "cli_client"
+path = "src/bin/cli_client.rs"
+
 [[test]]
 name = "test_binance"
-path = "tests/exchanges/test_binance.rs"
+path = "test/test_binance.rs"
 
 [[test]]
 name = "test_coinbase"
-path = "tests/exchanges/test_coinbase.rs"
+path = "test/test_coinbase.rs"
 
 [[test]]
 name = "test_kraken"
-path = "tests/exchanges/test_kraken.rs"
+path = "test/test_kraken.rs"
 

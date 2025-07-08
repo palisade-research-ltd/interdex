@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    
+
     use ix_cex::BinanceClient;
 
     #[tokio::test]
@@ -21,7 +21,7 @@ mod tests {
                 println!("Binance server time: {}", server_time.server_time);
             }
             Err(e) => {
-                println!("Expected network error in test environment: {:?}", e);
+                println!("Expected network error in test environment: {e:?}");
             }
         }
     }

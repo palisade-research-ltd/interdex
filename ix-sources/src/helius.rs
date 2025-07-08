@@ -1,5 +1,3 @@
-use anyhow::{Context, Result};
-use serde_json::json;
 use solana_client::rpc_client::RpcClient;
 use solana_sdk::commitment_config::CommitmentConfig;
 
@@ -12,6 +10,12 @@ pub struct HeliusRpc {
 pub struct HeliusRpcBuilder {
     url: Option<String>,
     tkn: Option<String>,
+}
+
+impl Default for HeliusRpcBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl HeliusRpcBuilder {
@@ -41,12 +45,11 @@ impl HeliusRpcBuilder {
 }
 
 impl HeliusRpc {
-    pub fn get_client(&mut self, rpc_url: &str) -> RpcClient {
-        let rpc_client = RpcClient::new_with_commitment(
-            rpc_url.to_string(),
-            CommitmentConfig::confirmed(),
-        );
+    pub fn builder() -> HeliusRpcBuilder {
+        HeliusRpcBuilder::new()
+    }
 
-        rpc_client
+    pub fn get_client(&mut self, rpc_url: &str) -> RpcClient {
+        RpcClient::new_with_commitment(rpc_url.to_string(), CommitmentConfig::confirmed())
     }
 }
