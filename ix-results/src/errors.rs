@@ -27,12 +27,6 @@ impl From<reqwest::Error> for DatabaseError {
     }
 }
 
-impl From<scylla::errors::BadQuery> for DatabaseError {
-    fn from(err: scylla::errors::BadQuery) -> Self {
-        DatabaseError::DatabaseError(err.to_string())
-    }
-}
-
 impl From<serde_json::Error> for DatabaseError {
     fn from(err: serde_json::Error) -> Self {
         DatabaseError::SerializationError(err.to_string())

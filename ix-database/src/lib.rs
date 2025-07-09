@@ -159,6 +159,11 @@ impl ClickHouseClient {
         Ok(())
     }
 
+    pub async fn write_table(&self, query: &str) -> DatabaseResult<()> {
+        self.client.query(query).execute().await?;
+        Ok(())
+    }
+
     /// Get raw client for custom queries
     pub fn client(&self) -> &Client {
         &self.client

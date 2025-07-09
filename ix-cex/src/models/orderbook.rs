@@ -1,17 +1,17 @@
 use chrono::{DateTime, Utc};
-use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use clickhouse::Row;
+use std::str::FromStr;
 
 /// Represents a single price level in the order book
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct PriceLevel {
-    pub price: Decimal,
-    pub quantity: Decimal,
+    pub price: f64,
+    pub quantity: f64,
 }
 
 impl PriceLevel {
-    pub fn new(price: Decimal, quantity: Decimal) -> Self {
+    pub fn new(price: f64, quantity: f64) -> Self {
         Self { price, quantity }
     }
 }
@@ -36,7 +36,7 @@ pub struct OrderbookInput {
 
 /// Complete order book snapshot
 #[derive(Debug, Clone, Serialize, Deserialize, Row)]
-pub struct OrderBook {
+pub struct Orderbook {
     pub symbol: String,
     pub exchange: String,
     pub timestamp: DateTime<Utc>,
@@ -46,7 +46,46 @@ pub struct OrderBook {
     pub sequence: Option<u64>,
 }
 
-impl OrderBook {
+impl TryFrom<OrderbookInput> for Orderbook {
+
+    type Error = chrono::ParseError;
+
+    fn try_from(input: OrderbookInput) -> Result<Self, Self::Error> {
+
+        let timestamp = DateTime::parse_from_rfc3339(&input.timestamp)?
+            .with_timezone(&Utc);
+
+        let bids = input
+            .bids
+            .into_iter()
+            .map(|level| PriceLevel::new(
+                f64::from_str(&level.price).unwrap(),
+                f64::from_str(&level.quantity).unwrap(),
+            ))
+            .collect();
+
+        let asks = input
+            .asks
+            .into_iter()
+            .map(|level| PriceLevel::new(
+                f64::from_str(&level.price).unwrap(),
+                f64::from_str(&level.quantity).unwrap(),
+            ))
+            .collect();
+
+        Ok(Orderbook::new(
+            input.symbol,
+            input.exchange,
+            timestamp,
+            bids,
+            asks,
+            Some(input.last_update_id),
+            input.sequence,
+        ))
+    }
+}
+
+impl Orderbook {
     /// Create a new empty order book
     pub fn new(
         symbol: String,
@@ -79,29 +118,31 @@ impl OrderBook {
     }
 
     /// Calculate the bid-ask spread
-    pub fn spread(&self) -> Option<Decimal> {
+    pub fn spread(&self) -> Option<f64> {
+
         match (self.best_bid(), self.best_ask()) {
             (Some(bid), Some(ask)) => Some(ask.price - bid.price),
             _ => None,
         }
+
     }
 
     /// Calculate the mid price
-    pub fn mid_price(&self) -> Option<Decimal> {
+    pub fn mid_price(&self) -> Option<f64> {
         match (self.best_bid(), self.best_ask()) {
-            (Some(bid), Some(ask)) => Some((bid.price + ask.price) / Decimal::from(2)),
+            (Some(bid), Some(ask)) => Some((bid.price + ask.price) / 2.0),
             _ => None,
         }
     }
 
     /// Get total liquidity within a certain percentage of the mid price
-    pub fn liquidity_within_percentage(&self, percentage: Decimal) -> (Decimal, Decimal) {
+    pub fn liquidity_within_percentage(&self, percentage: f64) -> (f64, f64) {
         let mid = match self.mid_price() {
             Some(mid) => mid,
-            None => return (Decimal::ZERO, Decimal::ZERO),
+            None => return (0.0, 0.0),
         };
 
-        let threshold = mid * percentage / Decimal::from(100);
+        let threshold = mid * percentage / 100.0;
         let bid_threshold = mid - threshold;
         let ask_threshold = mid + threshold;
 
@@ -120,12 +161,6 @@ impl OrderBook {
             .sum();
 
         (bid_liquidity, ask_liquidity)
-    }
-
-    /// Sort the order book (bids descending, asks ascending)
-    pub fn sort(&mut self) {
-        self.bids.sort_by(|a, b| b.price.cmp(&a.price)); // Descending
-        self.asks.sort_by(|a, b| a.price.cmp(&b.price)); // Ascending
     }
 
     /// Validate that the order book is properly sorted and has no crossed spread
@@ -154,6 +189,22 @@ impl OrderBook {
         true
     }
 
+    /// Get total volume on bid side
+    pub fn bid_volume(&self) -> f64 {
+        self.bids
+            .iter()
+            .map(|level| level.quantity)
+            .sum()
+    }
+
+    /// Get total volume on ask side
+    pub fn ask_volume(&self) -> f64 {
+        self.asks
+            .iter()
+            .map(|level| level.quantity)
+            .sum()
+    }
+
     /// Create partitioned file path for parquet storage
     pub fn parquet_path(&self) -> String {
         format!(
@@ -166,7 +217,7 @@ impl OrderBook {
         )
     }
 
-    /// Validate orderbook data
+    /// Validate Orderbook data
     pub fn validate(&self) -> Result<(), String> {
         if self.symbol.is_empty() {
             return Err("Symbol cannot be empty".to_string());
@@ -227,22 +278,24 @@ impl std::fmt::Display for TradingPair {
 
 /// Summary statistics for an order book
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct OrderBookSummary {
+pub struct OrderbookSummary {
     pub symbol: String,
     pub exchange: String,
     pub timestamp: DateTime<Utc>,
-    pub best_bid: Option<Decimal>,
-    pub best_ask: Option<Decimal>,
-    pub spread: Option<Decimal>,
-    pub mid_price: Option<Decimal>,
+    pub best_bid: Option<f64>,
+    pub best_ask: Option<f64>,
+    pub spread: Option<f64>,
+    pub mid_price: Option<f64>,
     pub bid_count: usize,
     pub ask_count: usize,
-    pub total_bid_volume: Decimal,
-    pub total_ask_volume: Decimal,
+    pub total_bid_volume: f64,
+    pub total_ask_volume: f64,
 }
 
-impl From<&OrderBook> for OrderBookSummary {
-    fn from(orderbook: &OrderBook) -> Self {
+impl From<&Orderbook> for OrderbookSummary {
+
+    fn from(orderbook: &Orderbook) -> Self {
+
         Self {
             symbol: orderbook.symbol.clone(),
             exchange: orderbook.exchange.clone(),
@@ -256,5 +309,8 @@ impl From<&OrderBook> for OrderBookSummary {
             total_bid_volume: orderbook.bids.iter().map(|b| b.quantity).sum(),
             total_ask_volume: orderbook.asks.iter().map(|a| a.quantity).sum(),
         }
+
     }
+    
 }
+

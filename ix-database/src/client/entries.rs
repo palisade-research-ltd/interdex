@@ -7,9 +7,8 @@ use chrono::{DateTime, Utc};
 use clickhouse::Row;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-use rust_decimal::Decimal;
 
-use ix_cex::models::orderbook::{PriceLevel, OrderBook};
+use ix_cex::models::orderbook::{Orderbook, PriceLevel};
 
 /// Data report structure for analytics
 #[derive(Debug, Clone, Serialize, Deserialize, Row)]
@@ -53,10 +52,10 @@ impl DataReport {
 
 /// Input structure for JSON parsing (matches the provided format)
 #[derive(Debug, Serialize, Deserialize)]
-pub struct OrderBookInput {
+pub struct OrderbookInput {
     pub symbol: String,
     pub exchange: String,
-    pub timestamp: String,
+    pub timestamp: DateTime<Utc>,
     pub bids: Vec<PriceLevelInput>,
     pub asks: Vec<PriceLevelInput>,
     pub last_update_id: u64,
@@ -65,19 +64,14 @@ pub struct OrderBookInput {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PriceLevelInput {
-    pub price: Decimal,
-    pub quantity: Decimal,
+    pub price: f64,
+    pub quantity: f64,
 }
 
-impl TryFrom<OrderBookInput> for OrderBook {
-
+impl TryFrom<OrderbookInput> for Orderbook {
     type Error = chrono::ParseError;
 
-    fn try_from(input: OrderBookInput) -> Result<Self, Self::Error> {
-
-        let timestamp =
-            DateTime::parse_from_rfc3339(&input.timestamp)?.with_timezone(&Utc);
-
+    fn try_from(input: OrderbookInput) -> Result<Self, Self::Error> {
         let bids = input
             .bids
             .into_iter()
@@ -90,15 +84,14 @@ impl TryFrom<OrderBookInput> for OrderBook {
             .map(|level| PriceLevel::new(level.price, level.quantity))
             .collect();
 
-        Ok(OrderBook::new(
+        Ok(Orderbook::new(
             input.symbol,
             input.exchange,
-            timestamp,
+            input.timestamp,
             bids,
             asks,
             None,
             None,
         ))
-
     }
 }

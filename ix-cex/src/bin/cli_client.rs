@@ -1,13 +1,12 @@
 use clap::{Parser, ValueEnum};
-use ix_cex::{
-    exchanges::{BinanceClient, CoinbaseClient, ExchangeClient, KrakenClient},
-    models::{OrderBookSummary, TradingPair},
-    ExchangeError,
-};
 use tokio::time::{sleep, timeout, Duration};
 use tracing::{error, warn};
-//use serde_json;
-//use tracing_subscriber;
+
+use ix_cex::{
+    exchanges::{BinanceClient, CoinbaseClient, ExchangeClient, KrakenClient},
+    models::orderbook::{Orderbook, OrderbookSummary, TradingPair},
+    ExchangeError,
+};
 
 #[derive(Parser)]
 #[command(name = "ix-cex")]
@@ -119,7 +118,7 @@ async fn query_exchange(
     depth: u32,
     timeout_secs: u64,
     timewait_millis: u64,
-) -> Result<ix_cex::models::OrderBook, ExchangeError> {
+) -> Result<Orderbook, ExchangeError> {
     // println!("Querying {:?} for {} with depth {}", exchange, pair, depth);
 
     let client: Box<dyn ExchangeClient + Send + Sync> = match exchange {
@@ -146,7 +145,7 @@ async fn query_all_exchanges(
     depth: u32,
     timeout_secs: u64,
     timewait_millis: u64,
-) -> Vec<(Exchange, Result<ix_cex::models::OrderBook, ExchangeError>)> {
+) -> Vec<(Exchange, Result<Orderbook, ExchangeError>)> {
     println!("Querying all exchanges for {pair} with depth {depth}");
 
     let exchanges = vec![Exchange::Binance, Exchange::Coinbase, Exchange::Kraken];
@@ -180,7 +179,7 @@ async fn query_all_exchanges(
 }
 
 async fn display_single_result(
-    result: Result<ix_cex::models::OrderBook, ExchangeError>,
+    result: Result<Orderbook, ExchangeError>,
     format: &OutputFormat,
 ) {
     match result {
@@ -197,7 +196,7 @@ async fn display_single_result(
 }
 
 async fn display_all_results(
-    results: Vec<(Exchange, Result<ix_cex::models::OrderBook, ExchangeError>)>,
+    results: Vec<(Exchange, Result<Orderbook, ExchangeError>)>,
     format: &OutputFormat,
 ) {
     let mut successful_results = Vec::new();
@@ -235,8 +234,8 @@ async fn display_all_results(
     }
 }
 
-fn print_summary(orderbook: &ix_cex::models::OrderBook) {
-    let summary = OrderBookSummary::from(orderbook);
+fn print_summary(orderbook: &Orderbook) {
+    let summary = OrderbookSummary::from(orderbook);
 
     println!("=== {} Order Book Summary ===", orderbook.exchange);
     println!("Symbol: {}", summary.symbol);
@@ -264,7 +263,7 @@ fn print_summary(orderbook: &ix_cex::models::OrderBook) {
     println!("Total Ask Volume: {}", summary.total_ask_volume);
 }
 
-fn print_full(orderbook: &ix_cex::models::OrderBook) {
+fn print_full(orderbook: &Orderbook) {
     println!("=== {} Full Order Book ===", orderbook.exchange);
     println!("Symbol: {}", orderbook.symbol);
     println!("Timestamp: {}", orderbook.timestamp);
@@ -296,14 +295,14 @@ fn print_full(orderbook: &ix_cex::models::OrderBook) {
     }
 }
 
-fn print_json(orderbook: &ix_cex::models::OrderBook) {
+fn print_json(orderbook: &Orderbook) {
     match serde_json::to_string_pretty(orderbook) {
         Ok(json) => println!("{json}"),
         Err(e) => error!("Failed to serialize to JSON: {:?}", e),
     }
 }
 
-fn print_comparison_summary(results: &[(Exchange, ix_cex::models::OrderBook)]) {
+fn print_comparison_summary(results: &[(Exchange, Orderbook)]) {
     println!("\n=== Exchange Comparison ===\n");
     println!(
         "{:<15} {:<15} {:<15} {:<15} {:<15}",
@@ -342,14 +341,14 @@ fn print_comparison_summary(results: &[(Exchange, ix_cex::models::OrderBook)]) {
     println!("\n");
 }
 
-fn print_comparison_full(results: &[(Exchange, ix_cex::models::OrderBook)]) {
+fn print_comparison_full(results: &[(Exchange, Orderbook)]) {
     for (exchange, orderbook) in results {
         println!("\n=== {exchange:?} ===");
         print_full(orderbook);
     }
 }
 
-fn print_comparison_json(results: &[(Exchange, ix_cex::models::OrderBook)]) {
+fn print_comparison_json(results: &[(Exchange, Orderbook)]) {
     let json_data: Vec<_> = results
         .iter()
         .map(|(exchange, orderbook)| {

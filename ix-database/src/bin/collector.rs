@@ -1,15 +1,18 @@
 // src/bin/collector.rs
-//
+
+use clap::{Arg, Command};
 
 use ix_cex::{
     exchanges::{BinanceClient, CoinbaseClient, ExchangeClient, KrakenClient},
-    models::TradingPair,
-    ExchangeError,
+    models::{exchanges::Exchange, orderbook::TradingPair},
 };
-use tokio::time::{sleep, timeout, Duration};
 
-use clap::{Arg, Command};
-use ix_database::ClickHouseClient;
+use ix_database::{
+    queries::orderbooks::{
+        create_tables::create_orderbooks_table_ddl, write_tables::q_insert_orderbook,
+    },
+    ClickHouseClient,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -31,62 +34,39 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .get_matches();
 
-    let client = ClickHouseClient::builder()
+    let ch_client = ClickHouseClient::builder()
         .url(matches.get_one::<String>("url").unwrap())
         .database(matches.get_one::<String>("database").unwrap())
         .build()
         .await?;
 
     // Create orderbooks table if it doesn't exist
-    client
-        .create_table(&ix_database::create_orderbooks_table_ddl())
+    ch_client
+        .create_table(&create_orderbooks_table_ddl())
         .await?;
 
-    // Read JSON from ix-cex source
-    //
+    // Loop (first slowest: Kraken)
 
-    #[derive(Clone, Debug)]
-    enum Exchange {
-        Binance,
-        Coinbase,
-        Kraken,
-    }
+    let v_exchanges = vec![Exchange::Kraken, Exchange::Binance, Exchange::Coinbase];
+    let pair = TradingPair::SolUsdc;
+    let depth = 10;
 
-    #[derive(Clone, Debug)]
-    enum TradingPairArg {
-        BtcUsdc,
-        SolUsdc,
-    }
-
-    async fn query_exchange(
-        exchange: Exchange,
-        pair: TradingPair,
-        depth: u32,
-        timeout_secs: u64,
-        timewait_millis: u64,
-    ) -> Result<ix_cex::models::OrderBook, ExchangeError> {
-        let client: Box<dyn ExchangeClient + Send + Sync> = match exchange {
+    for i_exchange in v_exchanges {
+        let exchange_client: Box<dyn ExchangeClient + Send + Sync> = match i_exchange {
             Exchange::Binance => Box::new(BinanceClient::new()?),
             Exchange::Coinbase => Box::new(CoinbaseClient::new()?),
             Exchange::Kraken => Box::new(KrakenClient::new()?),
         };
 
-        sleep(Duration::from_millis(timewait_millis)).await;
+        let r_orderbook = exchange_client
+            .get_orderbook(pair.clone(), Some(depth))
+            .await?;
 
-        let request_future = client.get_orderbook(pair, Some(depth));
+        let query_str: String = q_insert_orderbook(&r_orderbook).unwrap();
+        println!("query_str for {:?} was: \n{:?}", i_exchange, query_str);
 
-        timeout(Duration::from_secs(timeout_secs), request_future)
-            .await
-            .map_err(|_| {
-                ExchangeError::Timeout(format!(
-                    "Request timed out after {timeout_secs} seconds"
-                ))
-            })?
+        ch_client.write_table(&query_str).await?;
     }
-
-    let result = query_exchange(Exchange::Binance, TradingPair::SolUsdc, 10, 2, 20).await;
-
-    println!("Collector finished : result {:?}", result);
 
     Ok(())
 }

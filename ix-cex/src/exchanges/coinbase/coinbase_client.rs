@@ -1,8 +1,10 @@
 use crate::client::http_client::{HttpClient, RetryConfig, RetryableHttpClient};
-use crate::models::orderbook::{OrderBook, PriceLevel, TradingPair};
+use crate::models::orderbook::{
+    Orderbook, PriceLevel, TradingPair
+};
+
 use chrono::Utc;
 use ix_results::errors::{ExchangeError, Result};
-use rust_decimal::Decimal;
 use serde::Deserialize;
 use std::str::FromStr;
 use tracing::{debug, info};
@@ -35,14 +37,15 @@ impl CoinbaseClient {
         &self,
         pair: TradingPair,
         depth: Option<u32>,
-    ) -> Result<OrderBook> {
+    ) -> Result<Orderbook> {
         let product_id = pair.to_exchange_symbol("coinbase");
         info!("Fetching Coinbase orderbook for {}", product_id);
 
-        let mut params: Vec<(&str, String)> = vec![("product_id", product_id.clone())];
+        let mut params: Vec<(&str, String)> = vec![
+            ("product_id", product_id.clone())];
 
         if let Some(depth) = depth {
-            params.push(("depth", depth.to_string()));
+            params.push(("limit", depth.to_string()));
         }
 
         // Convert params to the expected type for get_with_params_retry
@@ -68,20 +71,20 @@ impl CoinbaseClient {
         &self,
         response: CoinbaseProductBookResponse,
         symbol: String,
-    ) -> Result<OrderBook> {
+    ) -> Result<Orderbook> {
         let mut v_bids = Vec::new();
         let mut v_asks = Vec::new();
 
         // Convert bids
         for bid in response.pricebook.bids {
             let price =
-                Decimal::from_str(&bid.price).map_err(|e| ExchangeError::ApiError {
+                f64::from_str(&bid.price).map_err(|e| ExchangeError::ApiError {
                     exchange: "Coinbase".to_string(),
                     message: format!("Invalid bid price '{}': {}", bid.price, e),
                 })?;
 
             let quantity =
-                Decimal::from_str(&bid.size).map_err(|e| ExchangeError::ApiError {
+                f64::from_str(&bid.size).map_err(|e| ExchangeError::ApiError {
                     exchange: "Coinbase".to_string(),
                     message: format!("Invalid bid size '{}': {}", bid.size, e),
                 })?;
@@ -93,13 +96,13 @@ impl CoinbaseClient {
         // Convert asks
         for ask in response.pricebook.asks {
             let price =
-                Decimal::from_str(&ask.price).map_err(|e| ExchangeError::ApiError {
+                f64::from_str(&ask.price).map_err(|e| ExchangeError::ApiError {
                     exchange: "Coinbase".to_string(),
                     message: format!("Invalid ask price '{}': {}", ask.price, e),
                 })?;
 
             let quantity =
-                Decimal::from_str(&ask.size).map_err(|e| ExchangeError::ApiError {
+                f64::from_str(&ask.size).map_err(|e| ExchangeError::ApiError {
                     exchange: "Coinbase".to_string(),
                     message: format!("Invalid ask size '{}': {}", ask.size, e),
                 })?;
@@ -109,7 +112,7 @@ impl CoinbaseClient {
         }
 
         // Final value
-        let mut orderbook = OrderBook::new(
+        let orderbook = Orderbook::new(
             symbol,
             "Coinbase".to_string(),
             Utc::now(),
@@ -118,9 +121,6 @@ impl CoinbaseClient {
             None,
             None,
         );
-
-        // Sort the orderbook
-        orderbook.sort();
 
         // Validate the orderbook
         if !orderbook.is_valid() {

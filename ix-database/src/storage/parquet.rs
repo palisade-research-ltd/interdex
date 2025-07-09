@@ -11,6 +11,7 @@ use arrow::array::{Array, ArrayRef, StringArray, TimestampNanosecondArray, UInt6
 use arrow::datatypes::{DataType, Field, Schema, TimeUnit};
 use arrow::record_batch::RecordBatch;
 use chrono::{DateTime, Utc};
+use ix_cex::models::orderbook::{Orderbook, PriceLevel};
 use parquet::arrow::{
     arrow_reader::{
         ArrowReaderBuilder, ParquetRecordBatchReader, ParquetRecordBatchReaderBuilder,
@@ -20,7 +21,6 @@ use parquet::arrow::{
 use parquet::file::properties::WriterProperties;
 use serde::{Deserialize, Serialize};
 use tokio::fs;
-use ix_cex::models::orderbook::{PriceLevel, OrderBook};
 
 use crate::{DatabaseError, DatabaseResult};
 
@@ -66,7 +66,7 @@ impl ParquetStorage {
     /// Write OrderBook records to Parquet file
     pub async fn write_orderbooks(
         &self,
-        orderbooks: &[OrderBook],
+        orderbooks: &[Orderbook],
     ) -> DatabaseResult<String> {
         if orderbooks.is_empty() {
             return Err(DatabaseError::OperationFailed(
@@ -101,7 +101,7 @@ impl ParquetStorage {
     pub async fn read_orderbooks<P: AsRef<Path>>(
         &self,
         file_path: P,
-    ) -> DatabaseResult<Vec<OrderBook>> {
+    ) -> DatabaseResult<Vec<Orderbook>> {
         let file =
             std::fs::File::open(file_path.as_ref()).map_err(DatabaseError::IoError)?;
 
@@ -188,7 +188,7 @@ impl ParquetStorage {
     }
 
     /// Generate file path based on partitioning strategy
-    fn generate_file_path(&self, orderbook: &OrderBook) -> PathBuf {
+    fn generate_file_path(&self, orderbook: &Orderbook) -> PathBuf {
         match self.partition_strategy {
             PartitionStrategy::ExchangeDateTime => {
                 let date = orderbook.timestamp.format("%Y%m%d").to_string();
@@ -246,7 +246,7 @@ impl ParquetStorage {
     /// Create record batch from OrderBook data
     fn create_record_batch(
         schema: &Arc<Schema>,
-        orderbooks: &[OrderBook],
+        orderbooks: &[Orderbook],
     ) -> DatabaseResult<RecordBatch> {
         let symbols: ArrayRef = Arc::new(StringArray::from(
             orderbooks
@@ -312,7 +312,7 @@ impl ParquetStorage {
     }
 
     /// Parse record batch into OrderBook data
-    fn parse_record_batch(batch: &RecordBatch) -> DatabaseResult<Vec<OrderBook>> {
+    fn parse_record_batch(batch: &RecordBatch) -> DatabaseResult<Vec<Orderbook>> {
         let mut orderbooks = Vec::new();
 
         let symbols = batch
@@ -383,11 +383,10 @@ impl ParquetStorage {
             let ask_levels: Vec<PriceLevel> = serde_json::from_str(asks_json)
                 .map_err(DatabaseError::SerializationError)?;
 
-            let orderbook = OrderBook::new(
+            let orderbook = Orderbook::new(
                 symbol,
                 exchange,
                 timestamp,
-
                 bid_levels,
                 ask_levels,
                 Some(last_update_id),

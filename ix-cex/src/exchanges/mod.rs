@@ -6,7 +6,9 @@ pub use binance::binance_client::BinanceClient;
 pub use coinbase::coinbase_client::CoinbaseClient;
 pub use kraken::kraken_client::KrakenClient;
 
-use crate::models::orderbook::{OrderBook, TradingPair};
+use crate::models::{
+    orderbook::{Orderbook, TradingPair}
+};
 use ix_results::errors::Result;
 
 /// Trait for exchange clients
@@ -17,7 +19,7 @@ pub trait ExchangeClient {
         &self,
         pair: TradingPair,
         limit: Option<u32>,
-    ) -> Result<OrderBook>;
+    ) -> Result<Orderbook>;
 
     /// Get the exchange name
     fn exchange_name(&self) -> &str;
@@ -29,7 +31,7 @@ impl ExchangeClient for BinanceClient {
         &self,
         pair: TradingPair,
         limit: Option<u32>,
-    ) -> Result<OrderBook> {
+    ) -> Result<Orderbook> {
         self.get_orderbook(pair, limit).await
     }
 
@@ -44,7 +46,7 @@ impl ExchangeClient for CoinbaseClient {
         &self,
         pair: TradingPair,
         limit: Option<u32>,
-    ) -> Result<OrderBook> {
+    ) -> Result<Orderbook> {
         self.get_orderbook(pair, limit).await
     }
 
@@ -59,7 +61,7 @@ impl ExchangeClient for KrakenClient {
         &self,
         pair: TradingPair,
         limit: Option<u32>,
-    ) -> Result<OrderBook> {
+    ) -> Result<Orderbook> {
         self.get_orderbook(pair, limit).await
     }
 

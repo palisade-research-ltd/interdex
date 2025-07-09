@@ -1,8 +1,10 @@
 use crate::client::http_client::{HttpClient, RetryConfig, RetryableHttpClient};
-use crate::models::orderbook::{OrderBook, PriceLevel, TradingPair};
+use crate::models::{
+    orderbook::{Orderbook, PriceLevel, TradingPair}
+};
+
 use chrono::{DateTime, Utc};
 use ix_results::errors::{ExchangeError, Result};
-use rust_decimal::Decimal;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::str::FromStr;
@@ -36,7 +38,8 @@ impl KrakenClient {
         &self,
         pair: TradingPair,
         count: Option<u32>,
-    ) -> Result<OrderBook> {
+    ) -> Result<Orderbook> {
+
         let product_id = pair.to_exchange_symbol("kraken");
         info!("Fetching Kraken orderbook for {}", product_id);
 
@@ -89,7 +92,7 @@ impl KrakenClient {
         &self,
         data: KrakenOrderbookData,
         symbol: String,
-    ) -> Result<OrderBook> {
+    ) -> Result<Orderbook> {
         let mut ob_ts: u64 = 0;
         let mut v_bids = Vec::new();
         let mut v_asks = Vec::new();
@@ -103,12 +106,12 @@ impl KrakenClient {
             }
 
             let price =
-                Decimal::from_str(&bid.0).map_err(|e| ExchangeError::ApiError {
+                f64::from_str(&bid.0).map_err(|e| ExchangeError::ApiError {
                     exchange: "Kraken".to_string(),
                     message: format!("Invalid bid price '{}': {}", bid.0, e),
                 })?;
             let quantity =
-                Decimal::from_str(&bid.1).map_err(|e| ExchangeError::ApiError {
+                f64::from_str(&bid.1).map_err(|e| ExchangeError::ApiError {
                     exchange: "Kraken".to_string(),
                     message: format!("Invalid bid volume '{}': {}", bid.1, e),
                 })?;
@@ -122,12 +125,12 @@ impl KrakenClient {
             }
 
             let price =
-                Decimal::from_str(&ask.0).map_err(|e| ExchangeError::ApiError {
+                f64::from_str(&ask.0).map_err(|e| ExchangeError::ApiError {
                     exchange: "Kraken".to_string(),
                     message: format!("Invalid ask price '{}': {}", ask.0, e),
                 })?;
             let quantity =
-                Decimal::from_str(&ask.1).map_err(|e| ExchangeError::ApiError {
+                f64::from_str(&ask.1).map_err(|e| ExchangeError::ApiError {
                     exchange: "Kraken".to_string(),
                     message: format!("Invalid ask volume '{}': {}", ask.1, e),
                 })?;
@@ -135,7 +138,7 @@ impl KrakenClient {
         }
 
         // Final value
-        let mut orderbook = OrderBook::new(
+        let mut orderbook = Orderbook::new(
             symbol,
             "Kraken".to_string(),
             Utc::now(),
@@ -144,8 +147,6 @@ impl KrakenClient {
             None,
             None,
         );
-
-        orderbook.sort();
 
         if !orderbook.is_valid() {
             return Err(ExchangeError::ApiError {

@@ -1,11 +1,10 @@
 use crate::client::http_client::{HttpClient, RetryConfig, RetryableHttpClient};
-use crate::models::orderbook::{OrderBook, PriceLevel, TradingPair};
+use crate::models::orderbook::{Orderbook, PriceLevel, TradingPair};
 use chrono::Utc;
 use ix_results::errors::{ExchangeError, Result};
-use rust_decimal::Decimal;
 use serde::Deserialize;
-use std::str::FromStr;
 use tracing::{debug, info, warn};
+use std::str::FromStr;
 
 /// Binance REST API client
 #[derive(Clone)]
@@ -35,7 +34,7 @@ impl BinanceClient {
         &self,
         pair: TradingPair,
         depth: Option<u32>,
-    ) -> Result<OrderBook> {
+    ) -> Result<Orderbook> {
         let symbol = pair.to_exchange_symbol("binance");
         let depth_str = depth.unwrap_or(1000).to_string();
 
@@ -65,7 +64,7 @@ impl BinanceClient {
         &self,
         response: BinanceDepthResponse,
         symbol: String,
-    ) -> Result<OrderBook> {
+    ) -> Result<Orderbook> {
         let mut v_bids = Vec::new();
         let mut v_asks = Vec::new();
 
@@ -79,14 +78,14 @@ impl BinanceClient {
                 continue;
             }
 
-            let price = Decimal::from_str(&bid_array[0]).map_err(|e| {
+            let price = f64::from_str(&bid_array[0]).map_err(|e| {
                 ExchangeError::ApiError {
                     exchange: "Binance".to_string(),
                     message: format!("Invalid bid price '{}': {}", bid_array[0], e),
                 }
             })?;
 
-            let quantity = Decimal::from_str(&bid_array[1]).map_err(|e| {
+            let quantity = f64::from_str(&bid_array[1]).map_err(|e| {
                 ExchangeError::ApiError {
                     exchange: "Binance".to_string(),
                     message: format!("Invalid bid quantity '{}': {}", bid_array[1], e),
@@ -106,14 +105,14 @@ impl BinanceClient {
                 continue;
             }
 
-            let price = Decimal::from_str(&ask_array[0]).map_err(|e| {
+            let price = f64::from_str(&ask_array[0]).map_err(|e| {
                 ExchangeError::ApiError {
                     exchange: "Binance".to_string(),
                     message: format!("Invalid ask price '{}': {}", ask_array[0], e),
                 }
             })?;
 
-            let quantity = Decimal::from_str(&ask_array[1]).map_err(|e| {
+            let quantity = f64::from_str(&ask_array[1]).map_err(|e| {
                 ExchangeError::ApiError {
                     exchange: "Binance".to_string(),
                     message: format!("Invalid ask quantity '{}': {}", ask_array[1], e),
@@ -124,7 +123,7 @@ impl BinanceClient {
         }
 
         // Final value
-        let orderbook = OrderBook::new(
+        let orderbook = Orderbook::new(
             symbol,
             "Coinbase".to_string(),
             Utc::now(),

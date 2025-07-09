@@ -2,7 +2,7 @@
 
 mod tests {
 
-    use ix_database::create_orderbooks_table_ddl;
+    use ix_database::queries::orderbooks::create_tables::create_orderbooks_table_ddl;
     use ix_database::ClickHouseClient;
 
     #[tokio::test]
@@ -57,4 +57,10 @@ mod tests {
         assert!(ddl.contains("orderbooks"));
         assert!(ddl.contains("MergeTree"));
     }
+
+    #[test]
+    fn test_read_orderbook() {}
+
+    #[test]
+    fn test_insert_orderbook() {}
 }

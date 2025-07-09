@@ -13,5 +13,4 @@ authors = ["palisade research ltd"]
 thiserror = { workspace = true }
 serde_json = { workspace = true }
 reqwest = { workspace = true }
-scylla = { version = "1.3.0" }
 
