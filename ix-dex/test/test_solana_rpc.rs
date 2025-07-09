@@ -69,10 +69,7 @@ mod tests {
         println!("assert_eq!(response.slots.len(), 150)");
         println!("assert_eq!(response.fees.len(), 150)");
 
-        let results = (
-            if dimensions.0 == 150 { true } else { false },
-            if dimensions.1 == 150 { true } else { false },
-        );
+        let results = (dimensions.0 == 150, dimensions.1 == 150);
 
         assert_eq!(results, (true, true));
     }

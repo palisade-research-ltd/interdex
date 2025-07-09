@@ -9,26 +9,32 @@ authors = ["palisade research ltd"]
 
 [dependencies]
 
+ix-cex = { path = "../ix-cex", version = "0.0.1" }
 ix-core = { path = "../ix-core", version = "0.0.1" }
 ix-results = { path = "../ix-results", version = "0.0.1" }
 
-clap = { workspace = true }
-tokio = { workspace = true }
-serde = { workspace = true }
-serde_json = { workspace = true }
-reqwest = { workspace = true }
-anyhow = { workspace = true }
+clap = { version = "4.5", features = ["derive"] }
+rust_decimal = { workspace = true }
+tokio = { version = "1.45", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0" }
+reqwest = { version = "0.12", features = ["json"] }
 
+anyhow = { version = "1.0.98" }
 chrono = { version = "0.4", features = ["serde"] }
-uuid = { version = "1.17", features = ["v4"] }
+uuid = { version = "1.17", features = ["v4", "serde"] }
 clickhouse = { version = "0.13", features = ["lz4", "inserter", "time"] }
 arrow = { version = "55.2", features = ["prettyprint"] }
 parquet = { version = "55.2", features = ["arrow", "async"] }
+thiserror = { version = "1.0.64" }
 
 [dev-dependencies]
 tokio-test = "0.4"
 
 [[test]]
-name = "test_clickhouse_client"
-path = "test/test_clickhouse_client.rs"
+name = "test_orderbook_data"
+path = "test/test_orderbook_data.rs"
 
+[[test]]
+name = "test_connection"
+path = "test/test_connection.rs"

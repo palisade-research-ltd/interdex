@@ -90,8 +90,9 @@ impl KrakenClient {
         data: KrakenOrderbookData,
         symbol: String,
     ) -> Result<OrderBook> {
-        let mut orderbook = OrderBook::new(symbol, "Kraken".to_string());
         let mut ob_ts: u64 = 0;
+        let mut v_bids = Vec::new();
+        let mut v_asks = Vec::new();
 
         for bid in data.bids {
             // Update orderbook timestamp to the newst timestamp found in the levels
@@ -111,7 +112,7 @@ impl KrakenClient {
                     exchange: "Kraken".to_string(),
                     message: format!("Invalid bid volume '{}': {}", bid.1, e),
                 })?;
-            orderbook.bids.push(PriceLevel { price, quantity });
+            v_bids.push(PriceLevel { price, quantity });
         }
 
         for ask in data.asks {
@@ -130,8 +131,19 @@ impl KrakenClient {
                     exchange: "Kraken".to_string(),
                     message: format!("Invalid ask volume '{}': {}", ask.1, e),
                 })?;
-            orderbook.asks.push(PriceLevel { price, quantity });
+            v_asks.push(PriceLevel { price, quantity });
         }
+
+        // Final value
+        let mut orderbook = OrderBook::new(
+            symbol,
+            "Kraken".to_string(),
+            Utc::now(),
+            v_bids,
+            v_asks,
+            None,
+            None,
+        );
 
         orderbook.sort();
 

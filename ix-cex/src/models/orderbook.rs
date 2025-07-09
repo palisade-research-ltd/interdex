@@ -1,6 +1,7 @@
 use chrono::{DateTime, Utc};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use clickhouse::Row;
 
 /// Represents a single price level in the order book
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -9,31 +10,61 @@ pub struct PriceLevel {
     pub quantity: Decimal,
 }
 
+impl PriceLevel {
+    pub fn new(price: Decimal, quantity: Decimal) -> Self {
+        Self { price, quantity }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PriceLevelInput {
+    pub price: String,
+    pub quantity: String,
+}
+
+/// Input structure for JSON parsing (matches the provided format)
+#[derive(Debug, Serialize, Deserialize)]
+pub struct OrderbookInput {
+    pub symbol: String,
+    pub exchange: String,
+    pub timestamp: String,
+    pub bids: Vec<PriceLevelInput>,
+    pub asks: Vec<PriceLevelInput>,
+    pub last_update_id: u64,
+    pub sequence: Option<u64>,
+}
+
 /// Complete order book snapshot
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Row)]
 pub struct OrderBook {
     pub symbol: String,
     pub exchange: String,
     pub timestamp: DateTime<Utc>,
     pub bids: Vec<PriceLevel>,
     pub asks: Vec<PriceLevel>,
-    /// Last update ID from the exchange (if available)
     pub last_update_id: Option<u64>,
-    /// Sequence number for ordering updates
     pub sequence: Option<u64>,
 }
 
 impl OrderBook {
     /// Create a new empty order book
-    pub fn new(symbol: String, exchange: String) -> Self {
+    pub fn new(
+        symbol: String,
+        exchange: String,
+        timestamp: DateTime<Utc>,
+        bids: Vec<PriceLevel>,
+        asks: Vec<PriceLevel>,
+        last_update_id: Option<u64>,
+        sequence: Option<u64>,
+    ) -> Self {
         Self {
             symbol,
             exchange,
-            timestamp: Utc::now(),
-            bids: Vec::new(),
-            asks: Vec::new(),
-            last_update_id: None,
-            sequence: None,
+            timestamp,
+            bids,
+            asks,
+            last_update_id,
+            sequence,
         }
     }
 
@@ -121,6 +152,35 @@ impl OrderBook {
         }
 
         true
+    }
+
+    /// Create partitioned file path for parquet storage
+    pub fn parquet_path(&self) -> String {
+        format!(
+            "{}-{}-{}-{}-{}.parquet",
+            self.exchange,
+            self.timestamp.format("%Y%m%d"),
+            self.timestamp.format("%H"),
+            self.timestamp.format("%M"),
+            self.symbol
+        )
+    }
+
+    /// Validate orderbook data
+    pub fn validate(&self) -> Result<(), String> {
+        if self.symbol.is_empty() {
+            return Err("Symbol cannot be empty".to_string());
+        }
+
+        if self.exchange.is_empty() {
+            return Err("Exchange cannot be empty".to_string());
+        }
+
+        if self.bids.is_empty() && self.asks.is_empty() {
+            return Err("Orderbook must have at least one bid or ask".to_string());
+        }
+
+        Ok(())
     }
 }
 

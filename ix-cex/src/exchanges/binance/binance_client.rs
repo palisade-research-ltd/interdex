@@ -66,9 +66,8 @@ impl BinanceClient {
         response: BinanceDepthResponse,
         symbol: String,
     ) -> Result<OrderBook> {
-        let mut orderbook = OrderBook::new(symbol, "Binance".to_string());
-        orderbook.timestamp = Utc::now();
-        orderbook.last_update_id = Some(response.last_update_id);
+        let mut v_bids = Vec::new();
+        let mut v_asks = Vec::new();
 
         // Convert bids (should already be sorted from highest to lowest)
         for bid_array in response.bids {
@@ -94,7 +93,7 @@ impl BinanceClient {
                 }
             })?;
 
-            orderbook.bids.push(PriceLevel { price, quantity });
+            v_bids.push(PriceLevel { price, quantity });
         }
 
         // Convert asks (should already be sorted from lowest to highest)
@@ -121,8 +120,19 @@ impl BinanceClient {
                 }
             })?;
 
-            orderbook.asks.push(PriceLevel { price, quantity });
+            v_asks.push(PriceLevel { price, quantity });
         }
+
+        // Final value
+        let orderbook = OrderBook::new(
+            symbol,
+            "Coinbase".to_string(),
+            Utc::now(),
+            v_bids,
+            v_asks,
+            Some(response.last_update_id),
+            None,
+        );
 
         // Validate the orderbook
         if !orderbook.is_valid() {

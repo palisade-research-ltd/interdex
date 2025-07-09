@@ -69,8 +69,8 @@ impl CoinbaseClient {
         response: CoinbaseProductBookResponse,
         symbol: String,
     ) -> Result<OrderBook> {
-        let mut orderbook = OrderBook::new(symbol, "Coinbase".to_string());
-        orderbook.timestamp = Utc::now();
+        let mut v_bids = Vec::new();
+        let mut v_asks = Vec::new();
 
         // Convert bids
         for bid in response.pricebook.bids {
@@ -86,7 +86,8 @@ impl CoinbaseClient {
                     message: format!("Invalid bid size '{}': {}", bid.size, e),
                 })?;
 
-            orderbook.bids.push(PriceLevel { price, quantity });
+            // orderbook.bids.push(PriceLevel { price, quantity });
+            v_bids.push(PriceLevel { price, quantity });
         }
 
         // Convert asks
@@ -103,8 +104,20 @@ impl CoinbaseClient {
                     message: format!("Invalid ask size '{}': {}", ask.size, e),
                 })?;
 
-            orderbook.asks.push(PriceLevel { price, quantity });
+            // orderbook.asks.push(PriceLevel { price, quantity });
+            v_asks.push(PriceLevel { price, quantity });
         }
+
+        // Final value
+        let mut orderbook = OrderBook::new(
+            symbol,
+            "Coinbase".to_string(),
+            Utc::now(),
+            v_bids,
+            v_asks,
+            None,
+            None,
+        );
 
         // Sort the orderbook
         orderbook.sort();
