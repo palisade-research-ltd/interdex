@@ -1,0 +1,60 @@
+[package]
+name = "vaulted"
+description = "Vault-Backed Token Asset"
+version = "0.0.1"
+rust-version = "1.84.1"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "vaulted"
+
+[[bin]]
+name = "init"
+path = "scripts/init.rs"
+
+[dependencies]
+anchor-lang = { version = "0.31.1" }
+anchor-spl = { version = "0.31.1" }
+anchor-client = { version = "0.31.1" }
+pyth-solana-receiver-sdk = { version = "0.6.1" }
+libm = { version = "0.2.15" }
+shellexpand = "3.0"
+spl-token = "6.0.0"
+solana-sdk = { version = "2.2.18" }
+spl-associated-token-account = "4.0.0"
+tokio = { version = "1.45", features = ["full"]}
+
+[dev-dependencies]
+anchor-lang = { version = "0.31.1" }
+anchor-client = { version = "0.31.1" }
+solana-sdk = { version = "2.2.18" }
+solana-client = { version = "2.2.18" }
+
+tokio = { version = "1.45", features = ["full"]}
+toml = { version = "0.8" }
+
+vaulted = { path = "../vaulted" }
+
+[features]
+cpi = ["no-entrypoint"]
+default = []
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+custom-heap = []
+custom-panic = []
+anchor-debug = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[lints.rust]
+unsafe_code = "forbid"
+unused_extern_crates = "allow"
+unreachable_code = "deny"
+unreachable_patterns = "deny"
+dead_code = "allow"
+unused_variables = "warn"
+trivial_casts = "warn"
+trivial_numeric_casts = "warn"
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(nightly)'] }
+

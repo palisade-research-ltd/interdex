@@ -5,6 +5,8 @@ resolver = "2"
 members = [
     # Solana Programs
     "programs/datanode",
+    # vaulted pegged asset
+    "programs/vaulted",
 ]
 
 [workspace.package]

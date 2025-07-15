@@ -2,6 +2,14 @@ use chrono::{DateTime, Utc};
 use ix_cex::models::orderbook::{Orderbook, PriceLevel};
 use std::error;
 
+fn format_symbol_for_clickhouse(symbol: &str) -> String {
+    symbol
+        .replace("-", "")
+        .replace("/", "")
+        .to_uppercase()
+        .to_owned()
+}
+
 /// Format DateTime<Utc> for ClickHouse DateTime64(3, 'UTC')
 fn format_datetime_for_clickhouse(dt: &DateTime<Utc>) -> String {
     // Format with millisecond precision (3 decimal places)
@@ -32,7 +40,7 @@ pub fn q_insert_orderbook(
                 VALUES 
                     ('{}', '{}', '{}', '{}', '{}')
             "#,
-        orderbook.symbol,
+        format_symbol_for_clickhouse(&orderbook.symbol),
         orderbook.exchange,
         timestamp,
         bids_json.replace("'", "''"), // Escape single quotes

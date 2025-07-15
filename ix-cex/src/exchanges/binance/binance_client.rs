@@ -125,7 +125,7 @@ impl BinanceClient {
         // Final value
         let orderbook = Orderbook::new(
             symbol,
-            "Coinbase".to_string(),
+            "Binance".to_string(),
             Utc::now(),
             v_bids,
             v_asks,

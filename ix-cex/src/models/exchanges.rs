@@ -20,10 +20,10 @@ impl TradingPair {
         match (self, exchange.to_lowercase().as_str()) {
             (TradingPair::BtcUsdc, "binance") => "BTCUSDC".to_string(),
             (TradingPair::SolUsdc, "binance") => "SOLUSDC".to_string(),
-            (TradingPair::BtcUsdc, "coinbase") => "BTC-USDC".to_string(),
-            (TradingPair::SolUsdc, "coinbase") => "SOL-USDC".to_string(),
-            (TradingPair::BtcUsdc, "kraken") => "BTC/USDC".to_string(),
-            (TradingPair::SolUsdc, "kraken") => "SOL/USDC".to_string(),
+            (TradingPair::BtcUsdc, "coinbase") => "BTCUSDC".to_string(),
+            (TradingPair::SolUsdc, "coinbase") => "SOLUSDC".to_string(),
+            (TradingPair::BtcUsdc, "kraken") => "BTCUSDC".to_string(),
+            (TradingPair::SolUsdc, "kraken") => "SOLUSDC".to_string(),
             _ => format!("{self:?}"), // Fallback
         }
     }
@@ -41,8 +41,8 @@ impl TradingPair {
 impl std::fmt::Display for TradingPair {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
-            TradingPair::BtcUsdc => "BTC/USDC",
-            TradingPair::SolUsdc => "SOL/USDC",
+            TradingPair::BtcUsdc => "BTCUSDC",
+            TradingPair::SolUsdc => "SOLUSDC",
         };
         write!(f, "{s}")
     }

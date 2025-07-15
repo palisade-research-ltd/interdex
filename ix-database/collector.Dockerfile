@@ -1,8 +1,4 @@
 # collector.Dockerfile
-#FROM rust:1.75 as builder
-# COPY Cargo.toml ./
-# COPY src/ ./src/
-# RUN cargo build --release --bin collector
 
 FROM debian:bullseye-slim
 WORKDIR /app

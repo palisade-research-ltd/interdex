@@ -3,7 +3,7 @@ use crate::models::{
     orderbook::{Orderbook, PriceLevel, TradingPair}
 };
 
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 use ix_results::errors::{ExchangeError, Result};
 use serde::Deserialize;
 use std::collections::HashMap;
@@ -162,7 +162,11 @@ impl KrakenClient {
             orderbook.spread()
         );
 
-        orderbook.timestamp = DateTime::<Utc>::from_timestamp(ob_ts as i64, 0).unwrap();
+        // exchange_ts
+        // orderbook.timestamp = DateTime::<Utc>::from_timestamp(ob_ts as i64, 3).unwrap();
+    
+        // response_ts
+        orderbook.timestamp = Utc::now();
 
         Ok(orderbook)
     }

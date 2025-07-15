@@ -250,8 +250,8 @@ impl TradingPair {
             (TradingPair::SolUsdc, "binance") => "SOLUSDC".to_string(),
             (TradingPair::BtcUsdc, "coinbase") => "BTC-USDC".to_string(),
             (TradingPair::SolUsdc, "coinbase") => "SOL-USDC".to_string(),
-            (TradingPair::BtcUsdc, "kraken") => "BTC/USDC".to_string(),
-            (TradingPair::SolUsdc, "kraken") => "SOL/USDC".to_string(),
+            (TradingPair::BtcUsdc, "kraken") => "BTCUSDC".to_string(),
+            (TradingPair::SolUsdc, "kraken") => "SOLUSDC".to_string(),
             _ => format!("{self:?}"), // Fallback
         }
     }

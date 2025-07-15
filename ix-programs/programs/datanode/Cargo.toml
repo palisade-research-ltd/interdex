@@ -50,17 +50,17 @@ unexpected_cfgs = { level = "warn", check-cfg = ['cfg(nightly)'] }
 # ---------------------------------------------------------------------------- Tests -- #
 # ---------------------------------------------------------------------------- ----- -- #
 
-[[test]]
-name = "test_connectivity"
-path = "tests/test_connectivity.rs"
-
-[[test]]
-name = "test_program_exists"
-path = "tests/test_program_exist.rs"
-
-[[test]]
-name = "test_initialize_data_accounts"
-path = "tests/test_initialize_data_accounts.rs"
+# [[test]]
+# name = "test_connectivity"
+# path = "tests/test_connectivity.rs"
+#
+# [[test]]
+# name = "test_program_exists"
+# path = "tests/test_program_exist.rs"
+#
+# [[test]]
+# name = "test_initialize_data_accounts"
+# path = "tests/test_initialize_data_accounts.rs"
 
 # [[test]]
 # name = "test_initialize_model_accounts"

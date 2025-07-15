@@ -91,7 +91,7 @@ mod tests {
                         authority: payer_pubkey,
                         system_program: system_program::ID,
                     })
-                    .args(datanode::InitializePFBuffer {})
+                    .args(datanode::instruction::InitializePFBuffer {})
                     .signer(&payer)
                     .send()
                 },
@@ -105,7 +105,7 @@ mod tests {
                         authority: payer_pubkey,
                         system_program: system_program::ID,
                     })
-                    .args(datanode::InitializePFStats {})
+                    .args(datanode::instruction::InitializePFStats {})
                     .signer(&payer)
                     .send()
                 },
