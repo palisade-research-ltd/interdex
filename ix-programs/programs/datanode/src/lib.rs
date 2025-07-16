@@ -10,7 +10,7 @@ use crate::state::{
 };
 
 // Program ID
-declare_id!("AHpDZgjEwGmcmRBqbMtW6KsXvBAtxAQeRjj8fd5NQNMc");
+declare_id!("9vJCe7oy2gn4gAnS1SH6CKrHFcdABYZGUfcdHUwxwkzW");
 
 /// To execute instructions
 pub use instructions::initialize;

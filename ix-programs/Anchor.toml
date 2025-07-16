@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-vaulted = "ACgeeZmREHqAXoSgvCjot191Y4Vbpzuguw1pHgVeDzDv"
+datanode = ""
 
 [registry]
 url = "https://api.apr.dev"
@@ -15,5 +15,3 @@ url = "https://api.apr.dev"
 cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
-[scripts]
-init = "cargo run --bin init"
