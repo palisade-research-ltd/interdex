@@ -6,9 +6,7 @@ pub use binance::binance_client::BinanceClient;
 pub use coinbase::coinbase_client::CoinbaseClient;
 pub use kraken::kraken_client::KrakenClient;
 
-use crate::models::{
-    orderbook::{Orderbook, TradingPair}
-};
+use crate::models::orderbook::{Orderbook, TradingPair};
 use ix_results::errors::Result;
 
 /// Trait for exchange clients

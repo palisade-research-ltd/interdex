@@ -3,8 +3,8 @@ use crate::models::orderbook::{Orderbook, PriceLevel, TradingPair};
 use chrono::Utc;
 use ix_results::errors::{ExchangeError, Result};
 use serde::Deserialize;
-use tracing::{debug, info, warn};
 use std::str::FromStr;
+use tracing::{debug, info, warn};
 
 /// Binance REST API client
 #[derive(Clone)]
@@ -78,19 +78,17 @@ impl BinanceClient {
                 continue;
             }
 
-            let price = f64::from_str(&bid_array[0]).map_err(|e| {
-                ExchangeError::ApiError {
+            let price =
+                f64::from_str(&bid_array[0]).map_err(|e| ExchangeError::ApiError {
                     exchange: "Binance".to_string(),
                     message: format!("Invalid bid price '{}': {}", bid_array[0], e),
-                }
-            })?;
+                })?;
 
-            let quantity = f64::from_str(&bid_array[1]).map_err(|e| {
-                ExchangeError::ApiError {
+            let quantity =
+                f64::from_str(&bid_array[1]).map_err(|e| ExchangeError::ApiError {
                     exchange: "Binance".to_string(),
                     message: format!("Invalid bid quantity '{}': {}", bid_array[1], e),
-                }
-            })?;
+                })?;
 
             v_bids.push(PriceLevel { price, quantity });
         }
@@ -105,19 +103,17 @@ impl BinanceClient {
                 continue;
             }
 
-            let price = f64::from_str(&ask_array[0]).map_err(|e| {
-                ExchangeError::ApiError {
+            let price =
+                f64::from_str(&ask_array[0]).map_err(|e| ExchangeError::ApiError {
                     exchange: "Binance".to_string(),
                     message: format!("Invalid ask price '{}': {}", ask_array[0], e),
-                }
-            })?;
+                })?;
 
-            let quantity = f64::from_str(&ask_array[1]).map_err(|e| {
-                ExchangeError::ApiError {
+            let quantity =
+                f64::from_str(&ask_array[1]).map_err(|e| ExchangeError::ApiError {
                     exchange: "Binance".to_string(),
                     message: format!("Invalid ask quantity '{}': {}", ask_array[1], e),
-                }
-            })?;
+                })?;
 
             v_asks.push(PriceLevel { price, quantity });
         }
