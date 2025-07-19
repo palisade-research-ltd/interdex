@@ -4,10 +4,10 @@ Off-Chain data pipeline for composable trading indicators, on-chain Solana progr
 
 `interdex` is a Rust mono-repo that already contains two key crates you can wire together today:
 
-| Crate            | Purpose                                                         | Status |
-|------------------|-----------------------------------------------------------------|--------|
-| **ix-cex**       | Async client + CLI to use REST endpoints to get Order books from **Binance**, **Coinbase**, and, **Kraken** | ✅  Working |
-| **ix-database**  | Wrapper around **ClickHouse** and Docker assets (server, collector) | ✅  Working |
+|  Crate             |  Purpose                                                         |  Status  |
+|--------------------|------------------------------------------------------------------|----------|
+|  **ix-cex**        | Async client + CLI to use REST endpoints to get Order books from **Binance**, **Coinbase**, and, **Kraken** | ✅  Working |
+|  **ix-database**   | Wrapper around **ClickHouse** and Docker assets (server, collector) | ✅  Working |
 
 Below you will find quick-start instructions, an architectural overview, and a step-by-step guide to run everything in one Docker Compose stack so that each new order-book snapshot is persisted to ClickHouse.
 
