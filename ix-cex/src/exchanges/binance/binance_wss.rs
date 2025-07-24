@@ -12,7 +12,6 @@ pub async fn run_websocket_client(
     tx: mpsc::Sender<DepthOrDiff>,
     streams: Vec<String>,
 ) -> Result<(), ExchangeError> {
-
     const BINANCE_WS_URL: &str = "wss://stream.binance.com:9443/stream";
 
     // let streams = [
