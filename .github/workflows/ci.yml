@@ -21,7 +21,7 @@ jobs:
       # 2 . Pin exact tool-chain + rustfmt & clippy
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:                                          # [7]
-          toolchain: "1.78.0"            # <- lock MSRV / bump intentionally
+          toolchain: "stable"            # <- lock MSRV / bump intentionally
           components: "rustfmt, clippy"
 
       # 3 . Smart dependency cache (Cargo registry + target/)
