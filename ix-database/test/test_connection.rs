@@ -1,11 +1,9 @@
-#[cfg(test)]
+#![cfg(test)]
 
 mod tests {
 
     use ix_database::queries::orderbooks::create_tables::create_orderbooks_table_ddl;
     use ix_database::ClickHouseClient;
-
-    println!("\n---- Clickhouse Server should be running ! ---- \n");
 
     #[tokio::test]
     async fn test_connection_lifecycle() {

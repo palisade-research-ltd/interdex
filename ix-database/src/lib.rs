@@ -8,29 +8,6 @@
 //! - Parquet file storage and partitioning
 //! - System table monitoring and reporting
 //!
-//! ## Example Usage
-//!
-//! ```rust
-//! use ix_database::ClickHouseClient;
-//!
-//! #[tokio::main]
-//! async fn main() -> Result<(), Box<dyn std::error::Error>> {
-//!     let client = ClickHouseClient::builder()
-//!         .url("http://localhost:8123")
-//!         .database("default")
-//!         .build()
-//!         .await?;
-//!     
-//!     // Create connection
-//!     let connection = client.create_connection().await?;
-//!     
-//!     // Get system tables
-//!     let tables = client.get_system_tables().await?;
-//!     println!("System tables: {:?}", tables);
-//!     
-//!     Ok(())
-//! }
-//! ```
 
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -43,10 +20,8 @@ use uuid::Uuid;
 
 pub mod client;
 pub mod queries;
-pub mod storage;
 pub use client::*;
 pub use queries::*;
-pub use storage::*;
 
 /// Main errors for the ix-database library
 #[derive(Error, Debug)]

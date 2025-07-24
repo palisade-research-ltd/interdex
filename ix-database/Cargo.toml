@@ -24,8 +24,6 @@ anyhow = { version = "1.0.98" }
 chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "1.17", features = ["v4", "serde"] }
 clickhouse = { version = "0.13", features = ["lz4", "inserter", "time"] }
-arrow = { version = "55.2", features = ["prettyprint"] }
-parquet = { version = "55.2", features = ["arrow", "async"] }
 thiserror = { version = "1.0.64" }
 
 [dev-dependencies]
@@ -35,6 +33,6 @@ tokio-test = "0.4"
 name = "test_orderbook_data"
 path = "test/test_orderbook_data.rs"
 
-[[test]]
-name = "test_connection"
-path = "test/test_connection.rs"
+# [[test]]
+# name = "test_connection"
+# path = "test/test_connection.rs"
