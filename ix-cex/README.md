@@ -141,6 +141,30 @@ ix-cex/
 
 ## Usage Examples
 
+### Binary Websocket Stream Usage
+
+```bash
+cargo run --bin cli_wss
+```
+
+Should produce this result
+
+```bash
+2025-07-19T06:36:10.937116Z  INFO process_orderbook_update: cli_wss: 
+
+| Update Type: Snapshot 
+| Timestamp: 2025-07-19T06:36:10.937+00:00 
+| Bid: Price: 118157.94000000 Amount: 6.72182000   
+| Ask: Price: 118157.95000000 Amount: 3.70383000  
+
+2025-07-19T06:36:10.937159Z  INFO process_orderbook_update: cli_wss: 
+
+| Update Type: Diff 
+| Timestamp: 2025-07-19T06:36:23.614+00:00 
+| Bid: Price: 118145.45000000 Amount: 0.00481000   
+| Ask: Price: 118157.95000000 Amount: 3.70383000  
+```
+
 ### CLI Usage
 
 ```bash

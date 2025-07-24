@@ -15,6 +15,7 @@
 pub mod client;
 pub mod exchanges;
 pub mod models;
+pub mod results;
 
 // Re-export commonly used types
 pub use exchanges::{BinanceClient, CoinbaseClient, ExchangeClient, KrakenClient};

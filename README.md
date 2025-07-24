@@ -165,8 +165,3 @@ You should see non-zero row counts.
 
 Apache 2.0
 
-### References
-
-* Docker + ClickHouse best practices   
-* Real-time ClickPipes ingestion patterns   
-* Order-book recorder examples storing to ClickHouse

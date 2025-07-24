@@ -3,8 +3,8 @@
 use ix_results::errors::FileError;
 use serde_json::Value;
 use std::fs::File;
-// use std::io::Read;
-// use thiserror::Error;
+use std::{error::Error, fs};
+use toml;
 
 // ----------------------------------------------------------------------------------- //
 // ----------------------------------------------------------------------------------- //
@@ -67,3 +67,10 @@ pub fn read_json(
         }
     }
 }
+
+pub fn load_from_toml(file_route: &str) -> Result<(), Box<dyn Error>> {
+    let contents = fs::read_to_string(file_route)?;
+    let config = toml::from_str(&contents)?;
+    Ok(config)
+}
+

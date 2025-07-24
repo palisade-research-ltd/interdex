@@ -16,4 +16,5 @@ serde_json = { workspace = true }
 borsh = { workspace = true }
 borsh-derive = { workspace = true }
 bs58 = { workspace = true }
+toml = { workspace = true }
 

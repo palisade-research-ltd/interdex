@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug)]
 pub enum Exchange {
@@ -47,4 +47,3 @@ impl std::fmt::Display for TradingPair {
         write!(f, "{s}")
     }
 }
-

@@ -1,0 +1,33 @@
+[exchange]
+name = "binance"
+base_url = "https://api.binance.com"
+api_version = "v3"
+wss_url = "wss:://stream.binance.com:9443/stream"
+
+# [api]
+# api_key = "none"
+# api_secret = "none"
+
+[pairs]
+symbols = ["BTCUSDC", "ETHUSDC", "SOLUSDC"]
+
+[streams]
+orderbooks = ["btcusdc@depth25@100ms",
+              "solusdc@depth25@100ms"]
+
+publictrades = ["btcusdc@trade@100ms",
+                "solusdc@trade@100ms"]
+
+[collection]
+interval_seconds = 1
+retry_attempts = 3
+timeout_seconds = 10
+
+[database]
+hosts = ["localhost:8123"]
+database = "cex"
+table = "binance_orderbooks"
+
+[logging]
+level = "info"
+file = "/var/log/binance_client.log"

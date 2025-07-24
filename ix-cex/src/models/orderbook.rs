@@ -1,6 +1,6 @@
 use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
 use clickhouse::Row;
+use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
 /// Represents a single price level in the order book
@@ -47,30 +47,32 @@ pub struct Orderbook {
 }
 
 impl TryFrom<OrderbookInput> for Orderbook {
-
     type Error = chrono::ParseError;
 
     fn try_from(input: OrderbookInput) -> Result<Self, Self::Error> {
-
-        let timestamp = DateTime::parse_from_rfc3339(&input.timestamp)?
-            .with_timezone(&Utc);
+        let timestamp =
+            DateTime::parse_from_rfc3339(&input.timestamp)?.with_timezone(&Utc);
 
         let bids = input
             .bids
             .into_iter()
-            .map(|level| PriceLevel::new(
-                f64::from_str(&level.price).unwrap(),
-                f64::from_str(&level.quantity).unwrap(),
-            ))
+            .map(|level| {
+                PriceLevel::new(
+                    f64::from_str(&level.price).unwrap(),
+                    f64::from_str(&level.quantity).unwrap(),
+                )
+            })
             .collect();
 
         let asks = input
             .asks
             .into_iter()
-            .map(|level| PriceLevel::new(
-                f64::from_str(&level.price).unwrap(),
-                f64::from_str(&level.quantity).unwrap(),
-            ))
+            .map(|level| {
+                PriceLevel::new(
+                    f64::from_str(&level.price).unwrap(),
+                    f64::from_str(&level.quantity).unwrap(),
+                )
+            })
             .collect();
 
         Ok(Orderbook::new(
@@ -119,12 +121,10 @@ impl Orderbook {
 
     /// Calculate the bid-ask spread
     pub fn spread(&self) -> Option<f64> {
-
         match (self.best_bid(), self.best_ask()) {
             (Some(bid), Some(ask)) => Some(ask.price - bid.price),
             _ => None,
         }
-
     }
 
     /// Calculate the mid price
@@ -191,18 +191,12 @@ impl Orderbook {
 
     /// Get total volume on bid side
     pub fn bid_volume(&self) -> f64 {
-        self.bids
-            .iter()
-            .map(|level| level.quantity)
-            .sum()
+        self.bids.iter().map(|level| level.quantity).sum()
     }
 
     /// Get total volume on ask side
     pub fn ask_volume(&self) -> f64 {
-        self.asks
-            .iter()
-            .map(|level| level.quantity)
-            .sum()
+        self.asks.iter().map(|level| level.quantity).sum()
     }
 
     /// Create partitioned file path for parquet storage
@@ -293,9 +287,7 @@ pub struct OrderbookSummary {
 }
 
 impl From<&Orderbook> for OrderbookSummary {
-
     fn from(orderbook: &Orderbook) -> Self {
-
         Self {
             symbol: orderbook.symbol.clone(),
             exchange: orderbook.exchange.clone(),
@@ -309,8 +301,5 @@ impl From<&Orderbook> for OrderbookSummary {
             total_bid_volume: orderbook.bids.iter().map(|b| b.quantity).sum(),
             total_ask_volume: orderbook.asks.iter().map(|a| a.quantity).sum(),
         }
-
     }
-    
 }
-

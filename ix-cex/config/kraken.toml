@@ -1,0 +1,28 @@
+[exchange]
+name = "kraken"
+base_url = "https://api.kraken.com"
+api_version = "0"
+
+# [api]
+# api_key = "none"
+# api_secret = "none"
+
+[pairs]
+symbols = ["SOLUSDC", "BTCUSDC"]
+
+# [streams]
+# orderbooks = [""]
+
+[collection]
+interval_seconds = 1
+retry_attempts = 3
+timeout_seconds = 10
+
+[database]
+hosts = ["localhost:8123"]
+keyspace = "cex"
+table = "kraken_orderbooks"
+
+[logging]
+level = "info"
+file = "/var/log/kraken_client.log"

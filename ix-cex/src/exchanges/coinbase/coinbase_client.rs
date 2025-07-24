@@ -1,7 +1,5 @@
 use crate::client::http_client::{HttpClient, RetryConfig, RetryableHttpClient};
-use crate::models::orderbook::{
-    Orderbook, PriceLevel, TradingPair
-};
+use crate::models::orderbook::{Orderbook, PriceLevel, TradingPair};
 
 use chrono::Utc;
 use ix_results::errors::{ExchangeError, Result};
@@ -41,8 +39,7 @@ impl CoinbaseClient {
         let product_id = pair.to_exchange_symbol("coinbase");
         info!("Fetching Coinbase orderbook for {}", product_id);
 
-        let mut params: Vec<(&str, String)> = vec![
-            ("product_id", product_id.clone())];
+        let mut params: Vec<(&str, String)> = vec![("product_id", product_id.clone())];
 
         if let Some(depth) = depth {
             params.push(("limit", depth.to_string()));

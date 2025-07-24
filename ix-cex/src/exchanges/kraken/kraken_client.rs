@@ -1,7 +1,5 @@
 use crate::client::http_client::{HttpClient, RetryConfig, RetryableHttpClient};
-use crate::models::{
-    orderbook::{Orderbook, PriceLevel, TradingPair}
-};
+use crate::models::orderbook::{Orderbook, PriceLevel, TradingPair};
 
 use chrono::Utc;
 use ix_results::errors::{ExchangeError, Result};
@@ -39,7 +37,6 @@ impl KrakenClient {
         pair: TradingPair,
         count: Option<u32>,
     ) -> Result<Orderbook> {
-
         let product_id = pair.to_exchange_symbol("kraken");
         info!("Fetching Kraken orderbook for {}", product_id);
 
@@ -105,11 +102,10 @@ impl KrakenClient {
                 ob_ts += delta_ts;
             }
 
-            let price =
-                f64::from_str(&bid.0).map_err(|e| ExchangeError::ApiError {
-                    exchange: "Kraken".to_string(),
-                    message: format!("Invalid bid price '{}': {}", bid.0, e),
-                })?;
+            let price = f64::from_str(&bid.0).map_err(|e| ExchangeError::ApiError {
+                exchange: "Kraken".to_string(),
+                message: format!("Invalid bid price '{}': {}", bid.0, e),
+            })?;
             let quantity =
                 f64::from_str(&bid.1).map_err(|e| ExchangeError::ApiError {
                     exchange: "Kraken".to_string(),
@@ -124,11 +120,10 @@ impl KrakenClient {
                 ob_ts += delta_ts;
             }
 
-            let price =
-                f64::from_str(&ask.0).map_err(|e| ExchangeError::ApiError {
-                    exchange: "Kraken".to_string(),
-                    message: format!("Invalid ask price '{}': {}", ask.0, e),
-                })?;
+            let price = f64::from_str(&ask.0).map_err(|e| ExchangeError::ApiError {
+                exchange: "Kraken".to_string(),
+                message: format!("Invalid ask price '{}': {}", ask.0, e),
+            })?;
             let quantity =
                 f64::from_str(&ask.1).map_err(|e| ExchangeError::ApiError {
                     exchange: "Kraken".to_string(),
@@ -164,7 +159,7 @@ impl KrakenClient {
 
         // exchange_ts
         // orderbook.timestamp = DateTime::<Utc>::from_timestamp(ob_ts as i64, 3).unwrap();
-    
+
         // response_ts
         orderbook.timestamp = Utc::now();
 

@@ -9,15 +9,19 @@ authors = ["palisade research ltd"]
 [dependencies]
 
 ix-results = { path = "../ix-results", version = "0.0.1" }
+ix-core = { path = "../ix-core", version = "0.0.1" }
 
 anyhow = { workspace = true }
 clap = { workspace = true }
+config = "0.13"
+futures-util = "0.3"
 reqwest = { workspace = true }
 rust_decimal = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
 tokio = { workspace = true }
+tokio-tungstenite = { version = "0.21", features = ["native-tls"] }
 toml = { workspace = true }
 
 async-rate-limiter = { version = "1.0", features = ["rt-tokio"] }
