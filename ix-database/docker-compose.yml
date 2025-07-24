@@ -11,7 +11,7 @@ services:
         - ./clickhouse/config.xml:/etc/clickhouse-server/config.xml
         - ./clickhouse/users.xml:/etc/clickhouse-server/users.xml
       environment:
-        - CLICKHOUSE_DB=default
+        - CLICKHOUSE_DB=cex
         - CLICKHOUSE_USER=default
         - CLICKHOUSE_PASSWORD=
         - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1

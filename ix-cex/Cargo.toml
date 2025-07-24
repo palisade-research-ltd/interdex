@@ -9,6 +9,7 @@ authors = ["palisade research ltd"]
 [dependencies]
 
 ix-results = { path = "../ix-results", version = "0.0.1" }
+ix-core = { path = "../ix-core", version = "0.0.1" }
 
 anyhow = { workspace = true }
 clap = { workspace = true }

@@ -8,17 +8,18 @@ use tokio_tungstenite::tungstenite::protocol::Message;
 use tracing::{error, info, warn};
 use url::Url;
 
-const BINANCE_WS_URL: &str = "wss://stream.binance.com:9443/stream";
-
 pub async fn run_websocket_client(
     tx: mpsc::Sender<DepthOrDiff>,
+    streams: Vec<String>,
 ) -> Result<(), ExchangeError> {
-    // Define the streams to subscribe to.
-    // In a real application, this would come from a config file.
-    let streams = [
-        "btcusdt@depth5@100ms", // Partial book depth
-        "btcusdt@depth@100ms",  // Diff. depth stream
-    ];
+
+    const BINANCE_WS_URL: &str = "wss://stream.binance.com:9443/stream";
+
+    // let streams = [
+    //     "btcusdt@depth5@100ms", // Partial book depth
+    //     "btcusdt@depth@100ms",  // Diff. depth stream
+    // ];
+
     let stream_names = streams.join("/");
     let url_str = format!("{BINANCE_WS_URL}?streams={stream_names}");
     let url = Url::parse(&url_str)?;
