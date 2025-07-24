@@ -43,10 +43,8 @@ use uuid::Uuid;
 
 pub mod client;
 pub mod queries;
-pub mod storage;
 pub use client::*;
 pub use queries::*;
-pub use storage::*;
 
 /// Main errors for the ix-database library
 #[derive(Error, Debug)]
