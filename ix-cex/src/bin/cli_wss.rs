@@ -10,7 +10,7 @@ use chrono::{TimeZone, Utc};
 use tokio::sync::mpsc;
 use tracing::{info, instrument};
 
-fn print_trade_update(data: AggOrTrade) {
+fn _print_trade_update(data: AggOrTrade) {
     let (trade_ts, price, quantity, update_type) = match data {
         AggOrTrade::Trade(trade) => (
             trade.trade_ts,
@@ -95,9 +95,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // let binance_config = files::load_from_toml(template_file.to_str().unwrap());
     // println!("binance_config {:?}", binance_config);
 
-    let streams = vec![
-        String::from("solusdc@depth20@100ms"),
-    ];
+    let streams = vec![String::from("solusdc@depth20@100ms")];
 
     // let streams = vec![String::from("btcusdc@trade")];
 

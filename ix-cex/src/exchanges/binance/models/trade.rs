@@ -30,4 +30,3 @@ pub struct Trade {
     #[serde(rename = "M")]
     pub is_ignore: bool,
 }
-

@@ -1,7 +1,10 @@
 // src/bin/collector.rs
 
 use clap::{Arg, Command};
-use std::{thread::sleep, time::{Duration, Instant}};
+use std::{
+    thread::sleep,
+    time::{Duration, Instant},
+};
 
 use ix_cex::{
     exchanges::{BinanceClient, CoinbaseClient, ExchangeClient, KrakenClient},
@@ -43,22 +46,19 @@ async fn main() {
         .unwrap();
 
     // Create orderbooks table if it doesn't exist
-    let _ = ch_client
-        .create_table(&create_orderbooks_table_ddl())
-        .await;
+    let _ = ch_client.create_table(&create_orderbooks_table_ddl()).await;
 
     let interval = Duration::from_secs(1);
     let mut next_time = Instant::now() + interval;
 
     loop {
-
         let v_exchanges = vec![Exchange::Kraken, Exchange::Binance, Exchange::Coinbase];
         let pair = TradingPair::SolUsdc;
         let depth = 25;
 
         for i_exchange in v_exchanges {
-
-            let exchange_client: Box<dyn ExchangeClient + Send + Sync> = match i_exchange {
+            let exchange_client: Box<dyn ExchangeClient + Send + Sync> = match i_exchange
+            {
                 Exchange::Binance => Box::new(BinanceClient::new().unwrap()),
                 Exchange::Coinbase => Box::new(CoinbaseClient::new().unwrap()),
                 Exchange::Kraken => Box::new(KrakenClient::new().unwrap()),
@@ -74,10 +74,6 @@ async fn main() {
 
             sleep(next_time - Instant::now());
             next_time += interval;
-
         }
-
     }
-
 }
-
