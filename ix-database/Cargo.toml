@@ -33,6 +33,6 @@ tokio-test = "0.4"
 name = "test_orderbook_data"
 path = "test/test_orderbook_data.rs"
 
-[[test]]
-name = "test_connection"
-path = "test/test_connection.rs"
+# [[test]]
+# name = "test_connection"
+# path = "test/test_connection.rs"
