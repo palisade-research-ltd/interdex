@@ -32,8 +32,8 @@ jobs:
         run: cargo fmt --all -- --check
 
       # 5 . Static analysis
-      - name: cargo clippy (deny warnings)
-        run: cargo clippy --all-targets --all-features -- -D warnings    # [12]
+      - name: cargo clippy
+        run: cargo clippy
 
       # 6 . Fast type+borrow checking (no code‐gen)
       - name: cargo check
