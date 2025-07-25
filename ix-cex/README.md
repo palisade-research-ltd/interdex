@@ -64,8 +64,7 @@ tokio = { version = "1.0", features = ["full"] }
 ```
 
 ```rust
-use ix_cex::exchanges::{BinanceClient, ExchangeClient};
-use ix_cex::models::TradingPair;
+use ix_cex::exchanges::{BinanceClient, ExchangeClient, TradingPair};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -88,29 +87,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     
     Ok(())
 }
-```
-
-## Project Structure
-
-```
-ix-cex/
-├── src/
-│   ├── main.rs              # CLI application
-│   ├── lib.rs               # Library root
-│   ├── error.rs             # Error handling
-│   ├── models/
-│   │   ├── mod.rs
-│   │   └── orderbook.rs     # Order book data structures
-│   ├── client/
-│   │   ├── mod.rs
-│   │   └── http_client.rs   # HTTP client with rate limiting
-│   └── exchanges/
-│       ├── mod.rs
-│       ├── binance.rs       # Binance API implementation
-│       ├── coinbase.rs      # Coinbase API implementation
-│       └── kraken.rs        # Kraken API implementation
-├── Cargo.toml
-└── README.md
 ```
 
 ## API Endpoints Used
@@ -144,7 +120,7 @@ ix-cex/
 ### Binary Websocket Stream Usage
 
 ```bash
-cargo run --bin cli_wss
+cargo run --bin cli_ob_wss
 ```
 
 Should produce this result
@@ -169,19 +145,19 @@ Should produce this result
 
 ```bash
 # Basic usage
-cargo run -- --exchange binance --pair btc-usdc
+cargo run --bin cli_ob_wss -- --exchange binance --pair btc-usdc
 
 # Compare all exchanges
-cargo run -- --pair sol-usdc --all
+cargo run --bin cli_ob_wss -- --pair sol-usdc --all
 
 # Get detailed output with verbose logging
-cargo run -- --exchange kraken --pair btc-usdc --format full --verbose
+cargo run --bin cli_ob_wss -- --exchange kraken --pair btc-usdc --format full --verbose
 
 # Set custom timeout and limit
-cargo run -- --exchange coinbase --pair sol-usdc --limit 200 --timeout 60
+cargo run --bin cli_ob_wss -- --exchange coinbase --pair sol-usdc --limit 200 --timeout 60
 
 # JSON output for processing
-cargo run -- --pair btc-usdc --all --format json > orderbooks.json
+cargo run --bin cli_ob_wss -- --pair btc-usdc --all --format json > orderbooks.json
 ```
 
 ### Library Usage
@@ -323,70 +299,6 @@ The library provides comprehensive error types:
 - `ExchangeError::Authentication` - API key issues (future)
 
 All errors include context about which exchange and operation failed.
-
-## Dependencies
-
-Key dependencies used in this project:
-
-- **tokio** - Async runtime
-- **reqwest** - HTTP client
-- **serde** - Serialization/deserialization
-- **anyhow** & **thiserror** - Error handling
-- **async-rate-limiter** - API rate limiting
-- **rust_decimal** - Precise decimal arithmetic
-- **chrono** - Date/time handling
-- **clap** - CLI argument parsing
-- **tracing** - Structured logging
-
-## Testing
-
-Run the test suite:
-
-```bash
-# Run all tests
-cargo test
-
-# Run tests with output
-cargo test -- --nocapture
-
-# Run specific test
-cargo test test_binance_client_creation
-```
-
-## Development
-
-### Building
-
-```bash
-# Debug build
-cargo build
-
-# Release build
-cargo build --release
-
-# Check without building
-cargo check
-```
-
-### Linting
-
-```bash
-# Run clippy lints
-cargo clippy
-
-# Run formatter
-cargo fmt
-
-# Check formatting
-cargo fmt --check
-```
-
-### Documentation
-
-```bash
-# Generate documentation
-cargo doc --open
-```
 
 ## Future Enhancements
 

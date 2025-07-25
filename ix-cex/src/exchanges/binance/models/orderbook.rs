@@ -11,7 +11,7 @@ pub struct Level {
 
 // The outer wrapper for combined streams
 #[derive(Deserialize, Debug)]
-pub struct StreamEvent {
+pub struct OrderbookEvent {
     pub stream: String,
     pub data: DepthOrDiff,
 }

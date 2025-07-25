@@ -1,10 +1,8 @@
-// src/bin/collector.rs
-
 use clap::{Arg, Command};
 use std::{thread::sleep, time::{Duration, Instant}};
 
 use ix_cex::{
-    exchanges::{BinanceClient, CoinbaseClient, ExchangeClient, KrakenClient},
+    exchanges::{BinanceRestClient, CoinbaseRestClient, KrakenRestClient, ExchangeClient},
     models::{exchanges::Exchange, orderbook::TradingPair},
 };
 
@@ -59,9 +57,9 @@ async fn main() {
         for i_exchange in v_exchanges {
 
             let exchange_client: Box<dyn ExchangeClient + Send + Sync> = match i_exchange {
-                Exchange::Binance => Box::new(BinanceClient::new().unwrap()),
-                Exchange::Coinbase => Box::new(CoinbaseClient::new().unwrap()),
-                Exchange::Kraken => Box::new(KrakenClient::new().unwrap()),
+                Exchange::Binance => Box::new(BinanceRestClient::new().unwrap()),
+                Exchange::Coinbase => Box::new(CoinbaseRestClient::new().unwrap()),
+                Exchange::Kraken => Box::new(KrakenRestClient::new().unwrap()),
             };
 
             let r_orderbook = exchange_client

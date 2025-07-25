@@ -38,7 +38,7 @@ tokio-test = "0.4"
 
 [[bin]]
 name = "cli_client"
-path = "src/bin/cli_client.rs"
+path = "src/bin/cli_ob_rest.rs"
 
 [[test]]
 name = "test_wss_binance"

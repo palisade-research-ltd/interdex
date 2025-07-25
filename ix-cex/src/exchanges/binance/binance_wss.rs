@@ -1,4 +1,4 @@
-use crate::exchanges::binance::models::{DepthOrDiff, StreamEvent};
+use crate::exchanges::binance::models::{DepthOrDiff, OrderbookEvent};
 use crate::results::errors::ExchangeError;
 use futures_util::{SinkExt, StreamExt};
 use tokio::sync::mpsc;
@@ -29,7 +29,7 @@ pub async fn run_websocket_client(
             Some(msg) = read.next() => {
                 match msg {
                     Ok(Message::Text(text)) => {
-                        match serde_json::from_str::<StreamEvent>(&text) {
+                        match serde_json::from_str::<OrderbookEvent>(&text) {
                             Ok(event) => {
                                 if tx.send(event.data).await.is_err() {
                                     error!("Receiver dropped. Shutting down wss client.");
@@ -65,3 +65,4 @@ pub async fn run_websocket_client(
     warn!("WebSocket client loop terminated.");
     Ok(())
 }
+

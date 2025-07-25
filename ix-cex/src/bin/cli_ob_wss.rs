@@ -84,31 +84,18 @@ fn print_orderbook_update(data: DepthOrDiff) {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // TODO:
-    // --- Workspace root
-    // let manifest_dir = env!("CARGO_MANIFEST_DIR");
-    // let workspace_root = Path::new(manifest_dir)
-    //     .parent()
-    //     .expect("Failed to get workspace root");
-    // --- Configuration Template file (toml)
-    // let template_file = workspace_root
-    //     .join("ix-cex")
-    //     .join("config")
-    //     .join("binance.toml");
-    // let binance_config = files::load_from_toml(template_file.to_str().unwrap());
-    // println!("binance_config {:?}", binance_config);
 
     let ob_streams = vec![String::from("solusdc@depth20@100ms")];
-    let pt_streams = vec![String::from("solusdc@trade")];
 
     // Initialize logging so we can see the output from `info!`
     tracing_subscriber::fmt::init();
 
     // We only need one channel for one client
-    // let (tx, mut rx) = mpsc::channel::<DepthOrDiff>(10_000);
     let (tx, mut rx) = mpsc::channel::<DepthOrDiff>(10_000);
+
     // Spawn the websocket client task. It will send data into `tx`.
     let client_handle = tokio::spawn(binance_wss::run_websocket_client(tx, ob_streams));
+    
     info!("Binance WebSocket client started.");
 
     // This is the consumer task. It receives data from `rx` and prints it.
@@ -119,6 +106,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         info!("Printer task finished.");
     });
+
     info!("Order book printer started.");
 
     // Await both tasks. The program will exit if either one fails or finishes.
@@ -127,9 +115,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         printer_handle
     )?;
 
-    // The `?` on the line above handles any errors. If we get here, both tasks succeeded.
     client_res?;
-    // The line `printer_res.unwrap()` is removed. It's not needed.
-
     Ok(())
+
 }
+

@@ -4,7 +4,7 @@ use tracing::{error, warn};
 
 use ix_cex::{
     exchanges::{
-        BinanceRestClient, CoinbaseRestClient, ExchangeClient, KrakenRestClient,
+        BinanceRestClient, CoinbaseRestClient, KrakenRestClient, ExchangeClient,
     },
     models::orderbook::{Orderbook, OrderbookSummary, TradingPair},
     ExchangeError,
@@ -76,7 +76,6 @@ impl From<TradingPairArg> for TradingPair {
         }
     }
 }
-
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
