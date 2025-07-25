@@ -70,7 +70,7 @@ pub fn read_json(
 
 pub fn load_from_toml(file_route: &str) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(file_route)?;
-    let config = toml::from_str(&contents)?;
-    Ok(config)
+    let config = toml::from_str(&contents);
+    Ok(config?)
 }
 

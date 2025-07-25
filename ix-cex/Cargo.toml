@@ -41,14 +41,18 @@ name = "cli_client"
 path = "src/bin/cli_client.rs"
 
 [[test]]
+name = "test_wss_binance"
+path = "test/wss/test_wss_binance.rs"
+
+[[test]]
 name = "test_binance"
-path = "test/test_binance.rs"
+path = "test/rest/test_binance.rs"
 
 [[test]]
 name = "test_coinbase"
-path = "test/test_coinbase.rs"
+path = "test/rest/test_coinbase.rs"
 
 [[test]]
 name = "test_kraken"
-path = "test/test_kraken.rs"
+path = "test/rest/test_kraken.rs"
 

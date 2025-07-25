@@ -8,11 +8,11 @@ use tracing::{debug, info, warn};
 
 /// Binance REST API client
 #[derive(Clone)]
-pub struct BinanceClient {
+pub struct BinanceRestClient {
     client: RetryableHttpClient,
 }
 
-impl BinanceClient {
+impl BinanceRestClient {
     /// Create a new Binance client
     pub fn new() -> Result<Self> {
         let http_client = HttpClient::new(
@@ -234,7 +234,7 @@ pub struct Binance24hrTicker {
     pub count: u64,
 }
 
-impl Default for BinanceClient {
+impl Default for BinanceRestClient {
     fn default() -> Self {
         Self::new().expect("Failed to create default Binance client")
     }

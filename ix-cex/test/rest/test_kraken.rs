@@ -1,17 +1,17 @@
 #[cfg(test)]
 mod tests {
 
-    use ix_cex::KrakenClient;
+    use ix_cex::exchanges::KrakenRestClient;
 
     #[tokio::test]
     async fn test_kraken_client_creation() {
-        let client = KrakenClient::new();
+        let client = KrakenRestClient::new();
         assert!(client.is_ok());
     }
 
     #[tokio::test]
     async fn test_get_server_time() {
-        let client = KrakenClient::new().unwrap();
+        let client = KrakenRestClient::new().unwrap();
         let result = client.get_server_time().await;
 
         // This test might fail if no internet connection
@@ -31,7 +31,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_system_status() {
-        let client = KrakenClient::new().unwrap();
+        let client = KrakenRestClient::new().unwrap();
         let result = client.get_system_status().await;
 
         // This test might fail if no internet connection

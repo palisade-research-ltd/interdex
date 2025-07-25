@@ -1,17 +1,17 @@
 #[cfg(test)]
 mod tests {
 
-    use ix_cex::BinanceClient;
+    use ix_cex::exchanges::BinanceRestClient;
 
     #[tokio::test]
     async fn test_binance_client_creation() {
-        let client = BinanceClient::new();
+        let client = BinanceRestClient::new();
         assert!(client.is_ok());
     }
 
     #[tokio::test]
     async fn test_get_server_time() {
-        let client = BinanceClient::new().unwrap();
+        let client = BinanceRestClient::new().unwrap();
         let result = client.get_server_time().await;
 
         // This test might fail if no internet connection

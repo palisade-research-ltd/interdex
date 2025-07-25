@@ -1,4 +1,3 @@
-// ix-cex/src/binance_ws/client.rs
 use crate::exchanges::binance::models::{DepthOrDiff, StreamEvent};
 use crate::results::errors::ExchangeError;
 use futures_util::{SinkExt, StreamExt};
@@ -12,14 +11,7 @@ pub async fn run_websocket_client(
     tx: mpsc::Sender<DepthOrDiff>,
     streams: Vec<String>,
 ) -> Result<(), ExchangeError> {
-
     const BINANCE_WS_URL: &str = "wss://stream.binance.com:9443/stream";
-
-    // let streams = [
-    //     "btcusdt@depth5@100ms", // Partial book depth
-    //     "btcusdt@depth@100ms",  // Diff. depth stream
-    // ];
-
     let stream_names = streams.join("/");
     let url_str = format!("{BINANCE_WS_URL}?streams={stream_names}");
     let url = Url::parse(&url_str)?;
@@ -40,11 +32,12 @@ pub async fn run_websocket_client(
                         match serde_json::from_str::<StreamEvent>(&text) {
                             Ok(event) => {
                                 if tx.send(event.data).await.is_err() {
-                                    error!("Receiver dropped. Shutting down websocket client.");
+                                    error!("Receiver dropped. Shutting down wss client.");
                                     break;
                                 }
                             }
-                            Err(e) => warn!("Failed to deserialize message: {}. Text: {}", e, text),
+                            Err(e) => warn!("Failed to deserialize message: {}. \
+                                Text: {}", e, text),
                         }
                     }
                     Ok(Message::Ping(ping)) => {

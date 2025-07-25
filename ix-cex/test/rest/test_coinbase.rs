@@ -3,17 +3,17 @@ mod tests {
 
     //use super::*;
 
-    use ix_cex::CoinbaseClient;
+    use ix_cex::exchanges::CoinbaseRestClient;
 
     #[tokio::test]
     async fn test_coinbase_client_creation() {
-        let client = CoinbaseClient::new();
+        let client = CoinbaseRestClient::new();
         assert!(client.is_ok());
     }
 
     #[tokio::test]
     async fn test_get_products() {
-        let client = CoinbaseClient::new().unwrap();
+        let client = CoinbaseRestClient::new().unwrap();
         let result = client.get_products().await;
 
         // This test might fail if no internet connection

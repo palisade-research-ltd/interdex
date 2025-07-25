@@ -10,11 +10,11 @@ use tracing::{debug, info};
 
 /// Kraken REST API client
 #[derive(Clone)]
-pub struct KrakenClient {
+pub struct KrakenRestClient {
     client: RetryableHttpClient,
 }
 
-impl KrakenClient {
+impl KrakenRestClient {
     /// Create a new Kraken client
     pub fn new() -> Result<Self> {
         let http_client = HttpClient::new(
@@ -346,7 +346,7 @@ pub struct KrakenTicker {
     pub o: String,      // today's opening price
 }
 
-impl Default for KrakenClient {
+impl Default for KrakenRestClient {
     fn default() -> Self {
         Self::new().expect("Failed to create default Kraken client")
     }

@@ -18,6 +18,4 @@ pub mod models;
 pub mod results;
 
 // Re-export commonly used types
-pub use exchanges::{BinanceClient, CoinbaseClient, ExchangeClient, KrakenClient};
 pub use ix_results::errors::{ExchangeError, Result};
-//pub use models::{Orderbook, OrderbookSummary, PriceLevel};

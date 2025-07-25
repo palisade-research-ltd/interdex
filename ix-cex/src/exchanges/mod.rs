@@ -2,9 +2,9 @@ pub mod binance;
 pub mod coinbase;
 pub mod kraken;
 
-pub use binance::binance_client::BinanceClient;
-pub use coinbase::coinbase_client::CoinbaseClient;
-pub use kraken::kraken_client::KrakenClient;
+pub use binance::binance_rest::BinanceRestClient;
+pub use coinbase::coinbase_client::CoinbaseRestClient;
+pub use kraken::kraken_client::KrakenRestClient;
 
 use crate::models::orderbook::{Orderbook, TradingPair};
 use ix_results::errors::Result;
@@ -24,7 +24,7 @@ pub trait ExchangeClient {
 }
 
 #[async_trait::async_trait]
-impl ExchangeClient for BinanceClient {
+impl ExchangeClient for BinanceRestClient {
     async fn get_orderbook(
         &self,
         pair: TradingPair,
@@ -39,7 +39,7 @@ impl ExchangeClient for BinanceClient {
 }
 
 #[async_trait::async_trait]
-impl ExchangeClient for CoinbaseClient {
+impl ExchangeClient for CoinbaseRestClient {
     async fn get_orderbook(
         &self,
         pair: TradingPair,
@@ -54,7 +54,7 @@ impl ExchangeClient for CoinbaseClient {
 }
 
 #[async_trait::async_trait]
-impl ExchangeClient for KrakenClient {
+impl ExchangeClient for KrakenRestClient {
     async fn get_orderbook(
         &self,
         pair: TradingPair,

@@ -3,7 +3,9 @@ use tokio::time::{sleep, timeout, Duration};
 use tracing::{error, warn};
 
 use ix_cex::{
-    exchanges::{BinanceClient, CoinbaseClient, ExchangeClient, KrakenClient},
+    exchanges::{
+        BinanceRestClient, CoinbaseRestClient, ExchangeClient, KrakenRestClient,
+    },
     models::orderbook::{Orderbook, OrderbookSummary, TradingPair},
     ExchangeError,
 };
@@ -122,9 +124,9 @@ async fn query_exchange(
     // println!("Querying {:?} for {} with depth {}", exchange, pair, depth);
 
     let client: Box<dyn ExchangeClient + Send + Sync> = match exchange {
-        Exchange::Binance => Box::new(BinanceClient::new()?),
-        Exchange::Coinbase => Box::new(CoinbaseClient::new()?),
-        Exchange::Kraken => Box::new(KrakenClient::new()?),
+        Exchange::Binance => Box::new(BinanceRestClient::new()?),
+        Exchange::Coinbase => Box::new(CoinbaseRestClient::new()?),
+        Exchange::Kraken => Box::new(KrakenRestClient::new()?),
     };
 
     sleep(Duration::from_millis(timewait_millis)).await;

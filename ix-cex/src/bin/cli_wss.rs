@@ -10,7 +10,10 @@ use chrono::{TimeZone, Utc};
 use tokio::sync::mpsc;
 use tracing::{info, instrument};
 
-fn print_trade_update(data: AggOrTrade) {
+/// Process Public Trade update and formats it for logging.
+///
+///
+fn _print_trade_update(data: AggOrTrade) {
     let (trade_ts, price, quantity, update_type) = match data {
         AggOrTrade::Trade(trade) => (
             trade.trade_ts,
@@ -95,11 +98,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // let binance_config = files::load_from_toml(template_file.to_str().unwrap());
     // println!("binance_config {:?}", binance_config);
 
-    let streams = vec![
-        String::from("solusdc@depth20@100ms"),
-    ];
-
-    // let streams = vec![String::from("btcusdc@trade")];
+    let ob_streams = vec![String::from("solusdc@depth20@100ms")];
+    let pt_streams = vec![String::from("solusdc@trade")];
 
     // Initialize logging so we can see the output from `info!`
     tracing_subscriber::fmt::init();
@@ -107,9 +107,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // We only need one channel for one client
     // let (tx, mut rx) = mpsc::channel::<DepthOrDiff>(10_000);
     let (tx, mut rx) = mpsc::channel::<DepthOrDiff>(10_000);
-
     // Spawn the websocket client task. It will send data into `tx`.
-    let client_handle = tokio::spawn(binance_wss::run_websocket_client(tx, streams));
+    let client_handle = tokio::spawn(binance_wss::run_websocket_client(tx, ob_streams));
     info!("Binance WebSocket client started.");
 
     // This is the consumer task. It receives data from `rx` and prints it.
@@ -123,7 +122,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     info!("Order book printer started.");
 
     // Await both tasks. The program will exit if either one fails or finishes.
-    let (client_res, _printer_res) = tokio::try_join!(client_handle, printer_handle)?;
+    let (client_res, _printer_res) = tokio::try_join!(
+        client_handle,
+        printer_handle
+    )?;
 
     // The `?` on the line above handles any errors. If we get here, both tasks succeeded.
     client_res?;

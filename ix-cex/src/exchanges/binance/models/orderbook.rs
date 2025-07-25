@@ -79,4 +79,3 @@ mod price_level_format {
     }
 }
 
-

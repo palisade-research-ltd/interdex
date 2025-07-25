@@ -9,11 +9,11 @@ use tracing::{debug, info};
 
 /// Coinbase Advanced Trade API client
 #[derive(Clone)]
-pub struct CoinbaseClient {
+pub struct CoinbaseRestClient {
     client: RetryableHttpClient,
 }
 
-impl CoinbaseClient {
+impl CoinbaseRestClient {
     /// Create a new Coinbase client
     pub fn new() -> Result<Self> {
         let http_client = HttpClient::new(
@@ -293,7 +293,7 @@ pub struct CoinbaseTrade {
     pub ask: String,
 }
 
-impl Default for CoinbaseClient {
+impl Default for CoinbaseRestClient {
     fn default() -> Self {
         Self::new().expect("Failed to create default Coinbase client")
     }
