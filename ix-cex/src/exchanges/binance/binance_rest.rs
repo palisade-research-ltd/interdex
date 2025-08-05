@@ -60,7 +60,7 @@ impl BinanceRestClient {
     }
 
     /// Convert Binance response to our OrderBook format
-    fn convert_to_orderbook(
+    pub fn convert_to_orderbook(
         &self,
         response: BinanceDepthResponse,
         symbol: String,
@@ -173,10 +173,10 @@ impl BinanceRestClient {
 /// Binance depth/orderbook response format
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-struct BinanceDepthResponse {
-    last_update_id: u64,
-    bids: Vec<Vec<String>>, // [price, quantity] pairs
-    asks: Vec<Vec<String>>, // [price, quantity] pairs
+pub struct BinanceDepthResponse {
+    pub last_update_id: u64,
+    pub bids: Vec<Vec<String>>, // [price, quantity] pairs
+    pub asks: Vec<Vec<String>>, // [price, quantity] pairs
 }
 
 /// Binance exchange info response

@@ -36,17 +36,13 @@ clickhouse = { version = "0.13", features = ["lz4", "inserter", "time"] }
 [dev-dependencies]
 tokio-test = "0.4"
 
-[[bin]]
-name = "cli_client"
-path = "src/bin/cli_ob_rest.rs"
-
 [[test]]
 name = "test_wss_binance"
 path = "test/wss/test_wss_binance.rs"
 
 [[test]]
-name = "test_binance"
-path = "test/rest/test_binance.rs"
+name = "test_rest_binance"
+path = "test/rest/test_rest_binance.rs"
 
 [[test]]
 name = "test_coinbase"
