@@ -17,6 +17,7 @@ pub struct HttpClient {
 }
 
 impl HttpClient {
+
     /// Create a new HTTP client for an exchange
     pub fn new(
         exchange_name: String,
@@ -24,6 +25,7 @@ impl HttpClient {
         requests_per_second: u32,
         timeout_seconds: u64,
     ) -> Result<Self> {
+
         let client = Client::builder()
             .timeout(Duration::from_secs(timeout_seconds))
             .user_agent("ix_cex/0.0.1")

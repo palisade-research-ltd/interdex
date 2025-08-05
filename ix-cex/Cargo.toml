@@ -52,3 +52,7 @@ path = "test/test_coinbase.rs"
 name = "test_kraken"
 path = "test/test_kraken.rs"
 
+[[test]]
+name = "test_bybit"
+path = "test/test_bybit.rs"
+

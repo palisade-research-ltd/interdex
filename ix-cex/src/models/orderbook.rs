@@ -16,6 +16,15 @@ impl PriceLevel {
     }
 }
 
+impl Default for PriceLevel {
+    fn default() -> Self {
+        Self { 
+            price: 0.0,
+            quantity: 0.01,
+        }
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PriceLevelInput {
     pub price: String,
@@ -84,6 +93,20 @@ impl TryFrom<OrderbookInput> for Orderbook {
             Some(input.last_update_id),
             input.sequence,
         ))
+    }
+}
+
+impl Default for Orderbook {
+    fn default() -> Self {
+        Self {
+            symbol: "default_symbol".to_string(),
+            exchange: "default_exchange".to_string(),
+            timestamp: DateTime::default(),
+            bids: vec![PriceLevel::default()],
+            asks: vec![PriceLevel::default()],
+            last_update_id: Some(1234),
+            sequence: Some(4321),
+        }
     }
 }
 
