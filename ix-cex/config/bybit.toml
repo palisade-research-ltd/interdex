@@ -1,0 +1,37 @@
+[exchange]
+name = "bybit"
+base_url = "https://api.bybit.com"
+api_version = "v5"
+wss_public_url = "wss://stream.bybit.com/v5/public"
+wss_private_url = "wss://stream.bybit.com/v5/private"
+testnet_url = "testnet"
+
+[api]
+api_key = ""
+api_secret = ""
+recv_window = 5000
+testnet = false
+
+[pairs]
+symbols = ["SOLUSDC"]
+
+[streams]
+orderbooks = ["orderbook.25.SOLUSDC_SOL/USDC",
+              "orderbook.25.BTCUSDC_BTC/USDC"]
+
+publictrades = ["publicTrade.SOLUSDC_SOL/USDC",
+                "publicTrade.BTCUSDC_BTC/USDC"]
+
+[collection]
+interval_seconds = 1
+retry_attempts = 3
+timeout_seconds = 10
+
+[database]
+hosts = ["localhost:8123"]
+database = "cex"
+table = "bybit_orderbooks"
+
+[logging]
+level = "info"
+file = "/var/log/bybit_client.log"

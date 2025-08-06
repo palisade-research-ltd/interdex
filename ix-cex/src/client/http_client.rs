@@ -1,8 +1,11 @@
 use async_rate_limiter::RateLimiter;
 use ix_results::errors::{ExchangeError, Result};
-use reqwest::{Client, Response};
+use reqwest::{
+    header::{HeaderMap, HeaderName, HeaderValue},
+    Client, Response,
+};
 use serde::de::DeserializeOwned;
-use std::time::Duration;
+use std::{collections::HashMap, str::FromStr, time::Duration};
 use tracing::{debug, error, info, warn};
 use url::Url;
 
@@ -17,7 +20,6 @@ pub struct HttpClient {
 }
 
 impl HttpClient {
-
     /// Create a new HTTP client for an exchange
     pub fn new(
         exchange_name: String,
@@ -25,7 +27,6 @@ impl HttpClient {
         requests_per_second: u32,
         timeout_seconds: u64,
     ) -> Result<Self> {
-
         let client = Client::builder()
             .timeout(Duration::from_secs(timeout_seconds))
             .user_agent("ix_cex/0.0.1")
@@ -53,6 +54,49 @@ impl HttpClient {
         T: DeserializeOwned,
     {
         self.get_with_params(endpoint, &[]).await
+    }
+
+    /// Make a GET request with custom headers
+    pub async fn get_with_headers<T>(
+        &self,
+        endpoint: &str,
+        params: &[(&str, &str)],
+        headers: HashMap<&str, &str>,
+    ) -> Result<T>
+    where
+        T: DeserializeOwned,
+    {
+        // Wait for rate limiter
+        self.rate_limiter.acquire().await;
+
+        let url = self.build_url(endpoint, params)?;
+
+        // Build the header map for reqwest
+        let mut header_map = HeaderMap::new();
+        for (key, value) in headers {
+            let header_name =
+                HeaderName::from_str(key).map_err(|_| ExchangeError::Configuration {
+                    message: format!("Invalid header name: {}", key),
+                })?;
+            let header_value = HeaderValue::from_str(value).map_err(|_| {
+                ExchangeError::Configuration {
+                    message: "Invalid header value".to_string(),
+                }
+            })?;
+            header_map.insert(header_name, header_value);
+        }
+
+        debug!("Making GET request to: {} with custom headers", url);
+
+        let response = self
+            .client
+            .get(&url)
+            .headers(header_map) // Attach the headers here
+            .send()
+            .await
+            .map_err(ExchangeError::Network)?;
+
+        self.handle_response(response).await
     }
 
     /// Make a GET request with query parameters
@@ -216,6 +260,56 @@ impl RetryableHttpClient {
             client,
             retry_config,
         }
+    }
+
+    pub async fn get_with_headers_retry<T>(
+        &self,
+        endpoint: &str,
+        params: &[(&str, &str)],
+        headers: HashMap<&str, &str>,
+    ) -> Result<T>
+    where
+        T: DeserializeOwned,
+    {
+        // (This retry logic is copied from get_with_params_retry)
+        let mut last_error = None;
+        let mut delay = self.retry_config.initial_delay;
+
+        for attempt in 0..=self.retry_config.max_retries {
+            // Call the new header-aware function
+            match self
+                .client
+                .get_with_headers(endpoint, params, headers.clone())
+                .await
+            {
+                Ok(result) => return Ok(result),
+                Err(error) => {
+                    last_error = Some(error);
+
+                    if attempt < self.retry_config.max_retries {
+                        info!(
+                            "Request failed (attempt {}/{}), retrying in {:?}",
+                            attempt + 1,
+                            self.retry_config.max_retries + 1,
+                            delay,
+                        );
+                        tokio::time::sleep(delay).await;
+                        delay = std::cmp::min(
+                            Duration::from_millis(
+                                (delay.as_millis() as f64
+                                    * self.retry_config.backoff_factor)
+                                    as u64,
+                            ),
+                            self.retry_config.max_delay,
+                        );
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        Err(last_error
+            .unwrap_or_else(|| ExchangeError::Unknown("No attempts made".to_string())))
     }
 
     /// Make a GET request with automatic retries

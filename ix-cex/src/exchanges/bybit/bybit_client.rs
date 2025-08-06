@@ -1,8 +1,8 @@
 use crate::client::http_client::{HttpClient, RetryConfig, RetryableHttpClient};
-use serde::Deserialize;
-use tracing::debug;
 use ix_results::errors::{ExchangeError, Result};
+use serde::Deserialize;
 use std::collections::HashMap;
+use tracing::debug;
 
 /// Bybit API Client
 #[derive(Clone)]
@@ -11,15 +11,17 @@ pub struct BybitClient {
 }
 
 impl BybitClient {
-
     /// Create a new Bybit client
     pub fn new() -> Result<Self> {
-        let http_client = HttpClient::new(
-            "Bybit".to_string(),
-            "https://api.bybit.com".to_string(),
-            10,
-            30,
-        )?;
+        debug!("Fetching Bybit Get New Client");
+
+        let exchange_name = "Bybit".to_string();
+        let base_url = "https://api.bybit.com".to_string();
+        let timeout_secs = 30;
+        let req_per_sec = 10;
+
+        let http_client =
+            HttpClient::new(exchange_name, base_url, req_per_sec, timeout_secs)?;
 
         let retry_client = RetryableHttpClient::new(http_client, RetryConfig::default());
 
@@ -56,7 +58,7 @@ impl BybitClient {
 
     /// Get Account Info
     pub async fn get_account_info(&self) -> Result<BybitAccountInfo> {
-        println!("Fetching Bybit Get Account Info");
+        debug!("Fetching Bybit Get Account Info");
 
         let response: BybitAccountInfoResponse =
             self.client.get_with_retry("/v5/account/info").await?;
@@ -68,8 +70,7 @@ impl BybitClient {
                 exchange: "Bybit".to_string(),
                 message: format!(
                     "Bybit API Error\n Code: {:?} Message: {:?}",
-                    response.ret_code,
-                    response.ret_msg,
+                    response.ret_code, response.ret_msg,
                 ),
             });
         }
@@ -78,26 +79,27 @@ impl BybitClient {
 
     /// Get Wallet Balence
     pub async fn get_wallet_balance(&self) -> Result<BybitWalletBalance> {
-    
         println!("Fetching Bybit Get Wallet Balance");
 
-        let response: BybitWalletBalanceResponse =
-            self.client.get_with_retry("/v5/account/info").await?;
+        let p_endpoint = "/v5/wallet-balance".to_string();
+        let p_params = [("accountType", "UNIFIED")];
+
+        let response: BybitWalletBalanceResponse = self
+            .client
+            .get_with_params_retry(&p_endpoint, &p_params)
+            .await?;
 
         if response.ret_code != 0 {
             return Err(ExchangeError::ApiError {
                 exchange: "Bybit".to_string(),
                 message: format!(
                     "Bybit API Error\n Code: {:?} Message: {:?}",
-                    response.ret_code,
-                    response.ret_msg,
+                    response.ret_code, response.ret_msg,
                 ),
             });
         }
         Ok(response.result)
-
     }
-
 }
 
 /// Bybit server time
@@ -146,20 +148,20 @@ struct BybitAccountInfoResponse {
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct BybitWalletBalance {
-    pub total_equity: String, // "3.31216591",
-    pub account_im_rate: String, // "0",
-    pub account_im_rate_bymp: String, // "0",
-    pub total_margin_balance: String, // "3.00326056",
-    pub total_initial_margin: String, // "0",
-    pub total_initial_margin_bymp: String, // "0",
-    pub account_type: String, // "UNIFIED",
-    pub total_available_balance: String, // "3.00326056",
-    pub account_mm_rate: String, // "0",
-    pub account_mm_rate_bymp: String, // "0",
-    pub total_perp_upl: String, // "0",
-    pub total_wallet_balance: String, // "3.00326056",
-    pub account_ltv: String, // "0",
-    pub total_maintenance_margin: String, // "0",
+    pub total_equity: String,                  // "3.31216591",
+    pub account_im_rate: String,               // "0",
+    pub account_im_rate_bymp: String,          // "0",
+    pub total_margin_balance: String,          // "3.00326056",
+    pub total_initial_margin: String,          // "0",
+    pub total_initial_margin_bymp: String,     // "0",
+    pub account_type: String,                  // "UNIFIED",
+    pub total_available_balance: String,       // "3.00326056",
+    pub account_mm_rate: String,               // "0",
+    pub account_mm_rate_bymp: String,          // "0",
+    pub total_perp_upl: String,                // "0",
+    pub total_wallet_balance: String,          // "3.00326056",
+    pub account_ltv: String,                   // "0",
+    pub total_maintenance_margin: String,      // "0",
     pub total_maintenance_margin_bymp: String, // "0",
     pub coin: BybitWalletBalanceCoin,
 }
@@ -168,24 +170,24 @@ pub struct BybitWalletBalance {
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct BybitWalletBalanceCoin {
-    pub available_to_borrow: String, // "3",
-    pub bonus: String, // "0",
-    pub accrued_interest: String, // "0",
+    pub available_to_borrow: String,   // "3",
+    pub bonus: String,                 // "0",
+    pub accrued_interest: String,      // "0",
     pub available_to_withdraw: String, // "0",
-    pub total_order_im: String, // "0",
-    pub equity: String, // "0",
-    pub total_position_mm: String, // "0",
-    pub usd_alue: String, // "0",
-    pub spot_hedging_qty: String, // "0.01592413",
-    pub unrealised_pnl: String, // "0",
-    pub collateral_switch: bool, // true,
-    pub borrow_amount: String, // "0.0",
-    pub total_position_im: String, // "0",
-    pub wallet_balance: String, // "0",
-    pub cum_realised_pnl: String, // "0",
-    pub locked: String, // "0",
-    pub margin_collateral: bool, // true,
-    pub coin: String, // "BTC"
+    pub total_order_im: String,        // "0",
+    pub equity: String,                // "0",
+    pub total_position_mm: String,     // "0",
+    pub usd_alue: String,              // "0",
+    pub spot_hedging_qty: String,      // "0.01592413",
+    pub unrealised_pnl: String,        // "0",
+    pub collateral_switch: bool,       // true,
+    pub borrow_amount: String,         // "0.0",
+    pub total_position_im: String,     // "0",
+    pub wallet_balance: String,        // "0",
+    pub cum_realised_pnl: String,      // "0",
+    pub locked: String,                // "0",
+    pub margin_collateral: bool,       // true,
+    pub coin: String,                  // "BTC"
 }
 
 /// Bybit wallet balance

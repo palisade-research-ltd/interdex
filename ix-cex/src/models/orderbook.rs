@@ -18,7 +18,7 @@ impl PriceLevel {
 
 impl Default for PriceLevel {
     fn default() -> Self {
-        Self { 
+        Self {
             price: 0.0,
             quantity: 0.01,
         }
