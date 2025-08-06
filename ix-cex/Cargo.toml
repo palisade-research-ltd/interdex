@@ -15,8 +15,11 @@ anyhow = { workspace = true }
 clap = { workspace = true }
 config = "0.13"
 futures-util = "0.3"
+hex = { version = "0.4" }
+hmac = { version = "0.12" }
 reqwest = { workspace = true }
 rust_decimal = { workspace = true }
+sha2 = { version = "0.10" }
 serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
@@ -53,6 +56,6 @@ name = "test_kraken"
 path = "test/test_kraken.rs"
 
 [[test]]
-name = "test_bybit"
-path = "test/test_bybit.rs"
+name = "test_bybit_private_account"
+path = "test/bybit/private/test_bybit_private_account.rs"
 

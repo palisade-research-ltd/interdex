@@ -1,0 +1,30 @@
+[exchange]
+name = "exchange"
+base_url = "https://api.exchange.com"
+api_version = "v0"
+wss_public_url = "wss://stream.exchange.com/v0/public"
+wss_private_url = "wss://stream.exchange.com/v0/private"
+
+[api]
+api_key = "EXCHANGE_KY"
+
+[pairs]
+symbols = ["BASEQUOTE"]
+
+[streams]
+orderbooks = ["orderbook.25@100ms"]
+publictrades = ["publictrades@100ms"]
+
+[collection]
+interval_seconds = 1
+retry_attempts = 3
+timeout_seconds = 10
+
+[database]
+hosts = ["localhost:8123"]
+database = "cex"
+table = "exchange_orderbooks"
+
+[logging]
+level = "info"
+file = "/var/log/exchange_client.log"

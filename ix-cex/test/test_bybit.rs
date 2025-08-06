@@ -5,15 +5,12 @@ mod tests {
 
     #[tokio::test]
     async fn test_bybit_client_creation() {
-
         let client = BybitClient::new();
         assert!(client.is_ok());
-
     }
 
     #[tokio::test]
-    async fn test_get_server_time() {
-
+    async fn test_bybit_get_server_time() {
         let client = BybitClient::new().unwrap();
         let result = client.get_server_time().await;
 
@@ -33,11 +30,10 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_get_account_info() {
-
+    async fn test_bybit_get_account_info() {
         let client = BybitClient::new().unwrap();
         let result = client.get_account_info().await;
-        
+
         println!("result: {:?}", result);
 
         match result {
@@ -46,41 +42,49 @@ mod tests {
                 assert!(account_info.updated_time != "");
                 assert!(account_info.unified_margin_status != 0);
 
-                println!("Bybit account_info.margin_mode: {}", account_info.margin_mode);
-                println!("Bybit account_info.updated_time: {}", account_info.updated_time);
-                println!("Bybit account_info.unified_margin_status: {}", account_info.unified_margin_status);
+                println!(
+                    "Bybit account_info.margin_mode: {}",
+                    account_info.margin_mode
+                );
+                println!(
+                    "Bybit account_info.updated_time: {}",
+                    account_info.updated_time
+                );
+                println!(
+                    "Bybit account_info.unified_margin_status: {}",
+                    account_info.unified_margin_status
+                );
             }
             Err(e) => {
                 println!("Expected network error in test environment: {e:?}");
             }
         }
-
     }
 
-     #[tokio::test]
-    async fn test_get_wallet_balance() {
-
-        let client = BybitClient::new().unwrap();
-        let result = client.get_wallet_balance().await;
-        
-        println!("result: {:?}", result);
-
-        match result {
-            Ok(wallet_balance) => {
-
-                assert!(wallet_balance.total_equity != "");
-                assert!(wallet_balance.total_available_balance != "");
-
-                println!("Bybit account_info.margin_mode: {}", wallet_balance.total_equity);
-                println!("Bybit account_info.updated_time: {}", wallet_balance.total_available_balance);
-
-            }
-                Err(e) => {
-
-                    println!("Expected network error in test environment: {e:?}");
-
-                }
-            }
-    }
-
+    // #[tokio::test]
+    // async fn test_bybit_get_wallet_balance() {
+    //     let client = BybitClient::new().unwrap();
+    //     let result = client.get_wallet_balance().await;
+    //
+    //     println!("result: {:?}", result);
+    //
+    //     match result {
+    //         Ok(wallet_balance) => {
+    //             assert!(wallet_balance.total_equity != "");
+    //             assert!(wallet_balance.total_available_balance != "");
+    //
+    //             println!(
+    //                 "Bybit wallet_balance.total_equity: {}",
+    //                 wallet_balance.total_equity
+    //             );
+    //             println!(
+    //                 "Bybit wallet_balance.total_available_balance: {}",
+    //                 wallet_balance.total_available_balance
+    //             );
+    //         }
+    //         Err(e) => {
+    //             println!("Expected network error in test environment: {e:?}");
+    //         }
+    //     }
+    // }
 }
