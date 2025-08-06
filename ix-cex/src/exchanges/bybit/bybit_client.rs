@@ -1,0 +1,198 @@
+use crate::client::http_client::{HttpClient, RetryConfig, RetryableHttpClient};
+use serde::Deserialize;
+use tracing::debug;
+use ix_results::errors::{ExchangeError, Result};
+use std::collections::HashMap;
+
+/// Bybit API Client
+#[derive(Clone)]
+pub struct BybitClient {
+    pub client: RetryableHttpClient,
+}
+
+impl BybitClient {
+
+    /// Create a new Bybit client
+    pub fn new() -> Result<Self> {
+        let http_client = HttpClient::new(
+            "Bybit".to_string(),
+            "https://api.bybit.com".to_string(),
+            10,
+            30,
+        )?;
+
+        let retry_client = RetryableHttpClient::new(http_client, RetryConfig::default());
+
+        Ok(Self {
+            client: retry_client,
+        })
+    }
+
+    /// Get Bybit server time
+    pub async fn get_server_time(&self) -> Result<BybitServerTime> {
+        debug!("Fetching Bybit Server Time");
+
+        let response: BybitServerTimeResponse =
+            self.client.get_with_retry("/v5/market/time").await?;
+
+        println!("get_server_time.response: {:?}", response);
+
+        if response.ret_code != 0 {
+            return Err(ExchangeError::ApiError {
+                exchange: "Bybit".to_string(),
+                message: format!(
+                    "Bybit API Error\n Code: {:?} Message: {:?} \n
+                        Time {:?} ExtInof {:?}",
+                    response.ret_code,
+                    response.ret_msg,
+                    response.ret_ext_info,
+                    response.time,
+                ),
+            });
+        }
+
+        Ok(response.result)
+    }
+
+    /// Get Account Info
+    pub async fn get_account_info(&self) -> Result<BybitAccountInfo> {
+        println!("Fetching Bybit Get Account Info");
+
+        let response: BybitAccountInfoResponse =
+            self.client.get_with_retry("/v5/account/info").await?;
+
+        println!("get_account_info.response: {:?}", response);
+
+        if response.ret_code != 0 {
+            return Err(ExchangeError::ApiError {
+                exchange: "Bybit".to_string(),
+                message: format!(
+                    "Bybit API Error\n Code: {:?} Message: {:?}",
+                    response.ret_code,
+                    response.ret_msg,
+                ),
+            });
+        }
+        Ok(response.result)
+    }
+
+    /// Get Wallet Balence
+    pub async fn get_wallet_balance(&self) -> Result<BybitWalletBalance> {
+    
+        println!("Fetching Bybit Get Wallet Balance");
+
+        let response: BybitWalletBalanceResponse =
+            self.client.get_with_retry("/v5/account/info").await?;
+
+        if response.ret_code != 0 {
+            return Err(ExchangeError::ApiError {
+                exchange: "Bybit".to_string(),
+                message: format!(
+                    "Bybit API Error\n Code: {:?} Message: {:?}",
+                    response.ret_code,
+                    response.ret_msg,
+                ),
+            });
+        }
+        Ok(response.result)
+
+    }
+
+}
+
+/// Bybit server time
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BybitServerTime {
+    pub time_second: String,
+    pub time_nano: String,
+}
+
+/// Bybit server time response
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct BybitServerTimeResponse {
+    ret_code: u64,
+    ret_msg: String,
+    ret_ext_info: HashMap<String, String>,
+    time: u64,
+    result: BybitServerTime,
+}
+
+/// Bybit account info
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BybitAccountInfo {
+    pub margin_mode: String,
+    pub updated_time: String,
+    pub unified_margin_status: u64,
+    pub dcp_status: String,
+    pub time_window: u64,
+    pub smp_group: u64,
+    pub is_master_trader: bool,
+    pub spot_hedging_status: String,
+}
+
+/// Bybit account info response
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct BybitAccountInfoResponse {
+    ret_code: u64,
+    ret_msg: String,
+    result: BybitAccountInfo,
+}
+
+/// Bybit wallet balance response
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BybitWalletBalance {
+    pub total_equity: String, // "3.31216591",
+    pub account_im_rate: String, // "0",
+    pub account_im_rate_bymp: String, // "0",
+    pub total_margin_balance: String, // "3.00326056",
+    pub total_initial_margin: String, // "0",
+    pub total_initial_margin_bymp: String, // "0",
+    pub account_type: String, // "UNIFIED",
+    pub total_available_balance: String, // "3.00326056",
+    pub account_mm_rate: String, // "0",
+    pub account_mm_rate_bymp: String, // "0",
+    pub total_perp_upl: String, // "0",
+    pub total_wallet_balance: String, // "3.00326056",
+    pub account_ltv: String, // "0",
+    pub total_maintenance_margin: String, // "0",
+    pub total_maintenance_margin_bymp: String, // "0",
+    pub coin: BybitWalletBalanceCoin,
+}
+
+/// Bybit wallet balance response
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BybitWalletBalanceCoin {
+    pub available_to_borrow: String, // "3",
+    pub bonus: String, // "0",
+    pub accrued_interest: String, // "0",
+    pub available_to_withdraw: String, // "0",
+    pub total_order_im: String, // "0",
+    pub equity: String, // "0",
+    pub total_position_mm: String, // "0",
+    pub usd_alue: String, // "0",
+    pub spot_hedging_qty: String, // "0.01592413",
+    pub unrealised_pnl: String, // "0",
+    pub collateral_switch: bool, // true,
+    pub borrow_amount: String, // "0.0",
+    pub total_position_im: String, // "0",
+    pub wallet_balance: String, // "0",
+    pub cum_realised_pnl: String, // "0",
+    pub locked: String, // "0",
+    pub margin_collateral: bool, // true,
+    pub coin: String, // "BTC"
+}
+
+/// Bybit wallet balance
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct BybitWalletBalanceResponse {
+    ret_code: u64,
+    ret_msg: String,
+    result: BybitWalletBalance,
+}
