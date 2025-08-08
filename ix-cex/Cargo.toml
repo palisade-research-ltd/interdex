@@ -56,6 +56,10 @@ name = "test_kraken"
 path = "test/test_kraken.rs"
 
 [[test]]
-name = "test_bybit_private_account"
-path = "test/bybit/private/test_bybit_private_account.rs"
+name = "test_bybit_account"
+path = "test/bybit/private/test_bybit_account.rs"
+
+[[test]]
+name = "test_bybit_trader"
+path = "test/bybit/private/test_bybit_trader.rs"
 
