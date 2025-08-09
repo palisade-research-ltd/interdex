@@ -3,11 +3,6 @@ mod tests {
 
     use ix_cex::BybitPrivateClient;
 
-    // TODO:
-    // #[tokio::test]
-    // async fn test_bybit_get_master_balance() {
-    // }
-
     #[tokio::test]
     async fn test_bybit_get_wallet_balance() {
         // build up call
@@ -39,19 +34,15 @@ mod tests {
                 assert!(account_info.result.margin_mode != "");
                 assert!(account_info.result.updated_time != "");
 
-                // println!(
-                //     "Bybit account_info.result: {:?}",
-                //     account_info.result
-                // );
-
-                // println!(
-                //     "Bybit account_info.result.unified_margin_status: {:?}",
-                //     account_info.result.unified_margin_status
-                // );
-                // println!(
-                //     "Bybit account_info.result.margin_mode: {:?}",
-                //     account_info.result.margin_mode
-                // );
+                println!("Bybit account_info.result: {:?}", account_info.result);
+                println!(
+                    "Bybit account_info.result.unified_margin_status: {:?}",
+                    account_info.result.unified_margin_status
+                );
+                println!(
+                    "Bybit account_info.result.margin_mode: {:?}",
+                    account_info.result.margin_mode
+                );
             }
 
             Err(e) => {
