@@ -4,6 +4,8 @@ use crate::{
     exchanges::bybit::configs::BybitConfig,
 };
 
+use std::{env, path::Path};
+
 use config::{Config, ConfigError};
 use hmac::{Hmac, Mac};
 use ix_results::errors::{ExchangeError, Result};
@@ -31,11 +33,27 @@ impl Default for BybitPrivateClient {
 }
 
 impl BybitPrivateClient {
+
     /// Create a new Bybit client with optional private credentials
     pub fn new() -> Result<Self> {
-        Self::from_config(
-            "/Users/franciscome/git/palisade/interdex/ix-cex/config/bybit.toml",
-        )
+
+        // --- Setup working directory
+        let manifest_dir = env!("CARGO_MANIFEST_DIR");
+        let workspace_root = Path::new(manifest_dir)
+            .parent()
+            .expect("Failed to get workspace root");
+
+        // --- File with Client Configuration (toml)
+        let client_file = workspace_root
+            .join("ix-cex")
+            .join("config")
+            .join("bybit.toml")
+            .to_str()
+            .unwrap()
+            .to_owned();
+
+        Self::from_config(&client_file)
+
     }
 
     /// Create Bybit client from configuration file
