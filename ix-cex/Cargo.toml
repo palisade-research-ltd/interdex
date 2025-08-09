@@ -63,3 +63,7 @@ path = "test/bybit/private/test_bybit_account.rs"
 name = "test_bybit_trader"
 path = "test/bybit/private/test_bybit_trader.rs"
 
+[[test]]
+name = "test_bybit_instrument"
+path = "test/bybit/private/test_bybit_instrument.rs"
+

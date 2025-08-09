@@ -24,6 +24,12 @@ pub struct BybitPrivateClient {
     pub testnet: bool,
 }
 
+impl Default for BybitPrivateClient {
+    fn default() -> Self {
+        Self::new().expect("Failed to create default Bybit client")
+    }
+}
+
 impl BybitPrivateClient {
     /// Create a new Bybit client with optional private credentials
     pub fn new() -> Result<Self> {
@@ -243,8 +249,3 @@ impl BybitPrivateClient {
     }
 }
 
-impl Default for BybitPrivateClient {
-    fn default() -> Self {
-        Self::new().expect("Failed to create default Bybit client")
-    }
-}

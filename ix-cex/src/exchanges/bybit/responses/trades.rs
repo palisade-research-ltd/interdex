@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 /// Bybit executed order (trade) response structure
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct TradeResponse {
     pub ret_code: i32,

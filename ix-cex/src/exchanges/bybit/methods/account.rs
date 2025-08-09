@@ -1,5 +1,5 @@
 // private
-use crate::exchanges::bybit::methods::{
+use crate::exchanges::bybit::responses::{
     AccountInfoResponse, ServerTimeResponse, WalletBalanceResponse,
 };
 use crate::{client::http_client::RequestType, BybitPrivateClient};
