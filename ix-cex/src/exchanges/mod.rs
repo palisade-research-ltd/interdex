@@ -5,7 +5,7 @@ pub mod kraken;
 
 pub use binance::binance_client::BinanceClient;
 pub use bybit::bybit_client::BybitClient;
-pub use bybit::bybit_private::BybitPrivateClient;
+pub use bybit::clients::BybitPrivateClient;
 pub use coinbase::coinbase_client::CoinbaseClient;
 pub use kraken::kraken_client::KrakenClient;
 

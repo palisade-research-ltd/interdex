@@ -1,3 +1,4 @@
+
 use async_rate_limiter::RateLimiter;
 use ix_results::errors::{ExchangeError, Result};
 use reqwest::{
@@ -5,9 +6,19 @@ use reqwest::{
     Client, Response,
 };
 use serde::de::DeserializeOwned;
-use std::{collections::HashMap, str::FromStr, time::Duration};
+use std::{
+    collections::{BTreeMap, HashMap},
+    str::FromStr,
+    time::Duration,
+};
 use tracing::{debug, error, info, warn};
 use url::Url;
+
+#[derive(Debug)]
+pub enum RequestType {
+    Get,
+    Post,
+}
 
 /// HTTP client wrapper with rate limiting and error handling
 #[derive(Clone)]
@@ -17,6 +28,196 @@ pub struct HttpClient {
     exchange_name: String,
     base_url: String,
     timeout: Duration,
+}
+
+impl RetryableHttpClient {
+    /// Make a POST request with parameters and automatic retries
+    pub async fn post_with_params_retry<T>(
+        &self,
+        endpoint: &str,
+        params: &[(&str, &str)],
+    ) -> Result<T>
+    where
+        T: DeserializeOwned,
+    {
+        let mut last_error = None;
+        let mut delay = self.retry_config.initial_delay;
+
+        for attempt in 0..=self.retry_config.max_retries {
+            match self.client.post_with_params(endpoint, params).await {
+                Ok(result) => return Ok(result),
+
+                Err(error) => {
+                    last_error = Some(error);
+
+                    if attempt < self.retry_config.max_retries {
+                        info!(
+                            "Request failed (attempt {}/{}), retrying in {:?}",
+                            attempt + 1,
+                            self.retry_config.max_retries + 1,
+                            delay,
+                        );
+
+                        tokio::time::sleep(delay).await;
+
+                        // Exponential backoff
+                        delay = std::cmp::min(
+                            Duration::from_millis(
+                                (delay.as_millis() as f64
+                                    * self.retry_config.backoff_factor)
+                                    as u64,
+                            ),
+                            self.retry_config.max_delay,
+                        );
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+
+        Err(last_error
+            .unwrap_or_else(|| ExchangeError::Unknown("No attempts made".to_string())))
+    }
+
+    /// Make a POST request with headers and retry
+    pub async fn post_with_headers_retry<T>(
+        &self,
+        endpoint: &str,
+        params: &[(&str, &str)],
+        headers: HashMap<&str, &str>,
+    ) -> Result<T>
+    where
+        T: DeserializeOwned,
+    {
+        // (This retry logic is copied from get_with_params_retry)
+        let mut last_error = None;
+        let mut delay = self.retry_config.initial_delay;
+
+        for attempt in 0..=self.retry_config.max_retries {
+            // Call the new header-aware function
+            match self
+                .client
+                .post_with_headers(endpoint, params, headers.clone())
+                .await
+            {
+                Ok(result) => return Ok(result),
+                Err(error) => {
+                    last_error = Some(error);
+
+                    if attempt < self.retry_config.max_retries {
+                        info!(
+                            "Request failed (attempt {}/{}), retrying in {:?}",
+                            attempt + 1,
+                            self.retry_config.max_retries + 1,
+                            delay,
+                        );
+                        tokio::time::sleep(delay).await;
+                        delay = std::cmp::min(
+                            Duration::from_millis(
+                                (delay.as_millis() as f64
+                                    * self.retry_config.backoff_factor)
+                                    as u64,
+                            ),
+                            self.retry_config.max_delay,
+                        );
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        Err(last_error
+            .unwrap_or_else(|| ExchangeError::Unknown("No attempts made".to_string())))
+    }
+}
+
+// --- POST --- //
+impl HttpClient {
+    /// Make a request with rate limiting
+    pub async fn post<T>(&self, endpoint: &str) -> Result<T>
+    where
+        T: DeserializeOwned,
+    {
+        self.post_with_params(endpoint, &[]).await
+    }
+
+    /// Make a POST request with query parameters
+    pub async fn post_with_params<T>(
+        &self,
+        endpoint: &str,
+        params: &[(&str, &str)],
+    ) -> Result<T>
+    where
+        T: DeserializeOwned,
+    {
+        // Wait for rate limiter
+        self.rate_limiter.acquire().await;
+
+        let url = self.build_url(endpoint, params)?;
+
+        debug!("Making POST request to: {}", url);
+
+        let response = self
+            .client
+            .post(&url)
+            .send()
+            .await
+            .map_err(ExchangeError::Network)?;
+
+        self.handle_response(response).await
+    }
+
+    /// Make a GET request with custom headers
+    pub async fn post_with_headers<T>(
+        &self,
+        endpoint: &str,
+        params: &[(&str, &str)],
+        headers: HashMap<&str, &str>,
+    ) -> Result<T>
+    where
+        T: DeserializeOwned,
+    {
+        // Wait for rate limiter
+        self.rate_limiter.acquire().await;
+
+        let url = self.build_url(endpoint, &[])?;
+
+        // Build the header map for reqwest
+        let mut header_map = HeaderMap::new();
+        for (key, value) in headers {
+            let header_name =
+                HeaderName::from_str(key).map_err(|_| ExchangeError::Configuration {
+                    message: format!("Invalid header name: {}", key),
+                })?;
+            let header_value = HeaderValue::from_str(value).map_err(|_| {
+                ExchangeError::Configuration {
+                    message: "Invalid header value".to_string(),
+                }
+            })?;
+            header_map.insert(header_name, header_value);
+        }
+
+        debug!("Making POST request to: {} with custom headers", url);
+
+        let json_body = if params.is_empty() {
+            serde_json::json!({})
+        } else {
+            let body_map: BTreeMap<_, _> = params.iter().cloned().collect();
+            serde_json::to_value(&body_map).unwrap_or_default()
+        };
+
+        let response = self
+            .client
+            .post(&url)
+            .headers(header_map) // Attach the headers here
+            .json(&json_body)
+            .send()
+            .await
+            .map_err(ExchangeError::Network)?;
+
+        self.handle_response(response).await
+    }
 }
 
 impl HttpClient {
@@ -48,7 +249,7 @@ impl HttpClient {
         self.timeout
     }
 
-    /// Make a GET request with rate limiting
+    /// Make a request with rate limiting
     pub async fn get<T>(&self, endpoint: &str) -> Result<T>
     where
         T: DeserializeOwned,
@@ -205,7 +406,9 @@ impl HttpClient {
             Err(error)
         }
     }
+}
 
+impl HttpClient {
     /// Get the exchange name
     pub fn exchange_name(&self) -> &str {
         &self.exchange_name
@@ -255,6 +458,7 @@ pub struct RetryableHttpClient {
 }
 
 impl RetryableHttpClient {
+    // New
     pub fn new(client: HttpClient, retry_config: RetryConfig) -> Self {
         Self {
             client,
