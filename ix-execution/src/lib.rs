@@ -1,4 +1,4 @@
-//! # ix-database
+//! # ix-execution
 //!
 //! A ClickHouse database client library for the interdex workspace with orderbook data handling.
 //!
@@ -23,7 +23,7 @@ pub mod queries;
 pub use client::*;
 pub use queries::*;
 
-/// Main errors for the ix-database library
+/// Main errors for the ix-execution library
 #[derive(Error, Debug)]
 pub enum DatabaseError {
     #[error("ClickHouse client error: {0}")]
@@ -59,6 +59,7 @@ pub struct ConnectionInfo {
 }
 
 /// ClickHouse client with connection management
+#[derive(Clone)]
 pub struct ClickHouseClient {
     client: Client,
     url: String,

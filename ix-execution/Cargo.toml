@@ -1,5 +1,5 @@
 [package]
-name = "ix-database"
+name = "ix-execution"
 publish = false
 readme = "README.md"
 version = "0.0.1"
@@ -26,13 +26,16 @@ uuid = { version = "1.17", features = ["v4", "serde"] }
 clickhouse = { version = "0.13", features = ["lz4", "inserter", "time"] }
 thiserror = { version = "1.0.64" }
 
+atelier_data = { version = "0.0.11" }
+
 [dev-dependencies]
 tokio-test = "0.4"
 
-[[test]]
-name = "test_orderbook_data"
-path = "test/test_orderbook_data.rs"
+[[bin]]
+name = "indicator"
+path = "src/bin/indicators.rs"
 
-# [[test]]
-# name = "test_connection"
-# path = "test/test_connection.rs"
+[[bin]]
+name = "collector"
+path = "src/bin/collector.rs"
+

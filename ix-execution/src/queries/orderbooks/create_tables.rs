@@ -2,9 +2,9 @@
 pub fn create_orderbooks_table_ddl() -> String {
     r#"
 CREATE TABLE IF NOT EXISTS orderbooks (
+    timestamp DateTime64(6, 'UTC'),
     symbol String,
     exchange String,
-    timestamp DateTime64(6, 'UTC'),
     bids Array(Tuple(String, String)),
     asks Array(Tuple(String, String)),
 ) ENGINE = MergeTree()
@@ -15,3 +15,4 @@ SETTINGS index_granularity = 8192
     .trim()
     .to_string()
 }
+

@@ -6,7 +6,7 @@ members = [
  
   "ix-cex",
   "ix-core",
-  "ix-database",
+  "ix-execution",
   "ix-dex",
   "ix-results",
 
