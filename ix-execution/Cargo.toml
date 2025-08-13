@@ -7,6 +7,18 @@ rust-version = "1.84.1"
 edition = "2021"
 authors = ["palisade research ltd"]
 
+[[bin]]
+name = "collector"
+path = "src/bin/collector.rs"
+
+[[bin]]
+name = "features"
+path = "src/bin/features.rs"
+
+[[bin]]
+name = "trader"
+path = "src/bin/trader.rs"
+
 [dependencies]
 
 ix-cex = { path = "../ix-cex", version = "0.0.1" }
@@ -31,11 +43,10 @@ atelier_data = { version = "0.0.11" }
 [dev-dependencies]
 tokio-test = "0.4"
 
-[[bin]]
-name = "indicator"
-path = "src/bin/indicators.rs"
+[[test]]
+name = "test_connection"
+path = "test/test_connection.rs"
 
-[[bin]]
-name = "collector"
-path = "src/bin/collector.rs"
-
+[[test]]
+name = "test_orderbook_data"
+path = "test/test_orderbook_data.rs"

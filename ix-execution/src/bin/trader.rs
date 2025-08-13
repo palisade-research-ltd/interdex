@@ -3,22 +3,19 @@
 use ix_cex::BybitPrivateClient;
 // use atelier_data::orderbooks::Orderbook;
 
-// -- Create client for clickhouse DB
-// -- Read Orderbooks Table
-// -- Compute Indicator
-// -- Send to Bybit's TradingView 
-
 #[tokio::main]
 async fn main() {
-    
+
     // --- Get Balance
     let client = BybitPrivateClient::new().unwrap();
     let p_account_type = "UNIFIED";
     let p_coin = Some("USD");
     let wallet_balance = client.get_wallet_balance(p_account_type, p_coin).await;
     let wb = wallet_balance.unwrap().result.list[0].total_equity.clone();
-    
-    println!("\n ---- Wallet Balance: {:?} ", wb );
+
+    println!("\n ---- Wallet Balance: {:?} ", wb);
+
+    // --- 
 
     // --- Open a trade
     let client = BybitPrivateClient::new().unwrap();
@@ -34,6 +31,5 @@ async fn main() {
 
     let ot = open_trade.unwrap();
 
-    println!("\n ---- Opened Trade: {:?} ", ot );
-
+    println!("\n ---- Opened Trade: {:?} ", ot);
 }

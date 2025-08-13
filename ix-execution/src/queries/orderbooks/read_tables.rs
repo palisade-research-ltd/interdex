@@ -1,14 +1,14 @@
-// Read from the orderbooks table DDL
+// Create the orderbooks table DDL
 pub fn read_orderbooks_table() -> String {
     r#"
-        SELECT 
-            * FROM orderbooks =
-        WHERE
-            exchange = 'binance',
-        AND
-            symbol = 'btcusdc'
-        LIMIT 10 
-    "#
+    SELECT *
+    FROM orderbooks
+    WHERE 
+        exchange = {}
+    AND
+        symbol = {}
+"#
     .trim()
     .to_string()
 }
+

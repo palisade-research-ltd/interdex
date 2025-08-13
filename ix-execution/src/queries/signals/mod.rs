@@ -8,4 +8,3 @@ pub struct Signal {
     pub side: String,
     pub exchange: String,
 }
-

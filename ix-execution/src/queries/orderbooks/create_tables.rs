@@ -15,4 +15,3 @@ SETTINGS index_granularity = 8192
     .trim()
     .to_string()
 }
-

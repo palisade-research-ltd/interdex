@@ -130,6 +130,12 @@ impl ClickHouseClient {
     }
 
     /// Create a table from a SQL query string
+    pub async fn read_table(&self, query: &str) -> DatabaseResult<()> {
+        self.client.query(query).execute().await?;
+        Ok(())
+    }
+
+    /// Create a table from a SQL query string
     pub async fn create_table(&self, query: &str) -> DatabaseResult<()> {
         self.client.query(query).execute().await?;
         Ok(())

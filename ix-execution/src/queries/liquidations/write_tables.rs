@@ -1,5 +1,5 @@
 use crate::liquidations::LiquidationNew;
-use chrono::{DateTime, Utc, TimeZone};
+use chrono::{DateTime, TimeZone, Utc};
 
 use std::error;
 
@@ -20,7 +20,8 @@ fn format_datetime_for_clickhouse(dt: &DateTime<Utc>) -> String {
 pub fn q_insert_liquidations(
     liquidations: &LiquidationNew,
 ) -> Result<String, Box<dyn error::Error>> {
-    let timestamp_dt: DateTime<Utc> = Utc.timestamp_millis_opt(liquidations.ts as i64).unwrap();
+    let timestamp_dt: DateTime<Utc> =
+        Utc.timestamp_millis_opt(liquidations.ts as i64).unwrap();
     let timestamp = format_datetime_for_clickhouse(&timestamp_dt);
 
     let query = format!(

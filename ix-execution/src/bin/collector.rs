@@ -12,10 +12,10 @@ use std::{
     thread::sleep,
     time::{Duration, Instant},
 };
-use tokio;
 
 #[tokio::main]
 async fn main() {
+    // --- Orderbook Data Collector --- //
     let matches = Command::new("collector")
         .about("Collects orderbook data and stores in ClickHouse")
         .arg(
@@ -34,7 +34,7 @@ async fn main() {
         )
         .get_matches();
 
-    let ch_client = ClickHouseClient::builder()
+    let ch_admin_client = ClickHouseClient::builder()
         .url(matches.get_one::<String>("url").unwrap())
         .database(matches.get_one::<String>("database").unwrap())
         .build()
@@ -42,17 +42,27 @@ async fn main() {
         .unwrap();
 
     // Create tables if they don't exist
-    let _ = ch_client
+    let _ = ch_admin_client
         .create_table(&queries::orderbooks::create_tables::create_orderbooks_table_ddl())
         .await;
-    let _ = ch_client
+
+    let _ = ch_admin_client
         .create_table(
             &queries::liquidations::create_tables::create_liquidations_table_ddl(),
         )
         .await;
 
+    let _ = ch_admin_client
+        .create_table(&queries::signals::create_tables::create_signals_table_ddl())
+        .await;
+
     // Clone client for liquidation task
-    let liquidation_client = ch_client.clone();
+    let ch_lq_client = ClickHouseClient::builder()
+        .url(matches.get_one::<String>("url").unwrap())
+        .database(matches.get_one::<String>("database").unwrap())
+        .build()
+        .await
+        .unwrap();
 
     // --- Spawn Liquidations Task --- //
     let liquidation_task = tokio::spawn(async move {
@@ -96,9 +106,17 @@ async fn main() {
             let liquidation_query =
                 queries::liquidations::write_tables::q_insert_liquidations(&i_liq)
                     .unwrap();
-            let _ = liquidation_client.write_table(&liquidation_query).await;
+            let _ = ch_lq_client.write_table(&liquidation_query).await;
         }
     });
+
+    // Clone client for orderbook collection task
+    let ch_ob_client = ClickHouseClient::builder()
+        .url(matches.get_one::<String>("url").unwrap())
+        .database(matches.get_one::<String>("database").unwrap())
+        .build()
+        .await
+        .unwrap();
 
     // --- Main Orderbook Collection Loop --- //
     let orderbook_task = tokio::spawn(async move {
@@ -127,7 +145,7 @@ async fn main() {
                 let query_str: String =
                     queries::orderbooks::write_tables::q_insert_orderbook(&r_orderbook)
                         .unwrap();
-                let _ = ch_client.write_table(&query_str).await;
+                let _ = ch_ob_client.write_table(&query_str).await;
 
                 sleep(next_time - Instant::now());
                 next_time += interval;
