@@ -1,4 +1,4 @@
-//! # ix-database
+//! # ix-execution
 //!
 //! A ClickHouse database client library for the interdex workspace with orderbook data handling.
 //!
@@ -19,11 +19,12 @@ use tokio::sync::RwLock;
 use uuid::Uuid;
 
 pub mod client;
-pub mod queries;
 pub use client::*;
+
+pub mod queries;
 pub use queries::*;
 
-/// Main errors for the ix-database library
+/// Main errors for the ix-execution library
 #[derive(Error, Debug)]
 pub enum DatabaseError {
     #[error("ClickHouse client error: {0}")]
@@ -59,6 +60,7 @@ pub struct ConnectionInfo {
 }
 
 /// ClickHouse client with connection management
+#[derive(Clone)]
 pub struct ClickHouseClient {
     client: Client,
     url: String,
@@ -126,6 +128,12 @@ impl ClickHouseClient {
             .await?;
 
         Ok(tables.into_iter().map(|t| t.name).collect())
+    }
+
+    /// Create a table from a SQL query string
+    pub async fn read_table(&self, query: &str) -> DatabaseResult<()> {
+        self.client.query(query).execute().await?;
+        Ok(())
     }
 
     /// Create a table from a SQL query string

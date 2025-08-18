@@ -2,8 +2,8 @@
 
 mod tests {
 
-    use ix_database::queries::orderbooks::create_tables::create_orderbooks_table_ddl;
-    use ix_database::ClickHouseClient;
+    use ix_execution::queries::orderbooks::create_tables::create_orderbooks_table_ddl;
+    use ix_execution::ClickHouseClient;
 
     #[tokio::test]
     async fn test_connection_lifecycle() {

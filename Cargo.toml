@@ -6,10 +6,18 @@ members = [
  
   "ix-cex",
   "ix-core",
-  "ix-database",
+  "ix-execution",
   "ix-dex",
   "ix-results",
 
+]
+
+default-members = [
+    "ix-core",
+    "ix-cex",
+    "ix-execution",
+    "ix-dex",
+    "ix-results",
 ]
 
 [workspace.package]
@@ -30,7 +38,6 @@ solana-client = { version = "2.2.18" }
 solana-transaction-status = "2.2.18"
 pyth-solana-receiver-sdk = "0.6.1"
 
-# Common dependencies
 anyhow = { version = "1.0.98" }
 thiserror = { version = "1.0.64" }
 criterion = { version = "0.5", features = ["html_reports"] }
