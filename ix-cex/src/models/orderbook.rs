@@ -314,7 +314,6 @@ impl TradingPair {
             (TradingPair::EthUsdc, "kraken") => "ETHUSDC".to_string(),
             (TradingPair::UniUsdc, "kraken") => "UNIUSDC".to_string(),
             (TradingPair::LinkUsdc, "kraken") => "LINKUSDC".to_string(),
-
             _ => format!("{self:?}"), // Fallback
         }
     }
@@ -333,7 +332,6 @@ impl TradingPair {
             "ETHUSDC" | "ETH-USDC" | "ETH/USDC" => Some(TradingPair::EthUsdc),
             "UNIUSDC" | "UNI-USDC" | "UNI/USDC" => Some(TradingPair::UniUsdc),
             "LINKUSDC" | "LINK-USDC" | "LINK/USDC" => Some(TradingPair::LinkUsdc),
-
             _ => None,
         }
     }

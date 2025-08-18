@@ -24,7 +24,6 @@ async fn main() {
     let p_side = "Buy";
     let p_order_type = "Market";
     let p_qty = "5.0";
-
     let open_trade = client
         .new_order(p_category, p_symbol, p_side, p_order_type, p_qty)
         .await;
