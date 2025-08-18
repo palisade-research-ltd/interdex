@@ -20,10 +20,10 @@ async fn main() {
     // --- Open a trade
     let client = BybitPrivateClient::new().unwrap();
     let p_category = "spot";
-    let p_symbol = "SOLUSDC";
-    let p_side = "Sell";
+    let p_symbol = "SOLUSDT";
+    let p_side = "Buy";
     let p_order_type = "Market";
-    let p_qty = "0.1";
+    let p_qty = "5.0";
 
     let open_trade = client
         .new_order(p_category, p_symbol, p_side, p_order_type, p_qty)

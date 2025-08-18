@@ -255,30 +255,65 @@ impl Orderbook {
 /// Supported trading pairs
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum TradingPair {
+    BtcUsdt,
     BtcUsdc,
+    EthUsdt,
     EthUsdc,
+    SolUsdt,
     SolUsdc,
+    LinkUsdc,
+    LinkUsdt,
+    UniUsdt,
+    UniUsdc,
 }
 
 impl TradingPair {
     /// Convert to exchange-specific symbol format
     pub fn to_exchange_symbol(&self, exchange: &str) -> String {
         match (self, exchange.to_lowercase().as_str()) {
+            (TradingPair::BtcUsdt, "binance") => "BTCUSDT".to_string(),
+            (TradingPair::SolUsdt, "binance") => "SOLUSDT".to_string(),
+            (TradingPair::EthUsdt, "binance") => "ETHUSDT".to_string(),
+            (TradingPair::UniUsdt, "binance") => "UNIUSDT".to_string(),
+            (TradingPair::LinkUsdt, "binance") => "LINKUSDT".to_string(),
             (TradingPair::BtcUsdc, "binance") => "BTCUSDC".to_string(),
             (TradingPair::SolUsdc, "binance") => "SOLUSDC".to_string(),
             (TradingPair::EthUsdc, "binance") => "ETHUSDC".to_string(),
+            (TradingPair::UniUsdc, "binance") => "UNIUSDC".to_string(),
+            (TradingPair::LinkUsdc, "binance") => "LINKUSDC".to_string(),
 
+            (TradingPair::BtcUsdt, "bybit") => "BTCUSDT".to_string(),
+            (TradingPair::SolUsdt, "bybit") => "SOLUSDT".to_string(),
+            (TradingPair::EthUsdt, "bybit") => "ETHUSDT".to_string(),
+            (TradingPair::UniUsdt, "bybit") => "UNIUSDT".to_string(),
+            (TradingPair::LinkUsdt, "bybit") => "LINKUSDT".to_string(),
             (TradingPair::BtcUsdc, "bybit") => "BTCUSDC".to_string(),
             (TradingPair::SolUsdc, "bybit") => "SOLUSDC".to_string(),
             (TradingPair::EthUsdc, "bybit") => "ETHUSDC".to_string(),
+            (TradingPair::UniUsdc, "bybit") => "UNIUSDC".to_string(),
+            (TradingPair::LinkUsdc, "bybit") => "LINKUSDC".to_string(),
 
+            (TradingPair::BtcUsdt, "coinbase") => "BTC-USDT".to_string(),
+            (TradingPair::SolUsdt, "coinbase") => "SOL-USDT".to_string(),
+            (TradingPair::EthUsdt, "coinbase") => "ETH-USDT".to_string(),
+            (TradingPair::UniUsdt, "coinbase") => "UNI-USDT".to_string(),
+            (TradingPair::LinkUsdt, "coinbase") => "LINK-USDT".to_string(),
             (TradingPair::BtcUsdc, "coinbase") => "BTC-USDC".to_string(),
             (TradingPair::SolUsdc, "coinbase") => "SOL-USDC".to_string(),
             (TradingPair::EthUsdc, "coinbase") => "ETH-USDC".to_string(),
+            (TradingPair::UniUsdc, "coinbase") => "UNI-USDC".to_string(),
+            (TradingPair::LinkUsdc, "coinbase") => "LINK-USDC".to_string(),
 
+            (TradingPair::BtcUsdt, "kraken") => "BTCUSDT".to_string(),
+            (TradingPair::SolUsdt, "kraken") => "SOLUSDT".to_string(),
+            (TradingPair::EthUsdt, "kraken") => "ETHUSDT".to_string(),
+            (TradingPair::UniUsdt, "kraken") => "UNIUSDT".to_string(),
+            (TradingPair::LinkUsdt, "kraken") => "LINKUSDT".to_string(),
             (TradingPair::BtcUsdc, "kraken") => "BTCUSDC".to_string(),
             (TradingPair::SolUsdc, "kraken") => "SOLUSDC".to_string(),
             (TradingPair::EthUsdc, "kraken") => "ETHUSDC".to_string(),
+            (TradingPair::UniUsdc, "kraken") => "UNIUSDC".to_string(),
+            (TradingPair::LinkUsdc, "kraken") => "LINKUSDC".to_string(),
 
             _ => format!("{self:?}"), // Fallback
         }
@@ -287,9 +322,18 @@ impl TradingPair {
     /// Parse from string
     pub fn parse_from_str(s: &str) -> Option<Self> {
         match s.to_uppercase().as_str() {
-            "BTCUSDC" | "BTC-USDC" | "BTC/USDC" | "XBTUSDC" => Some(TradingPair::BtcUsdc),
+            "BTCUSDT" | "BTC-USDT" | "BTC/USDT" => Some(TradingPair::BtcUsdt),
+            "SOLUSDT" | "SOL-USDT" | "SOL/USDT" => Some(TradingPair::SolUsdt),
+            "ETHUSDT" | "ETH-USDT" | "ETH/USDT" => Some(TradingPair::EthUsdt),
+            "UNIUSDT" | "UNI-USDT" | "UNI/USDT" => Some(TradingPair::UniUsdt),
+            "LINKUSDT" | "LINK-USDT" | "LINK/USDT" => Some(TradingPair::LinkUsdt),
+
+            "BTCUSDC" | "BTC-USDC" | "BTC/USDC" => Some(TradingPair::BtcUsdc),
             "SOLUSDC" | "SOL-USDC" | "SOL/USDC" => Some(TradingPair::SolUsdc),
             "ETHUSDC" | "ETH-USDC" | "ETH/USDC" => Some(TradingPair::EthUsdc),
+            "UNIUSDC" | "UNI-USDC" | "UNI/USDC" => Some(TradingPair::UniUsdc),
+            "LINKUSDC" | "LINK-USDC" | "LINK/USDC" => Some(TradingPair::LinkUsdc),
+
             _ => None,
         }
     }
@@ -298,9 +342,17 @@ impl TradingPair {
 impl std::fmt::Display for TradingPair {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
+            TradingPair::BtcUsdt => "BTC/USDT",
+            TradingPair::SolUsdt => "SOL/USDT",
+            TradingPair::EthUsdt => "ETH/USDT",
+            TradingPair::UniUsdt => "UNI/USDT",
+            TradingPair::LinkUsdt => "LINK/USDT",
+
             TradingPair::BtcUsdc => "BTC/USDC",
             TradingPair::SolUsdc => "SOL/USDC",
             TradingPair::EthUsdc => "ETH/USDC",
+            TradingPair::UniUsdc => "UNI/USDC",
+            TradingPair::LinkUsdc => "LINK/USDC",
         };
         write!(f, "{s}")
     }
