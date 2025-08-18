@@ -256,6 +256,7 @@ impl Orderbook {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum TradingPair {
     BtcUsdc,
+    EthUsdc,
     SolUsdc,
 }
 
@@ -265,10 +266,20 @@ impl TradingPair {
         match (self, exchange.to_lowercase().as_str()) {
             (TradingPair::BtcUsdc, "binance") => "BTCUSDC".to_string(),
             (TradingPair::SolUsdc, "binance") => "SOLUSDC".to_string(),
+            (TradingPair::EthUsdc, "binance") => "ETHUSDC".to_string(),
+
+            (TradingPair::BtcUsdc, "bybit") => "BTCUSDC".to_string(),
+            (TradingPair::SolUsdc, "bybit") => "SOLUSDC".to_string(),
+            (TradingPair::EthUsdc, "bybit") => "ETHUSDC".to_string(),
+
             (TradingPair::BtcUsdc, "coinbase") => "BTC-USDC".to_string(),
             (TradingPair::SolUsdc, "coinbase") => "SOL-USDC".to_string(),
+            (TradingPair::EthUsdc, "coinbase") => "ETH-USDC".to_string(),
+
             (TradingPair::BtcUsdc, "kraken") => "BTCUSDC".to_string(),
             (TradingPair::SolUsdc, "kraken") => "SOLUSDC".to_string(),
+            (TradingPair::EthUsdc, "kraken") => "ETHUSDC".to_string(),
+
             _ => format!("{self:?}"), // Fallback
         }
     }
@@ -278,6 +289,7 @@ impl TradingPair {
         match s.to_uppercase().as_str() {
             "BTCUSDC" | "BTC-USDC" | "BTC/USDC" | "XBTUSDC" => Some(TradingPair::BtcUsdc),
             "SOLUSDC" | "SOL-USDC" | "SOL/USDC" => Some(TradingPair::SolUsdc),
+            "ETHUSDC" | "ETH-USDC" | "ETH/USDC" => Some(TradingPair::EthUsdc),
             _ => None,
         }
     }
@@ -288,6 +300,7 @@ impl std::fmt::Display for TradingPair {
         let s = match self {
             TradingPair::BtcUsdc => "BTC/USDC",
             TradingPair::SolUsdc => "SOL/USDC",
+            TradingPair::EthUsdc => "ETH/USDC",
         };
         write!(f, "{s}")
     }

@@ -1,5 +1,3 @@
-# clickchouse.Dockerfile
-
 FROM clickhouse/clickhouse-server:latest
 
 # Remove default password file that may override configuration

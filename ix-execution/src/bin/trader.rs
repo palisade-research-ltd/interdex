@@ -1,4 +1,4 @@
-// src/bin/signals.rs
+// src/bin/trader.rs
 
 use ix_cex::BybitPrivateClient;
 // use atelier_data::orderbooks::Orderbook;
@@ -33,3 +33,4 @@ async fn main() {
 
     println!("\n ---- Opened Trade: {:?} ", ot);
 }
+

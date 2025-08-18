@@ -38,7 +38,9 @@ uuid = { version = "1.17", features = ["v4", "serde"] }
 clickhouse = { version = "0.13", features = ["lz4", "inserter", "time"] }
 thiserror = { version = "1.0.64" }
 
-atelier_data = { version = "0.0.11" }
+atelier_base = { version = "0.0.11" }
+atelier_data = { version = "0.0.12" }
+atelier_dcml = { version = "0.0.11" }
 
 [dev-dependencies]
 tokio-test = "0.4"

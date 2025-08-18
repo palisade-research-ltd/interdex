@@ -1,8 +1,13 @@
 use crate::client::http_client::{HttpClient, RetryConfig, RetryableHttpClient};
+use crate::exchanges::bybit::responses;
+use crate::models::orderbook::{Orderbook, TradingPair, PriceLevel};
+use chrono::Utc;
+
 use ix_results::errors::{ExchangeError, Result};
 use serde::Deserialize;
 use std::collections::HashMap;
-use tracing::debug;
+use std::str::FromStr;
+use tracing::{debug, info};
 
 /// Bybit API Client
 #[derive(Clone)]
@@ -11,6 +16,7 @@ pub struct BybitClient {
 }
 
 impl BybitClient {
+
     /// Create a new Bybit client
     pub fn new() -> Result<Self> {
         debug!("Fetching Bybit Get New Client");
@@ -28,6 +34,122 @@ impl BybitClient {
         Ok(Self {
             client: retry_client,
         })
+    }
+
+    /// Get order book snapshot for a trading pair
+    pub async fn get_orderbook(
+        &self,
+        pair: TradingPair,
+        depth: Option<u32>,
+    ) -> Result<Orderbook> {
+        let symbol_id = pair.to_exchange_symbol("bybit");
+        info!("Fetching Bybit orderbook for {}", symbol_id);
+
+        let mut params: Vec<(&str, String)> = vec![("product_id", symbol_id.clone())];
+
+        if let Some(depth) = depth {
+            params.push(("limit", depth.to_string()));
+        }
+
+        // Convert params to the expected type for get_with_params_retry
+        let params_ref: Vec<(&str, &str)> =
+            params.iter().map(|(k, v)| (*k, v.as_str())).collect();
+
+        let response: responses::BybitOrderbookResponse = self
+            .client
+            .get_with_params_retry("/v5/market/orderbook", &params_ref)
+            .await?;
+
+        debug!(
+            "Received Bybit orderbook with {} bids, {} asks",
+            response.result.bids.len(),
+            response.result.asks.len()
+        );
+
+        self.convert_to_orderbook(response, symbol_id)
+    }
+
+    fn convert_to_orderbook(
+        &self,
+        response: responses::BybitOrderbookResponse,
+        symbol: String,
+    ) -> Result<Orderbook> {
+
+        let mut v_bids = Vec::new();
+        let mut v_asks = Vec::new();
+
+        // --- 
+        for bid in response.result.bids {
+            
+            let price =
+                f64::from_str(&bid.price).map_err(|e| ExchangeError::ApiError {
+                    exchange: "Coinbase".to_string(),
+                    message: format!("Invalid bid price '{}': {}", bid.price, e),
+                })?;
+
+            let quantity =
+                f64::from_str(&bid.qty).map_err(|e| ExchangeError::ApiError {
+                    exchange: "Coinbase".to_string(),
+                    message: format!("Invalid bid size '{}': {}", bid.qty, e),
+                })?;
+
+            v_bids.push(PriceLevel {
+                price: price,
+                quantity: quantity,
+            });
+
+        }
+
+        // ---  
+        for ask in response.result.asks {
+
+            let price =
+                f64::from_str(&ask.price).map_err(|e| ExchangeError::ApiError {
+                    exchange: "Coinbase".to_string(),
+                    message: format!("Invalid bid price '{}': {}", ask.price, e),
+                })?;
+
+            let quantity =
+                f64::from_str(&ask.qty).map_err(|e| ExchangeError::ApiError {
+                    exchange: "Coinbase".to_string(),
+                    message: format!("Invalid bid size '{}': {}", ask.qty, e),
+                })?;
+
+            v_asks.push(PriceLevel {
+                price: price,
+                quantity: quantity,
+            });
+
+        }
+
+        let mut orderbook = Orderbook::new(
+            symbol, 
+            "Bybit".to_string(),
+            Utc::now(),
+            v_bids,
+            v_asks,
+            None,
+            None,
+        );
+
+        if !orderbook.is_valid() {
+            return Err(ExchangeError::ApiError {
+                exchange: "Bybit".to_string(),
+                message: "Received invalidad orderbook data".to_string(),
+            });
+        }
+
+        info!(
+            "Succesfully converted Bybit orderbok: {} bids, {} asks, spread: {:?}", 
+            orderbook.bids.len(),
+            orderbook.asks.len(),
+            orderbook.spread()
+        );
+
+        orderbook.timestamp = Utc::now();
+
+        Ok(orderbook)
+
     }
 
     /// Get Bybit server time
@@ -54,10 +176,12 @@ impl BybitClient {
         }
 
         Ok(response.result)
+
     }
 
     /// Get Account Info
     pub async fn get_account_info(&self) -> Result<BybitAccountInfo> {
+
         debug!("Fetching Bybit Get Account Info");
 
         let response: BybitAccountInfoResponse =

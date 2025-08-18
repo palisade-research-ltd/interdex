@@ -19,8 +19,9 @@ use tokio::sync::RwLock;
 use uuid::Uuid;
 
 pub mod client;
-pub mod queries;
 pub use client::*;
+
+pub mod queries;
 pub use queries::*;
 
 /// Main errors for the ix-execution library
