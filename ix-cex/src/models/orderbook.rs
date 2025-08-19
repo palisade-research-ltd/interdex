@@ -25,12 +25,6 @@ impl Default for PriceLevel {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct PriceLevelInput {
-    pub price: String,
-    pub quantity: String,
-}
-
 /// Input structure for JSON parsing (matches the provided format)
 #[derive(Debug, Serialize, Deserialize)]
 pub struct OrderbookInput {
@@ -41,6 +35,12 @@ pub struct OrderbookInput {
     pub asks: Vec<PriceLevelInput>,
     pub last_update_id: u64,
     pub sequence: Option<u64>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PriceLevelInput {
+    pub price: String,
+    pub quantity: String,
 }
 
 /// Complete order book snapshot

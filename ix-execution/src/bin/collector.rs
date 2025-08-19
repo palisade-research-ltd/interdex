@@ -9,7 +9,6 @@ use std::{
     time::{Duration, Instant},
 };
 use tokio;
-use tracing::info;
 
 use ix_execution::{
     liquidations::LiquidationNew, queries, trades::TradeNew, ClickHouseClient,
@@ -106,7 +105,6 @@ async fn main() -> anyhow::Result<()> {
                         amount: event_data.amount,
                         price: event_data.price,
                         exchange: "bybit".to_string(),
-                        id: "".to_string(),
                     };
 
                     println!("\npublicTrade event received... {:?}", event_data.symbol);

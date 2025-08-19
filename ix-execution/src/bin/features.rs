@@ -1,13 +1,4 @@
-
-use atelier_base::orderbooks::Orderbook;
-use ix_execution::ClickHouseClient;
-use atelier_dcml::{
-    features::{
-        ImbalanceFeature, MidpriceFeature, SpreadFeature, TAVFeature, VWAPFeature,
-        WeightedMidpriceFeature,
-    },
-    Feature, OrderbookConfig,
-};
+use ix_execution::{queries, ClickHouseClient};
 
 #[tokio::main]
 async fn main() {
@@ -16,46 +7,72 @@ async fn main() {
     let database = "default".to_string();
 
     // --- Database Client --- //
-    let _ch_read_client = ClickHouseClient::builder()
+    let ch_read_client = ClickHouseClient::builder()
         .url(&url)
         .database(&database)
         .build()
         .await
         .unwrap();
 
-    // --- Database Client --- //
-    let _ch_write_client = ClickHouseClient::builder()
-        .url(&url)
-        .database(&database)
-        .build()
+    // --- Spawn Read & Compute Task --- //
+    let read_compute_task = tokio::spawn(async move {
+        // --- Public Trades --- //
+        let p_symbol = "SOLUSDT".to_string();
+        let p_exchange = "bybit".to_string();
+        let pt_query: String = queries::trades::read_tables::read_trades_table(
+            p_exchange.clone(),
+            p_symbol.clone(),
+        )
         .await
         .unwrap();
 
-    // --- Spawn Read ask --- //
-    let read_data_task = tokio::spawn(async move {
+        let pt_data: Result<Vec<queries::trades::TradeNew>, _> =
+            ch_read_client.read_table(&pt_query).await;
 
-        // Orderbooks data
+        println!("public trades data: {:?}", pt_data);
+
+        // --- Orderbook --- //
+        let p_symbol = "SOLUSDT".to_string();
+        let p_exchange = "Binance".to_string();
+        let ob_query: String = queries::orderbooks::read_tables::read_orderbooks_table(
+            p_exchange.clone(),
+            p_symbol.clone(),
+        )
+        .await
+        .unwrap();
+
+        let ob_data: Result<Vec<queries::orderbooks::OrderbookCH>, _> =
+            ch_read_client.read_table(&ob_query).await;
+
+        println!("\norderbook data: {:?}", ob_data);
+
+        // match ob_data {
+        //     Ok(data) => {
+        //         println!("orderbook data count: {}", data.len());
+        //         for orderbook in &data {
+        //             println!(
+        //                 "Exchange: {}, Symbol: {}",
+        //                 orderbook.exchange, orderbook.symbol
+        //             );
+        //         }
+        //     }
+        //     Err(e) => println!("Error: {:?}", e),
+        // }
+
+        // Liquidations data (Past 10 values)
         //
-        // Liquidations data
-        //
-        // Publictrades data
-    
-    });
+        // Publictrades data (Past 10 values)
 
-    // --- Spawn Compute ask --- //
-    let compute_data_task = tokio::spawn(async move {
-        // order flow indicator (Based in Orderbooks)
-
-        let features: Vec<
-            Box<dyn Feature<Input = Orderbook, Output = f64, Config = OrderbookConfig>>,
-        > = vec![
-            Box::new(SpreadFeature),
-            Box::new(MidpriceFeature),
-            Box::new(WeightedMidpriceFeature),
-            Box::new(ImbalanceFeature),
-            Box::new(VWAPFeature),
-            Box::new(TAVFeature),
-        ];
+        // let features: Vec<
+        //     Box<dyn Feature<Input = Orderbook, Output = f64, Config = OrderbookConfig>>,
+        // > = vec![
+        //     Box::new(SpreadFeature),
+        //     Box::new(MidpriceFeature),
+        //     Box::new(WeightedMidpriceFeature),
+        //     Box::new(ImbalanceFeature),
+        //     Box::new(VWAPFeature),
+        //     Box::new(TAVFeature),
+        // ];
 
         // vpin indicator (Based in Publictrades)
         // liquidated gaps indicator (Based in Liquidations)
@@ -70,6 +87,5 @@ async fn main() {
     });
 
     // Wait for tasks
-    let _ = tokio::join!(read_data_task, compute_data_task, write_data_task);
+    let _ = tokio::join!(read_compute_task, write_data_task);
 }
-
