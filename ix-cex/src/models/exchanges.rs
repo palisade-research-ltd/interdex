@@ -5,6 +5,7 @@ pub enum Exchange {
     Binance,
     Coinbase,
     Kraken,
+    Bybit,
 }
 
 /// Supported trading pairs

@@ -1,4 +1,4 @@
-pub async fn read_trades_table(
+pub async fn read_liquidations_table(
     p_exchange: String,
     p_symbol: String,
 ) -> Result<String, Box<dyn std::error::Error>> {
@@ -10,10 +10,12 @@ pub async fn read_trades_table(
             side, 
             amount, 
             price,
-        FROM trades 
+        FROM liquidations 
         WHERE exchange = '{}' AND symbol = '{}' 
-        LIMIT 10"#,
+        LIMIT 10
+        "#,
         p_exchange, p_symbol
     );
     Ok(query)
 }
+

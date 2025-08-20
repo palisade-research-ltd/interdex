@@ -136,7 +136,6 @@ impl ClickHouseClient {
         T: Row + for<'de> serde::de::Deserialize<'de> + std::fmt::Debug,
     {
         let data: Vec<T> = self.client.query(query).fetch_all().await?;
-        println!("data {:?}", data);
         Ok(data)
     }
 

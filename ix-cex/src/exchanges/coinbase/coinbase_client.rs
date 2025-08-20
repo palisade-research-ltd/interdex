@@ -1,5 +1,6 @@
 use crate::client::http_client::{HttpClient, RetryConfig, RetryableHttpClient};
 use crate::models::orderbook::{Orderbook, PriceLevel, TradingPair};
+use crate::exchanges::coinbase::responses::{orderbook, trades};
 
 use chrono::Utc;
 use ix_results::errors::{ExchangeError, Result};
@@ -49,7 +50,7 @@ impl CoinbaseClient {
         let params_ref: Vec<(&str, &str)> =
             params.iter().map(|(k, v)| (*k, v.as_str())).collect();
 
-        let response: CoinbaseProductBookResponse = self
+        let response: orderbook::CoinbaseProductBookResponse = self
             .client
             .get_with_params_retry("/api/v3/brokerage/market/product_book", &params_ref)
             .await?;
@@ -66,7 +67,7 @@ impl CoinbaseClient {
     /// Convert Coinbase response to our OrderBook format
     fn convert_to_orderbook(
         &self,
-        response: CoinbaseProductBookResponse,
+        response: orderbook::CoinbaseProductBookResponse,
         symbol: String,
     ) -> Result<Orderbook> {
         let mut v_bids = Vec::new();
@@ -157,28 +158,12 @@ impl CoinbaseClient {
         self.client.get_with_retry(&endpoint).await
     }
 
-    /// Get product candles (OHLCV data)
-    pub async fn get_product_candles(
-        &self,
-        product_id: &str,
-        start: &str,
-        end: &str,
-        granularity: &str,
-    ) -> Result<CoinbaseCandlesResponse> {
-        info!("Fetching Coinbase candles for {}", product_id);
-
-        let endpoint = format!("/api/v3/brokerage/products/{product_id}/candles");
-        let params = vec![("start", start), ("end", end), ("granularity", granularity)];
-
-        self.client.get_with_params_retry(&endpoint, &params).await
-    }
-
     /// Get market trades
     pub async fn get_market_trades(
         &self,
         product_id: &str,
         depth: Option<u32>,
-    ) -> Result<CoinbaseTradesResponse> {
+    ) -> Result<trades::CoinbaseTradesResponse> {
         let endpoint = format!("/api/v3/brokerage/products/{product_id}/ticker");
         let mut params: Vec<(&str, String)> =
             vec![("product_id", product_id.to_string())];
@@ -197,27 +182,27 @@ impl CoinbaseClient {
     }
 }
 
-/// Coinbase product book response
-#[derive(Debug, Deserialize)]
-pub struct CoinbaseProductBookResponse {
-    pub pricebook: CoinbasePricebook,
-}
-
-/// Coinbase pricebook
-#[derive(Debug, Deserialize)]
-pub struct CoinbasePricebook {
-    pub product_id: String,
-    pub bids: Vec<CoinbasePriceLevel>,
-    pub asks: Vec<CoinbasePriceLevel>,
-    pub time: String,
-}
-
-/// Coinbase price level
-#[derive(Debug, Deserialize)]
-pub struct CoinbasePriceLevel {
-    pub price: String,
-    pub size: String,
-}
+// /// Coinbase product book response
+// #[derive(Debug, Deserialize)]
+// pub struct CoinbaseProductBookResponse {
+//     pub pricebook: CoinbasePricebook,
+// }
+//
+// /// Coinbase pricebook
+// #[derive(Debug, Deserialize)]
+// pub struct CoinbasePricebook {
+//     pub product_id: String,
+//     pub bids: Vec<CoinbasePriceLevel>,
+//     pub asks: Vec<CoinbasePriceLevel>,
+//     pub time: String,
+// }
+//
+// /// Coinbase price level
+// #[derive(Debug, Deserialize)]
+// pub struct CoinbasePriceLevel {
+//     pub price: String,
+//     pub size: String,
+// }
 
 /// Coinbase products response
 #[derive(Debug, Deserialize)]
@@ -255,43 +240,26 @@ pub struct CoinbaseProduct {
     pub base_currency_id: String,
 }
 
-/// Coinbase candles response
-#[derive(Debug, Deserialize)]
-pub struct CoinbaseCandlesResponse {
-    pub candles: Vec<CoinbaseCandle>,
-}
-
-/// Coinbase candle data
-#[derive(Debug, Deserialize)]
-pub struct CoinbaseCandle {
-    pub start: String,
-    pub low: String,
-    pub high: String,
-    pub open: String,
-    pub close: String,
-    pub volume: String,
-}
-
-/// Coinbase trades response
-#[derive(Debug, Deserialize)]
-pub struct CoinbaseTradesResponse {
-    pub trades: Vec<CoinbaseTrade>,
-    pub best_bid: String,
-    pub best_ask: String,
-}
+// /// Coinbase trades response
+// #[derive(Debug, Deserialize)]
+// pub struct CoinbaseTradesResponse {
+//     pub trades: Vec<CoinbaseTrade>,
+//     pub best_bid: String,
+//     pub best_ask: String,
+// }
 
 /// Coinbase trade
-#[derive(Debug, Deserialize)]
-pub struct CoinbaseTrade {
-    pub trade_id: String,
-    pub product_id: String,
-    pub price: String,
-    pub size: String,
-    pub time: String,
-    pub side: String,
-    pub bid: String,
-    pub ask: String,
-}
+// #[derive(Debug, Deserialize)]
+// pub struct CoinbaseTrade {
+//     pub trade_id: String,
+//     pub product_id: String,
+//     pub price: String,
+//     pub size: String,
+//     pub time: String,
+//     pub side: String,
+//     pub bid: String,
+//     pub ask: String,
+// }
 
 impl Default for CoinbaseClient {
     fn default() -> Self {

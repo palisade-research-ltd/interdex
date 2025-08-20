@@ -15,7 +15,7 @@ use ix_execution::{
 };
 
 use ix_cex::{
-    exchanges::{BinanceClient, CoinbaseClient, ExchangeClient, KrakenClient},
+    exchanges::{BinanceClient, BybitClient, CoinbaseClient, ExchangeClient, KrakenClient},
     models::{exchanges::Exchange, orderbook::TradingPair},
 };
 
@@ -41,10 +41,6 @@ async fn main() -> anyhow::Result<()> {
         )
         .await;
 
-    // let _ = ch_admin_client
-    //     .create_table(&queries::signals::create_tables::create_signals_table_ddl())
-    //     .await;
-
     let _ = ch_admin_client
         .create_table(&queries::trades::create_tables::create_trades_table_ddl())
         .await;
@@ -58,7 +54,7 @@ async fn main() -> anyhow::Result<()> {
         .unwrap();
 
     let streams_task = tokio::spawn(async move {
-        println!("started streams_task");
+        // println!("started streams_task");
 
         let symbols = vec![
             "SOLUSDT".to_string(),
@@ -72,7 +68,7 @@ async fn main() -> anyhow::Result<()> {
             .expect("failed to open Bybit WS");
 
         while let Some(recv_event) = rx.recv().await {
-            println!("\nrecv_event");
+            // println!("\nrecv_event");
             match recv_event {
                 BybitWssEvent::LiquidationData(event_data) => {
                     let i_liq = LiquidationNew {
@@ -81,13 +77,13 @@ async fn main() -> anyhow::Result<()> {
                         side: event_data.side,
                         amount: event_data.amount,
                         price: event_data.price,
-                        exchange: "bybit".to_string(),
+                        exchange: "Bybit".to_string(),
                     };
 
-                    println!(
-                        "\nallLiquidation event received... {:?}",
-                        event_data.symbol
-                    );
+                    // println!(
+                    //     "\nallLiquidation event received... {:?}",
+                    //     event_data.symbol
+                    // );
 
                     let liquidation_query =
                         queries::liquidations::write_tables::q_insert_liquidations(
@@ -104,10 +100,10 @@ async fn main() -> anyhow::Result<()> {
                         side: event_data.side,
                         amount: event_data.amount,
                         price: event_data.price,
-                        exchange: "bybit".to_string(),
+                        exchange: "Bybit".to_string(),
                     };
 
-                    println!("\npublicTrade event received... {:?}", event_data.symbol);
+                    // println!("\npublicTrade event received... {:?}", event_data.symbol);
 
                     let trade_query =
                         queries::trades::write_tables::q_insert_trades(&i_trade).unwrap();
@@ -126,7 +122,7 @@ async fn main() -> anyhow::Result<()> {
         .unwrap();
 
     let orderbook_task = tokio::spawn(async move {
-        let interval = Duration::from_secs(1);
+        let interval = Duration::from_millis(800);
         let mut next_time = Instant::now() + interval;
 
         loop {
@@ -134,12 +130,13 @@ async fn main() -> anyhow::Result<()> {
             let v_exchanges = vec![
                 Exchange::Kraken,
                 Exchange::Binance,
+                Exchange::Bybit,
                 Exchange::Coinbase
             ];
 
             let v_pairs = vec![
                 TradingPair::SolUsdt,
-                TradingPair::LinkUsdt,
+                // TradingPair::LinkUsdt,
             ];
 
             let depth = 25;
@@ -153,10 +150,11 @@ async fn main() -> anyhow::Result<()> {
                         Exchange::Binance => Box::new(BinanceClient::new().unwrap()),
                         Exchange::Coinbase => Box::new(CoinbaseClient::new().unwrap()),
                         Exchange::Kraken => Box::new(KrakenClient::new().unwrap()),
+                        Exchange::Bybit => Box::new(BybitClient::new().unwrap()),
                     };
 
                 for i_pair in v_pairs.clone() {
-                    println!("pair {:?}", i_pair);
+                    // println!("pair {:?}", i_pair);
 
                     let r_orderbook = exchange_client
                         .get_orderbook(i_pair.clone(), Some(depth))
