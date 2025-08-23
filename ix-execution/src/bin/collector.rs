@@ -8,15 +8,14 @@ use std::{
     thread::sleep,
     time::{Duration, Instant},
 };
-use tokio;
-use tracing::info;
 
+use tracing::info;
 use ix_execution::{
     liquidations::LiquidationNew, queries, trades::TradeNew, ClickHouseClient,
 };
 
 use ix_cex::{
-    exchanges::{BinanceClient, CoinbaseClient, ExchangeClient, KrakenClient},
+    exchanges::{BinanceClient, BybitClient, CoinbaseClient, ExchangeClient, KrakenClient},
     models::{exchanges::Exchange, orderbook::TradingPair},
 };
 
@@ -41,10 +40,6 @@ async fn main() -> anyhow::Result<()> {
             &queries::liquidations::create_tables::create_liquidations_table_ddl(),
         )
         .await;
-
-    // let _ = ch_admin_client
-    //     .create_table(&queries::signals::create_tables::create_signals_table_ddl())
-    //     .await;
 
     let _ = ch_admin_client
         .create_table(&queries::trades::create_tables::create_trades_table_ddl())
@@ -82,7 +77,7 @@ async fn main() -> anyhow::Result<()> {
                         side: event_data.side,
                         amount: event_data.amount,
                         price: event_data.price,
-                        exchange: "bybit".to_string(),
+                        exchange: "Bybit".to_string(),
                     };
 
                     println!(
@@ -105,8 +100,7 @@ async fn main() -> anyhow::Result<()> {
                         side: event_data.side,
                         amount: event_data.amount,
                         price: event_data.price,
-                        exchange: "bybit".to_string(),
-                        id: "".to_string(),
+                        exchange: "Bybit".to_string(),
                     };
 
                     println!("\npublicTrade event received... {:?}", event_data.symbol);
@@ -128,7 +122,7 @@ async fn main() -> anyhow::Result<()> {
         .unwrap();
 
     let orderbook_task = tokio::spawn(async move {
-        let interval = Duration::from_secs(1);
+        let interval = Duration::from_millis(800);
         let mut next_time = Instant::now() + interval;
 
         loop {
@@ -136,6 +130,7 @@ async fn main() -> anyhow::Result<()> {
             let v_exchanges = vec![
                 Exchange::Kraken,
                 Exchange::Binance,
+                Exchange::Bybit,
                 Exchange::Coinbase
             ];
 
@@ -155,6 +150,7 @@ async fn main() -> anyhow::Result<()> {
                         Exchange::Binance => Box::new(BinanceClient::new().unwrap()),
                         Exchange::Coinbase => Box::new(CoinbaseClient::new().unwrap()),
                         Exchange::Kraken => Box::new(KrakenClient::new().unwrap()),
+                        Exchange::Bybit => Box::new(BybitClient::new().unwrap()),
                     };
 
                 for i_pair in v_pairs.clone() {
@@ -181,4 +177,5 @@ async fn main() -> anyhow::Result<()> {
     // Wait for both tasks
     tokio::try_join!(streams_task, orderbook_task)?;
     Ok(())
+
 }

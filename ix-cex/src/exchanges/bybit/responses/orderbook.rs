@@ -22,13 +22,7 @@ pub struct BybitOrderbook {
     #[serde(rename = "b")]
     pub bids: Vec<PriceLevel>,
     #[serde(rename = "ts")]
-    pub timestamp: String,
-    #[serde(rename = "update_id")]
-    pub u: String,
-    #[serde(rename = "sequence_id")]
-    pub seq: String,
-    #[serde(rename = "executed_ts")]
-    pub cts: String,
+    pub timestamp: u64,
 }
 
 /// Bybit PriceLevel result structure

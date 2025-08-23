@@ -45,7 +45,7 @@ impl BybitClient {
         let symbol_id = pair.to_exchange_symbol("bybit");
         info!("Fetching Bybit orderbook for {}", symbol_id);
 
-        let mut params: Vec<(&str, String)> = vec![("product_id", symbol_id.clone())];
+        let mut params: Vec<(&str, String)> = vec![("symbol", symbol_id.clone())];
 
         if let Some(depth) = depth {
             params.push(("limit", depth.to_string()));
@@ -55,12 +55,23 @@ impl BybitClient {
         let params_ref: Vec<(&str, &str)> =
             params.iter().map(|(k, v)| (*k, v.as_str())).collect();
 
+        println!("params_ref: {:?}", params_ref);
+
+        // let response_debug: responses::BybitOrderbookResponse = self
+        //     .client
+        //     .get_with_params_retry("/v5/market/orderbook?category=spot", &params_ref)
+        //     .await?;
+        //
+        // println!("response_debug: {:?}", response_debug);
+
         let response: responses::BybitOrderbookResponse = self
             .client
-            .get_with_params_retry("/v5/market/orderbook", &params_ref)
+            .get_with_params_retry("/v5/market/orderbook?category=spot", &params_ref)
             .await?;
 
-        debug!(
+        println!("response: {:?}", response);
+
+        println!(
             "Received Bybit orderbook with {} bids, {} asks",
             response.result.bids.len(),
             response.result.asks.len()
@@ -94,8 +105,8 @@ impl BybitClient {
                 })?;
 
             v_bids.push(PriceLevel {
-                price: price,
-                quantity: quantity,
+                price,
+                quantity,
             });
 
         }
@@ -116,8 +127,8 @@ impl BybitClient {
                 })?;
 
             v_asks.push(PriceLevel {
-                price: price,
-                quantity: quantity,
+                price,
+                quantity,
             });
 
         }

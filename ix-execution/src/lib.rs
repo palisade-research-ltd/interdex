@@ -131,9 +131,12 @@ impl ClickHouseClient {
     }
 
     /// Create a table from a SQL query string
-    pub async fn read_table(&self, query: &str) -> DatabaseResult<()> {
-        self.client.query(query).execute().await?;
-        Ok(())
+    pub async fn read_table<T>(&self, query: &str) -> DatabaseResult<Vec<T>>
+    where
+        T: Row + for<'de> serde::de::Deserialize<'de> + std::fmt::Debug,
+    {
+        let data: Vec<T> = self.client.query(query).fetch_all().await?;
+        Ok(data)
     }
 
     /// Create a table from a SQL query string

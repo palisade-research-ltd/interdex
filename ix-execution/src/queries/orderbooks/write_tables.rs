@@ -20,7 +20,7 @@ fn format_datetime_for_clickhouse(dt: &DateTime<Utc>) -> String {
 fn format_price_levels_for_clickhouse(levels: &[PriceLevel]) -> String {
     let tuples: Vec<String> = levels
         .iter()
-        .map(|level| format!("('{}', '{}')", level.price, level.quantity))
+        .map(|level| format!("({}, {})", level.price, level.quantity))
         .collect();
 
     format!("[{}]", tuples.join(", "))
@@ -29,6 +29,7 @@ fn format_price_levels_for_clickhouse(levels: &[PriceLevel]) -> String {
 pub fn q_insert_orderbook(
     orderbook: &Orderbook,
 ) -> Result<String, Box<dyn error::Error>> {
+
     let bids_json = format_price_levels_for_clickhouse(&orderbook.bids);
     let asks_json = format_price_levels_for_clickhouse(&orderbook.asks);
     let timestamp = format_datetime_for_clickhouse(&orderbook.timestamp);
@@ -38,14 +39,13 @@ pub fn q_insert_orderbook(
                 orderbooks 
                     (symbol, exchange, timestamp, bids, asks)
                 VALUES 
-                    ('{}', '{}', '{}', '{}', '{}')
+                    ('{}', '{}', '{}', {}, {})
             "#,
         format_symbol_for_clickhouse(&orderbook.symbol),
         orderbook.exchange,
         timestamp,
-        bids_json.replace("'", "''"), // Escape single quotes
-        asks_json.replace("'", "''"), // Escape single quotes
+        bids_json, // Escape single quotes
+        asks_json, // Escape single quotes
     );
-
     Ok(query)
 }

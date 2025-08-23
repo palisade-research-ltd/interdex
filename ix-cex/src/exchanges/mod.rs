@@ -1,12 +1,14 @@
 pub mod binance;
-pub mod bybit;
-pub mod coinbase;
-pub mod kraken;
-
 pub use binance::binance_client::BinanceClient;
+
+pub mod bybit;
 pub use bybit::bybit_client::BybitClient;
 pub use bybit::clients::BybitPrivateClient;
+
+pub mod coinbase;
 pub use coinbase::coinbase_client::CoinbaseClient;
+
+pub mod kraken;
 pub use kraken::kraken_client::KrakenClient;
 
 use crate::models::orderbook::{Orderbook, TradingPair};
