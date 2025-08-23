@@ -22,6 +22,7 @@ async fn main() {
     let p_category = "spot";
     let p_symbol = "SOLUSDT";
     let p_side = "Sell";
+
     let p_order_type = "Market";
     let p_qty = "5.0";
     let open_trade = client

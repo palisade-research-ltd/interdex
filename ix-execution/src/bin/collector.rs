@@ -9,6 +9,7 @@ use std::{
     time::{Duration, Instant},
 };
 
+use tracing::info;
 use ix_execution::{
     liquidations::LiquidationNew, queries, trades::TradeNew, ClickHouseClient,
 };
@@ -53,7 +54,7 @@ async fn main() -> anyhow::Result<()> {
         .unwrap();
 
     let streams_task = tokio::spawn(async move {
-        // println!("started streams_task");
+        println!("started streams_task");
 
         let symbols = vec![
             "SOLUSDT".to_string(),
@@ -67,7 +68,7 @@ async fn main() -> anyhow::Result<()> {
             .expect("failed to open Bybit WS");
 
         while let Some(recv_event) = rx.recv().await {
-            // println!("\nrecv_event");
+            println!("\nrecv_event");
             match recv_event {
                 BybitWssEvent::LiquidationData(event_data) => {
                     let i_liq = LiquidationNew {
@@ -79,10 +80,10 @@ async fn main() -> anyhow::Result<()> {
                         exchange: "Bybit".to_string(),
                     };
 
-                    // println!(
-                    //     "\nallLiquidation event received... {:?}",
-                    //     event_data.symbol
-                    // );
+                    println!(
+                        "\nallLiquidation event received... {:?}",
+                        event_data.symbol
+                    );
 
                     let liquidation_query =
                         queries::liquidations::write_tables::q_insert_liquidations(
@@ -102,7 +103,7 @@ async fn main() -> anyhow::Result<()> {
                         exchange: "Bybit".to_string(),
                     };
 
-                    // println!("\npublicTrade event received... {:?}", event_data.symbol);
+                    println!("\npublicTrade event received... {:?}", event_data.symbol);
 
                     let trade_query =
                         queries::trades::write_tables::q_insert_trades(&i_trade).unwrap();
@@ -135,7 +136,7 @@ async fn main() -> anyhow::Result<()> {
 
             let v_pairs = vec![
                 TradingPair::SolUsdt,
-                // TradingPair::LinkUsdt,
+                TradingPair::LinkUsdt,
             ];
 
             let depth = 25;
@@ -153,7 +154,7 @@ async fn main() -> anyhow::Result<()> {
                     };
 
                 for i_pair in v_pairs.clone() {
-                    // println!("pair {:?}", i_pair);
+                    println!("pair {:?}", i_pair);
 
                     let r_orderbook = exchange_client
                         .get_orderbook(i_pair.clone(), Some(depth))
