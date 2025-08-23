@@ -12,7 +12,6 @@ pub async fn read_orderbooks_table(
             asks
         FROM orderbooks 
         WHERE exchange = '{}' AND symbol = '{}'
-        LIMIT 10
         "#,
         p_exchange, p_symbol
     );

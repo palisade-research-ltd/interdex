@@ -27,13 +27,13 @@ pub fn q_insert_liquidations(
     let query = format!(
         r#"INSERT INTO 
                 liquidations
-                    (timestamp, exchange, symbol, side, amount, price)
+                    (timestamp, symbol, exchange, side, amount, price)
                 VALUES 
                     ('{}', '{}', '{}', '{}', '{}', '{}')
             "#,
         timestamp,
-        liquidations.exchange,
         format_symbol_for_clickhouse(&liquidations.symbol),
+        liquidations.exchange,
         liquidations.side,
         liquidations.amount,
         liquidations.price,

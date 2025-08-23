@@ -182,28 +182,6 @@ impl CoinbaseClient {
     }
 }
 
-// /// Coinbase product book response
-// #[derive(Debug, Deserialize)]
-// pub struct CoinbaseProductBookResponse {
-//     pub pricebook: CoinbasePricebook,
-// }
-//
-// /// Coinbase pricebook
-// #[derive(Debug, Deserialize)]
-// pub struct CoinbasePricebook {
-//     pub product_id: String,
-//     pub bids: Vec<CoinbasePriceLevel>,
-//     pub asks: Vec<CoinbasePriceLevel>,
-//     pub time: String,
-// }
-//
-// /// Coinbase price level
-// #[derive(Debug, Deserialize)]
-// pub struct CoinbasePriceLevel {
-//     pub price: String,
-//     pub size: String,
-// }
-
 /// Coinbase products response
 #[derive(Debug, Deserialize)]
 pub struct CoinbaseProductsResponse {
@@ -240,29 +218,10 @@ pub struct CoinbaseProduct {
     pub base_currency_id: String,
 }
 
-// /// Coinbase trades response
-// #[derive(Debug, Deserialize)]
-// pub struct CoinbaseTradesResponse {
-//     pub trades: Vec<CoinbaseTrade>,
-//     pub best_bid: String,
-//     pub best_ask: String,
-// }
-
-/// Coinbase trade
-// #[derive(Debug, Deserialize)]
-// pub struct CoinbaseTrade {
-//     pub trade_id: String,
-//     pub product_id: String,
-//     pub price: String,
-//     pub size: String,
-//     pub time: String,
-//     pub side: String,
-//     pub bid: String,
-//     pub ask: String,
-// }
-
+/// Coinbase client default
 impl Default for CoinbaseClient {
     fn default() -> Self {
         Self::new().expect("Failed to create default Coinbase client")
     }
 }
+

@@ -105,8 +105,8 @@ impl BybitClient {
                 })?;
 
             v_bids.push(PriceLevel {
-                price: price,
-                quantity: quantity,
+                price,
+                quantity,
             });
 
         }
@@ -127,8 +127,8 @@ impl BybitClient {
                 })?;
 
             v_asks.push(PriceLevel {
-                price: price,
-                quantity: quantity,
+                price,
+                quantity,
             });
 
         }

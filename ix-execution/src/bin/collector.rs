@@ -8,7 +8,6 @@ use std::{
     thread::sleep,
     time::{Duration, Instant},
 };
-use tokio;
 
 use ix_execution::{
     liquidations::LiquidationNew, queries, trades::TradeNew, ClickHouseClient,
@@ -177,4 +176,5 @@ async fn main() -> anyhow::Result<()> {
     // Wait for both tasks
     tokio::try_join!(streams_task, orderbook_task)?;
     Ok(())
+
 }

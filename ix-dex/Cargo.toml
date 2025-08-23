@@ -9,32 +9,30 @@ authors = ["palisade research ltd"]
 
 [dependencies]
 
-ix-results = { path = "../ix-results", version = "0.0.1" }
+# ix-results = { path = "../ix-results", version = "0.0.1" }
 ix-core = { path = "../ix-core", version = "0.0.1" }
 
 anyhow = { workspace = true }
 thiserror = { workspace = true }
-criterion = { workspace = true }
-memuse = { workspace = true }
-human_bytes = { workspace = true }
-rand = { workspace = true }
+human_bytes = { version = "0.4.1" }
+rand = { version = "0.7.3" }
 toml = { workspace = true }
 csv = { workspace = true }
-clap = { workspace = true }
+clap = { version = "4.5", features = ["derive"] }
 
-tokio = { workspace = true }
-futures = { workspace = true }
-serde = { workspace = true }
-serde_json = { workspace = true }
+tokio = { version = "1.45", features = ["full"] }
+futures = { version = "0.3" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0" }
 
-regex = { workspace = true }
-hex = { workspace = true }
-borsh = { workspace = true }
-bs58 = { workspace = true }
+regex = { version = "1.5" }
+hex = { version = "0.4.3" }
+borsh = { version = "1.5.7", features = ["derive"] }
+bs58 = { version = "0.5.1" }
 
-reqwest = { workspace = true }
-solana-client = { workspace = true }
-solana-sdk = { workspace = true }
+reqwest = { version = "0.12", features = ["json"] }
+solana-client = { version = "2.2.18" }
+solana-sdk = { version = "2.2.18" }
 
 [[test]]
 name = "test_solana_rpc"

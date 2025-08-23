@@ -1,7 +1,7 @@
 // Create the order features table
-pub fn create_order_features_table_ddl() -> String {
+pub fn create_features_table_ddl() -> String {
     r#"
-CREATE TABLE IF NOT EXISTS order_features (
+CREATE TABLE IF NOT EXISTS features (
     timestamp DateTime64(6, 'UTC'),
     symbol String,
     exchange String,
