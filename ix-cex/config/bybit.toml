@@ -7,8 +7,8 @@ wss_private_url = "wss://stream.bybit.com/v5/private"
 testnet_url = "testnet"
 
 [api]
-api_key = "nHMnnRmoUo1uInJthY"
-api_secret = "xgbVoVIigdgs9Epvs9XCxUT5vD2e4WQm4TZj"
+api_key = "eEmQIB8BV1rMjdqHnC" # "nHMnnRmoUo1uInJthY"
+api_secret = "ztZkrq0GUySr5ERCGXwAAKXam8GxGIsdfbww" # "xgbVoVIigdgs9Epvs9XCxUT5vD2e4WQm4TZj"
 recv_window = 6000
 testnet = false
 

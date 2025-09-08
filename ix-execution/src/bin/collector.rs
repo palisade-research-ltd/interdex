@@ -9,7 +9,6 @@ use std::{
     time::{Duration, Instant},
 };
 
-use tracing::info;
 use ix_execution::{
     liquidations::LiquidationNew, queries, trades::TradeNew, ClickHouseClient,
 };

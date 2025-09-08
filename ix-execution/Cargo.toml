@@ -15,10 +15,6 @@ path = "src/bin/collector.rs"
 name = "features"
 path = "src/bin/features.rs"
 
-# [[bin]]
-# name = "trader"
-# path = "src/bin/trader.rs"
-
 [dependencies]
 
 ix-cex = { path = "../ix-cex", version = "0.0.1" }
@@ -40,9 +36,8 @@ tracing = { version = "0.1" }
 tracing-subscriber = { version = "0.3" }
 serde_bytes = { version = "0.11.17" }
 
-atelier_base = { version = "0.0.11" }
-atelier_data = { version = "0.0.12" }
-atelier_dcml = { version = "0.0.11" }
+atelier_base = { git = "https://github.com/IteraLabs/atelier-rs.git", version = "0.0.11" }
+atelier_data = { git = "https://github.com/IteraLabs/atelier-rs.git", version = "0.0.12" }
 
 [dev-dependencies]
 tokio-test = "0.4"
