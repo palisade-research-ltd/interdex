@@ -1,0 +1,48 @@
+# File: docker/collector-config.toml
+# Configuration for the CEX data collector
+
+[collector]
+name = "datacollector"
+log_level = "info"
+
+[database]
+clickhouse_url = "http://localhost:8123"
+database = "operations"
+username = "default"
+password = ""
+
+[connection]
+timeout = "30s"
+retry_attempts = 3
+batch_size = 1000
+flush_interval_seconds = 30
+
+[exchanges]
+
+[exchanges.binance]
+enabled = true
+websocket_url = "wss://stream.binance.com:9443/ws/"
+rest_api_url = "https://api.binance.com/api/v3/"
+symbols = ["BTCUSDT", "ETHUSDT", "ADAUSDT", "DOTUSDT"]
+data_types = ["orderbook", "trades", "klines"]
+
+[exchanges.coinbase]
+enabled = true
+websocket_url = "wss://ws-feed.pro.coinbase.com"
+rest_api_url = "https://api.pro.coinbase.com/"
+symbols = ["BTC-USD", "ETH-USD", "ADA-USD", "DOT-USD"]
+data_types = ["orderbook", "trades"]
+
+[exchanges.kraken]
+enabled = false
+websocket_url = "wss://ws.kraken.com"
+rest_api_url = "https://api.kraken.com/0/public/"
+
+[features]
+calculate_technical_indicators = true
+store_raw_data = true
+enable_signal_generation = false
+
+[monitoring]
+metrics_port = 8090
+health_check_port = 8091

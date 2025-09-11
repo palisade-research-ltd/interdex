@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  database:
+    build:
+      context: .
+      dockerfile: database/build/database.Dockerfile
+    container_name: clickhouse-database
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      # Fixed: Use separate volumes for data and logs
+      - database_data:/var/lib/clickhouse
+      - database_logs:/var/log/clickhouse-server
+      # Mount configuration files
+      - ./database/configs/config.xml:/etc/clickhouse-server/config.xml:ro
+      - ./database/configs/users.xml:/etc/clickhouse-server/users.xml:ro
+    environment:
+      - CLICKHOUSE_DB=default
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8123/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    # Fixed: Use proper entrypoint
+    entrypoint: ["/database-entrypoint.sh"]
+    networks:
+      - app-network
+
+  datacollector:
+    build:
+      context: .
+      dockerfile: datacollector/build/datacollector.Dockerfile
+    container_name: rust-datacollector
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      - RUST_LOG=info
+      - CONFIG_PATH=/app/config/datacollector_config.toml
+      # Fixed: Use service name for database connection
+      - CLICKHOUSE_URL=http://database:8123
+    volumes:
+      # Mount logs for debugging
+      - ./logs:/app/logs
+    ports:
+      - "9009:9009"
+    healthcheck:
+      test: ["CMD", "pgrep", "datacollector"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  # Fixed: Separate volumes for data and logs
+  database_data:
+    driver: local
+  database_logs:
+    driver: local
