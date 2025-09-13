@@ -1,7 +1,7 @@
 // Create the trades table DDL
 pub fn create_trades_table_ddl() -> String {
     r#"
-CREATE TABLE IF NOT EXISTS trades (
+CREATE TABLE IF NOT EXISTS publictrades (
     timestamp DateTime64(6, 'UTC'),
     symbol String,
     side String,

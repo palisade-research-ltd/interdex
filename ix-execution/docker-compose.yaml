@@ -1,0 +1,60 @@
+# Fixed docker-compose.yml with correct paths
+name: datalake
+services:
+
+  database:
+    container_name: database-ch
+    build: 
+      context: ./database 
+      dockerfile: database.Dockerfile
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - database_data:/var/lib/database
+    environment:
+      - CLICKHOUSE_DB=default
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+    restart: always
+    ulimits:
+      nofile: 20000
+      nproc: 30000
+    healthcheck:
+        test: ["CMD", "wget", "--spider", "-q", "localhost:8123/ping"]
+        interval: 30s
+        timeout: 10s
+        retries: 3
+    networks:
+      - datalake-network
+
+  datacollector:
+    container_name: datacollector-rs
+    platform: linux/amd64
+    build:
+      context: ./datacollector
+      dockerfile: datacollector.Dockerfile
+      # tests for compile 
+      # context: . 
+      # dockerfile: ./datacollector/datacollector.Dockerfile
+    depends_on:
+      database:
+        condition: service_healthy
+        restart: true
+    environment:
+      - CLICKHOUSE_URL=http://database:8123
+      - CLICKHOUSE_DB=operations
+    volumes:
+      - ./logs:/app/logs
+    ports:
+      - "9009:9009"
+    networks:
+      - datalake-network
+
+volumes:
+  database_data:
+
+networks:
+  datalake-network:
+    driver: bridge

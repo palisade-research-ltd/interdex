@@ -8,8 +8,8 @@ edition = "2021"
 authors = ["palisade research ltd"]
 
 [[bin]]
-name = "collector"
-path = "src/bin/collector.rs"
+name = "datacollector"
+path = "src/bin/datacollector.rs"
 
 [[bin]]
 name = "features"
@@ -26,6 +26,8 @@ tokio = { version = "1.45", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0" }
 reqwest = { version = "0.12", features = ["json"] }
+
+openssl = { version = "0.10", features = ["vendored"] }
 
 anyhow = { version = "1.0.98" }
 chrono = { version = "0.4", features = ["serde"] }

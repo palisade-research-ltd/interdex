@@ -23,7 +23,7 @@ pub fn q_insert_trades(trades: &TradeNew) -> Result<String, Box<dyn error::Error
 
     let query = format!(
         r#"INSERT INTO 
-                trades
+                publictrades
                     (timestamp, symbol, side, amount, price, exchange)
                 VALUES 
                     ('{}', '{}', '{}', '{}', '{}', '{}')

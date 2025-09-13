@@ -40,9 +40,9 @@ futures-util = { version = "0.3.31" }
 [dev-dependencies]
 tokio-test = "0.4"
 
-[[bin]]
-name = "cli_client"
-path = "src/bin/cli_client.rs"
+# [[bin]]
+# name = "cli_client"
+# path = "src/bin/cli_client.rs"
 
 [[test]]
 name = "test_binance"

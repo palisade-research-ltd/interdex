@@ -10,7 +10,7 @@ pub async fn read_trades_table(
             side, 
             amount, 
             price,
-        FROM trades 
+        FROM publictrades 
         WHERE exchange = '{}' AND symbol = '{}' 
         LIMIT 10"#,
         p_exchange, p_symbol
