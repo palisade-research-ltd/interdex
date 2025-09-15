@@ -1,4 +1,4 @@
-pub async fn read_trades_table(
+pub async fn q_read_trades(
     p_exchange: String,
     p_symbol: String,
 ) -> Result<String, Box<dyn std::error::Error>> {
@@ -11,8 +11,7 @@ pub async fn read_trades_table(
             amount, 
             price,
         FROM publictrades 
-        WHERE exchange = '{}' AND symbol = '{}' 
-        LIMIT 10"#,
+        WHERE exchange = '{}' AND symbol = '{}' "#,
         p_exchange, p_symbol
     );
     Ok(query)

@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS publictrades (
     timestamp DateTime64(6, 'UTC'),
     symbol String,
     side String,
-    amount String, -- Float64(6), 
-    price String, -- Float64(6),
+    amount String,
+    price String,
     exchange String
 ) ENGINE = MergeTree()
 PARTITION BY toYYYYMM(timestamp)

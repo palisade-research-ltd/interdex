@@ -12,8 +12,16 @@ name = "datacollector"
 path = "src/bin/datacollector.rs"
 
 [[bin]]
-name = "features"
-path = "src/bin/features.rs"
+name = "dataproducer"
+path = "src/bin/dataproducer.rs"
+
+[[bin]]
+name = "signalproducer"
+path = "src/bin/signalproducer.rs"
+
+[[bin]]
+name = "signalbroadcaster"
+path = "src/bin/signalbroadcaster.rs"
 
 [dependencies]
 
@@ -40,6 +48,7 @@ serde_bytes = { version = "0.11.17" }
 
 atelier_base = { git = "https://github.com/IteraLabs/atelier-rs.git", version = "0.0.11" }
 atelier_data = { git = "https://github.com/IteraLabs/atelier-rs.git", version = "0.0.12" }
+atelier_quant = { git = "https://github.com/IteraLabs/atelier-rs.git", version = "0.0.1" }
 
 [dev-dependencies]
 tokio-test = "0.4"

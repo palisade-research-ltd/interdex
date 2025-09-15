@@ -1,7 +1,7 @@
-# File: docker/collector-config.toml
+# File: docker/datacollector-config.toml
 # Configuration for the CEX data collector
 
-[collector]
+[datacollector]
 name = "datacollector"
 log_level = "info"
 

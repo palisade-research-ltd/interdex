@@ -16,6 +16,7 @@ RUN mkdir -p /var/lib/clickhouse/format_schemas && \
 # Copy initialization SQL scripts to the init directory
 RUN echo "Copy initialization queries.."
 RUN mkdir -p /docker-entrypoint-initdb.d
+COPY clickhouse/init-ft-schema.sql /docker-entrypoint-initdb.d/init-ft-schema.sql
 COPY clickhouse/init-lq-schema.sql /docker-entrypoint-initdb.d/init-lq-schema.sql
 COPY clickhouse/init-ob-schema.sql /docker-entrypoint-initdb.d/init-ob-schema.sql
 COPY clickhouse/init-pt-schema.sql /docker-entrypoint-initdb.d/init-pt-schema.sql

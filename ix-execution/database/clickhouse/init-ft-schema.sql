@@ -6,15 +6,11 @@ CREATE DATABASE IF NOT EXISTS operations;
 USE operations;
 
 -- Liquidations table
-CREATE TABLE IF NOT EXISTS liquidations (
+CREATE TABLE IF NOT EXISTS features_ob (
     timestamp DateTime64(6, 'UTC'),
-    symbol String,
-    exchange String,
-    side String,
-    amount String,
-    price String
+    amount String
 ) ENGINE = MergeTree()
 PARTITION BY toYYYYMM(timestamp)
-ORDER BY (symbol, exchange, timestamp)
+ORDER BY (timestamp)
 SETTINGS index_granularity = 8192;
 
