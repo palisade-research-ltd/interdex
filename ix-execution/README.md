@@ -1,9 +1,6 @@
 # ix-execution
 
-## Create Database
-
-## Create Table
-
-## Read from Table
-
+- Database: Clickhouse (Local) 
+- Datacollector: Bybit WebSocket (Rust)
+- Dataproducer: Quant Model VPIN (Rust)
 

@@ -1,0 +1,20 @@
+[dataproducer]
+name = "vpin'
+log_level = "info"
+
+[database]
+clickhouse_url = "http://localhost:8123"
+database = "operations"
+username = "default"
+password = ""
+
+[connection]
+timeout = "30s"
+retry_attempts = 3
+batch_size = 1000
+flush_interval_seconds = 30
+
+[model]
+
+[model.parameters]
+

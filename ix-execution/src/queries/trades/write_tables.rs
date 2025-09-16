@@ -1,4 +1,4 @@
-use crate::trades::TradeNew;
+use crate::trades::ClickhouseTradeData;
 use chrono::{DateTime, TimeZone, Utc};
 use std::error;
 
@@ -16,9 +16,9 @@ fn format_datetime_for_clickhouse(dt: &DateTime<Utc>) -> String {
     dt.format("%Y-%m-%d %H:%M:%S%.6f").to_string()
 }
 
-pub fn q_insert_trades(trades: &TradeNew) -> Result<String, Box<dyn error::Error>> {
+pub fn q_insert_trades(trades: &ClickhouseTradeData) -> Result<String, Box<dyn error::Error>> {
     let timestamp_dt: DateTime<Utc> =
-        Utc.timestamp_millis_opt(trades.trade_ts as i64).unwrap();
+        Utc.timestamp_millis_opt(trades.timestamp as i64).unwrap();
     let timestamp = format_datetime_for_clickhouse(&timestamp_dt);
 
     let query = format!(

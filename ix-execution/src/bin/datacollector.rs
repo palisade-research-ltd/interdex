@@ -11,7 +11,7 @@ use std::{
 };
 
 use ix_execution::{
-    liquidations::LiquidationNew, queries, trades::TradeNew, ClickHouseClient,
+    liquidations::LiquidationNew, queries, queries::trades::ClickhouseTradeData, ClickHouseClient,
 };
 
 use ix_cex::{
@@ -79,12 +79,12 @@ async fn main() -> anyhow::Result<()> {
                 }
 
                 BybitWssEvent::TradeData(event_data) => {
-                    let i_trade = TradeNew {
-                        trade_ts: event_data.trade_ts,
+                    let i_trade = ClickhouseTradeData {
+                        timestamp: event_data.trade_ts,
                         symbol: event_data.symbol.clone(),
                         side: event_data.side,
-                        amount: event_data.amount,
-                        price: event_data.price,
+                        amount: event_data.amount.parse().expect("failed to parse amount to f64"),
+                        price: event_data.price.parse().expect("failed to parse price to f64"),
                         exchange: "Bybit".to_string(),
                     };
 

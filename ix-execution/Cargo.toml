@@ -3,8 +3,8 @@ name = "ix-execution"
 publish = false
 readme = "README.md"
 version = "0.0.1"
-rust-version = "1.84.1"
-edition = "2021"
+rust-version = "1.89.0"
+edition = "2024"
 authors = ["palisade research ltd"]
 
 [[bin]]
@@ -48,7 +48,7 @@ serde_bytes = { version = "0.11.17" }
 
 atelier_base = { git = "https://github.com/IteraLabs/atelier-rs.git", version = "0.0.11" }
 atelier_data = { git = "https://github.com/IteraLabs/atelier-rs.git", version = "0.0.12" }
-atelier_quant = { git = "https://github.com/IteraLabs/atelier-rs.git", version = "0.0.1" }
+atelier_quant = { git = "https://github.com/IteraLabs/atelier-rs.git", version = "0.0.10" }
 
 [dev-dependencies]
 tokio-test = "0.4"

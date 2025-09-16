@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS publictrades (
     side String,
     amount String, 
     price String,
-    exchange String,
+    exchange String
 ) ENGINE = MergeTree()
 PARTITION BY toYYYYMM(timestamp)
 ORDER BY (symbol, timestamp, exchange)

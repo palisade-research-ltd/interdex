@@ -13,8 +13,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Build inside Linux container (no cross-compilation needed!)
-RUN cargo build --bin datacollector --release # --target x86_64-unknown-linux-gnu
+RUN cargo build --bin dataproducer --release # --target x86_64-unknown-linux-gnu
 
 FROM scratch as output
-COPY --from=builder /app/target/release/datacollector /datacollector
+COPY --from=builder /app/target/release/dataproducer /dataproducer
+
+# Run the collector
+CMD ["/bin/bash"]
 

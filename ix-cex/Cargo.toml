@@ -1,9 +1,11 @@
 [package]
 name = "ix-cex"
 version = "0.0.1"
-edition = "2021"
 publish = false
 readme = "README.md"
+
+rust-version = "1.89.0"
+edition = "2024"
 authors = ["palisade research ltd"]
 
 [dependencies]

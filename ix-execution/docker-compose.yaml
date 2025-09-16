@@ -52,28 +52,28 @@ services:
     networks:
       - datalake-network
 
-  dataproducer:
-    container_name: dataproducer-rs
-    platform: linux/amd64
-    build:
-      context: ./dataproducer
-      dockerfile: dataproducer.Dockerfile
-    depends_on:
-      database:
-        condition: service_healthy
-        restart: true
-      datacollector:
-        condition: service_healthy
-        restart: true
-    environment:
-      - CLICKHOUSE_URL=http://database:8123
-      - CLICKHOUSE_DB=operations
-    volumes:
-      - ./logs:/app/logs
-    ports:
-      - "9009:9009"
-    networks:
-      - datalake-network
+  # dataproducer:
+  #   container_name: dataproducer-rs
+  #   platform: linux/amd64
+  #   build:
+  #     context: ./dataproducer
+  #     dockerfile: dataproducer.Dockerfile
+  #   depends_on:
+  #     database:
+  #       condition: service_healthy
+  #       restart: true
+  #     datacollector:
+  #       condition: service_healthy
+  #       restart: true
+  #   environment:
+  #     - CLICKHOUSE_URL=http://database:8123
+  #     - CLICKHOUSE_DB=operations
+  #   volumes:
+  #     - ./logs:/app/logs
+  #   ports:
+  #     - "9009:9009"
+  #   networks:
+  #     - datalake-network
 
 volumes:
   database_data:
